@@ -74,6 +74,8 @@ or to create a symbolic link
 | (Hold) C| Free camera |
 | WASD | Move free camera |
 | 1/2/3/4 | Toggle the light |
+| F1 | Toggle debug panel |
+| F2 | Toggle control panel |
 
 ## Issues and questions
 Feel free to report issues and questions to the [issues section](https://github.com/x1nixmzeng/CityBuilderGame/issues).

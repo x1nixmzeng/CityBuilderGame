@@ -5,7 +5,6 @@
 #include "gui/components/stackPanel.hpp"
 #include "gui/components/widget.hpp"
 
-#include "gui/menus/buildMenu.hpp"
 #include "gui/menus/controlsPanel.hpp"
 #include "gui/menus/debugPanel.hpp"
 #include "gui/menus/levelSelectMenu.hpp"
@@ -27,12 +26,11 @@ void Gui::init() {
     optionsMenu = new OptionsMenu(this);
     levelSelectMenu = new LevelSelectMenu(this);
     controlsPanel = new ControlsPanel(this);
-    buildMenu = new BuildMenu(this);
     debugPanel = new DebugPanel(this);
     warningWidget = new Label("warning_label", this, colors::transparent, "", colors::warning);
     warningWidget->hide();
 
-    widgets = {pauseMenu, optionsMenu, buildMenu, debugPanel, levelSelectMenu, controlsPanel};
+    widgets = {pauseMenu, optionsMenu, debugPanel, levelSelectMenu, controlsPanel};
 }
 
 void Gui::showMenu(GameMenus menu) {
@@ -146,10 +144,6 @@ void Gui::handleMouseButtonEvent(MouseButtonEvent& event) {
 
     if (debugPanel->isVisible()) {
         debugPanel->handleMouseButtonEvent(event);
-    }
-
-    if (buildMenu->isVisible()) {
-        buildMenu->handleMouseButtonEvent(event);
     }
 }
 

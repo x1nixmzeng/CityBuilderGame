@@ -88,8 +88,18 @@ void Application::run() {
 
         // this is super gross - we don't support callbacks?? vvvvvvvvvvvvvvvvvvv
 
-        if (IsKeyDown(KEY_ESCAPE)) {
+        if (IsKeyPressed(KEY_ESCAPE)) {
             KeyEvent event = KeyEvent(KEY_ESCAPE, 0, KeyAction::Press, 0);
+            onKeyEvent(event);
+        }
+
+        if (IsKeyPressed(KEY_F1)) {
+            KeyEvent event = KeyEvent(KEY_F1, 0, KeyAction::Press, 0);
+            onKeyEvent(event);
+        }
+
+        if (IsKeyPressed(KEY_F2)) {
+            KeyEvent event = KeyEvent(KEY_F2, 0, KeyAction::Press, 0);
             onKeyEvent(event);
         }
 
@@ -112,7 +122,6 @@ void Application::run() {
             onMouseButtonEvent(event);
         }
 
-        
         // raylib doesn't support callbacks. ugly workaround
         //----------------------------------------------------------------------------------
         BeginDrawing();

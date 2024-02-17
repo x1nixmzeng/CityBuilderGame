@@ -7,7 +7,6 @@ class Application;
 
 class PauseMenu;
 class OptionsMenu;
-class BuildMenu;
 class DebugPanel;
 class ControlsPanel;
 class LevelSelectMenu;
@@ -18,18 +17,17 @@ struct MouseButtonEvent;
 struct MouseMoveEvent;
 
 enum class GameMenus {
-  NONE,
-  MAIN_MENU,
-  PAUSE_MENU,
-  OPTIONS_MENU,
-  LEVEL_SELECT_MENU,
+    NONE,
+    MAIN_MENU,
+    PAUSE_MENU,
+    OPTIONS_MENU,
+    LEVEL_SELECT_MENU,
 };
 
 class Gui {
   private:
     Application* app;
 
-    //RenderQuad quad;
     float width, height;
 
     PauseMenu* pauseMenu;
@@ -37,9 +35,8 @@ class Gui {
     LevelSelectMenu* levelSelectMenu;
     ControlsPanel* controlsPanel;
 
-    BuildMenu* buildMenu;
     DebugPanel* debugPanel;
-  Label* warningWidget;
+    Label* warningWidget;
 
     std::stack<Widget*> navigation;
     std::vector<Widget*> widgets;
@@ -48,7 +45,6 @@ class Gui {
 
   public:
     Gui(Application* app, float width, float height);
-
 
     void showMenu(GameMenus gameMenu);
     void popMenu();

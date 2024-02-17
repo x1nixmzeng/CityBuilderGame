@@ -7,8 +7,9 @@
 
 #include "events/resourceEvents.hpp"
 
-#include "components/components.hpp"
+#include "components/cameraComponent.hpp"
 
+#include <format>
 #include <raymath.h>
 
 DebugPanel::DebugPanel(Gui* gui)
@@ -65,24 +66,6 @@ DebugPanel::DebugPanel(Gui* gui)
     cameraYaw->constraints.height = AbsoluteConstraint(30);
     cameraYaw->constraints.width = RelativeConstraint(0.9);
     addChild(cameraYaw);
-
-    TextButton* resetCameraButton = new TextButton("debug_menu.resetCameraButton", gui, colors::anthraziteGrey, "Reset Camera");
-    resetCameraButton->constraints.height = AbsoluteConstraint(30);
-    resetCameraButton->constraints.width = RelativeConstraint(0.9);
-    resetCameraButton->onClick += [&](const MouseButtonEvent& e) {
-        Application* app = this->gui->getApp();
-
-        // const CameraComponent& cameraComponent = app->getGame()->getRegistry().get<CameraComponent>(app->getGame()->camera);
-
-        TransformationComponent& cameraTransform = app->getGame()->getRegistry().get<TransformationComponent>(app->getGame()->camera);
-
-        cameraTransform.setPosition(Vector3Zero());
-        cameraTransform.calculateTransform();
-
-        // CameraUpdateEvent event{cameraEntity, false, cameraPositionUpdated, cameraRotationUpdated};
-        // game->raiseEvent<CameraUpdateEvent>(event);
-    };
-    addChild(resetCameraButton);
 }
 
 void DebugPanel::update() {
@@ -96,26 +79,19 @@ void DebugPanel::update() {
     Label* fpsCounter = dynamic_cast<Label*>(getChild("debug_menu.fpsCounter"));
     fpsCounter->text = "FPS: " + std::to_string(fps);
 
-    //// sun info
-    //const SunLightComponent& sunLight = registry.get<SunLightComponent>(game->sun);
-    //const TransformationComponent& sunTransform = registry.get<TransformationComponent>(game->sun);
-
-    //Label* sunDirection = dynamic_cast<Label*>(getChild("debug_menu.sunDirection"));
-    //sunDirection->text = "Sun direction: (" + std::to_string(sunLight.direction) + ")";
-    //Label* sunPosition = dynamic_cast<Label*>(getChild("debug_menu.sunPosition"));
-    //sunPosition->text = "Sun position: (" + std::to_string(sunTransform.position) + ")";
-
     // camera info
-    //const TransformationComponent& cameraTransform = registry.get<TransformationComponent>(game->camera);
+    const CameraComponent& cameraTransform = registry.get<CameraComponent>(game->camera);
 
-    //Label* cameraPosition = dynamic_cast<Label*>(getChild("debug_menu.cameraPosition"));
-    //cameraPosition->text = "Camera position: (" + std::to_string(cameraTransform.position) + ")";
+    auto const& cameraPos = cameraTransform.camera.position;
 
-    //const CameraComponent& cameraComponent = registry.get<CameraComponent>(game->camera);
+    Label* cameraPosition = dynamic_cast<Label*>(getChild("debug_menu.cameraPosition"));
+    cameraPosition->text = std::format("Camera position: ({0}, {1}, {2})", cameraPos.x, cameraPos.y, cameraPos.z);
 
-    //Label* cameraPitch = dynamic_cast<Label*>(getChild("debug_menu.cameraPitch"));
-    //cameraPitch->text = "Camera pitch: (" + std::to_string(cameraComponent.pitch) + ")";
+    // const CameraComponent& cameraComponent = registry.get<CameraComponent>(game->camera);
 
-    //Label* cameraYaw = dynamic_cast<Label*>(getChild("debug_menu.cameraYaw"));
-    //cameraYaw->text = "Camera yaw: (" + std::to_string(cameraComponent.yaw) + ")";
+    /*Label* cameraPitch = dynamic_cast<Label*>(getChild("debug_menu.cameraPitch"));
+    cameraPitch->text = "Camera pitch: (" + std::to_string(cameraComponent.camera.) + ")";
+
+    Label* cameraYaw = dynamic_cast<Label*>(getChild("debug_menu.cameraYaw"));
+    cameraYaw->text = "Camera yaw: (" + std::to_string(cameraComponent.yaw) + ")";*/
 }
