@@ -16,9 +16,6 @@ void CameraSystem::init() {
     cameraComponent.camera.up = {0.0f, 1.0f, 0.0f};         // Camera up vector (rotation towards target)
     cameraComponent.camera.fovy = 45.0f;                    // Camera field-of-view Y
     cameraComponent.camera.projection = CAMERA_PERSPECTIVE; // Camera projection type
-
-    // Target component too
-    registry.emplace<CameraTargetComponent>(cameraEntity).valid = false;
 }
 
 CameraSystem::CameraSystem(Game* game)
@@ -26,8 +23,8 @@ CameraSystem::CameraSystem(Game* game)
 
     init();
 
-    eventDispatcher.sink<RequestCameraLookAt>()
-        .connect<&CameraSystem::handleRequestCameraLookAt>(*this);
+    eventDispatcher.sink<CameraRequestLookAt>()
+        .connect<&CameraSystem::handleCameraRequestLookAt>(*this);
 }
 
 void CameraSystem::update(float dt) {
@@ -40,11 +37,10 @@ void CameraSystem::update(float dt) {
     }
 }
 
-void CameraSystem::handleRequestCameraLookAt(const RequestCameraLookAt& e) {
+void CameraSystem::handleCameraRequestLookAt(const CameraRequestLookAt& e) {
 
     CameraComponent& cameraComponent = registry.get<CameraComponent>(cameraEntity);
-    const CameraTargetComponent& cameraTargetComponent = registry.get<CameraTargetComponent>(cameraEntity);
 
-    // why is this passed through a component?
-    cameraComponent.camera.target = cameraTargetComponent.target;
+    // apply immediately
+    cameraComponent.camera.target = e.target;
 }

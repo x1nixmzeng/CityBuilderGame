@@ -1,6 +1,5 @@
 #pragma once
 
-#include "buildMarkerComponent.hpp"
 #include "cameraComponent.hpp"
 #include "debugComponent.hpp"
 #include "instancedMeshComponent.hpp"

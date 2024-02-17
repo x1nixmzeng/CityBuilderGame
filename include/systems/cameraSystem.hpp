@@ -6,7 +6,7 @@
 
 #include <raylib.h>
 
-struct RequestCameraLookAt;
+struct CameraRequestLookAt;
 
 class CameraSystem : public System {
   protected:
@@ -19,5 +19,5 @@ class CameraSystem : public System {
 
     virtual void update(float dt) override;
 
-    void handleRequestCameraLookAt(const RequestCameraLookAt& e);
+    void handleCameraRequestLookAt(const CameraRequestLookAt& e);
 };

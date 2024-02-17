@@ -403,13 +403,9 @@ void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceTyp
 
                 {
                     auto end = getWorldPosition(laraTarget, laraTargetSurface);
-                    // kick off the animation transition
-                    CameraTargetComponent& camTarget = registry.get<CameraTargetComponent>(game->camera);
-                    camTarget.target = end;
-                    // camTarget.up = // ignored
-                    camTarget.valid = true;
 
-                    RequestCameraLookAt lookAt;
+                    CameraRequestLookAt lookAt;
+                    lookAt.target = end;
                     game->raiseEvent(lookAt);
                 }
 

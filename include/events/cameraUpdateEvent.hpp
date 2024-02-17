@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entityEvent.hpp"
+#include <raylib.h>
 
 struct CameraUpdateEvent : public EntityEvent {
     bool sizeUpdated;
@@ -12,5 +13,6 @@ struct CameraUpdateEvent : public EntityEvent {
     }
 };
 
-struct RequestCameraLookAt : public Event {
+struct CameraRequestLookAt : public Event {
+    Vector3 target;
 };

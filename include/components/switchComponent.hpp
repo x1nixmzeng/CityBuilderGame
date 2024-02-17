@@ -28,12 +28,3 @@ struct TriggerComponent : public Component<false> {
         : name(name_), cell(cell_), triggerData(triggerData_) {
     }
 };
-
-struct TriggerStateComponent : public Component<false> {
-
-    bool state;
-
-    inline TriggerStateComponent(const bool state_)
-        : state(state_) {
-    }
-};
