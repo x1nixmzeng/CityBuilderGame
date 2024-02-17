@@ -23,7 +23,7 @@
     </tile>
 
     <tile cell="6 1 -3" template="TILE_FRONT_PIECE" />
-    <tile cell="6 2 -3" template="TILE_FRONT_PIECE" />
+    <tile cell="6 2 -3" template="TILE_FRONT_PIECE_3W" />
     <tile cell="6 2 -3" template="TILE_GROUND_PIECE_CORNER_2" />
     <tile cell="6 0 -2" template="TILE_GROUND_PIECE_FB" />
 
@@ -47,14 +47,15 @@
       <trigger value="true" />
     </tile>
 
-    <tile cell="7 2 -3" template="TILE_GROUND_PIECE_LR" is_trap="true" /> <!-- is this right -->
+    <tile cell="7 2 -3" template="TILE_GROUND_PIECE_LR" />
    
-    <tile cell="8 2 -3" template="TILE_GROUND_PIECE_LR">
+    <tile cell="8 2 -3" template="TILE_GROUND_PIECE_CORNER">
       <trigger_switch toggle="switch_1" />
     </tile>
 
-    <tile cell="7 2 -3" template="TILE_FRONT_PIECE_3" />
-    <tile cell="8 2 -3" template="TILE_FRONT_PIECE_3" />
+    <tile cell="7 2 -3" template="TILE_FRONT_PIECE_4" />
+    <tile cell="8 2 -3" template="TILE_FRONT_PIECE_3W_4" /> <!-- 3 way -->
+    <tile cell="9 2 -3" template="TILE_FRONT_PIECE_4" />
 
 
     <tile cell="8 0 -2" template="TILE_GROUND_PIECE_CORNER_2" />

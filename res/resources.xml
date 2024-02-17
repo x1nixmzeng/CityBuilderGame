@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <!-- config -->
-  <resource type="config_value" id="DEFAULT_LEVEL" value="level_4" />
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_1" />
 
   <!-- hero -->
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
@@ -21,6 +21,8 @@
   <resource type="mesh" id="WB_SIDE_MESH_2" filename="models/side_straight_180.obj" />
   <resource type="mesh" id="WB_SIDE_MESH_3" filename="models/side_straight_90.obj" />
   <resource type="mesh" id="WB_SIDE_MESH_4" filename="models/side_straight_270.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH_3W" filename="models/ground_side_3w.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH_3W_4" filename="models/ground_side_3w_270.obj" />
   <resource type="mesh" id="WB_FRONT_MESH_1" filename="models/front_straight.obj" />
   <resource type="mesh" id="WB_FRONT_MESH_2" filename="models/front_straight_90.obj" />
   <resource type="mesh" id="WB_FRONT_MESH_4" filename="models/front_straight_270.obj" />
@@ -36,14 +38,13 @@
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
 
   <!-- walkables -->
-
   <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"
             mesh="WB_FRONT_MESH_1W"
             surface="wall_side"
             allow_right="false"
             allow_forward="false"
             allow_backward="false" />
-  
+
   <resource type="tile_template" id="TILE_SIDE_PIECE_V"
             mesh="WB_FRONT_MESH_1"
             surface="wall_side"
@@ -54,14 +55,14 @@
             mesh="WB_FRONT_MESH_4"
             surface="wall_side"
             allow_forward="false"
-            allow_right="false"/> 
-  
+            allow_right="false"/>
+
   <resource type="tile_template" id="TILE_SIDE_PIECE_H2"
             mesh="WB_FRONT_MESH_1W_2"
             surface="wall_side"
             allow_left="false"
             allow_right="false"/>
-  
+
   <resource type="tile_template" id="TILE_SIDE_PIECE_H"
             mesh="WB_FRONT_MESH_2"
             surface="wall_side"
@@ -76,7 +77,6 @@
   <resource type="tile_template" id="TILE_GROUND_PIECE"
             surface="ground"
             mesh="WB_GROUND_MESH_1W"
-            allow_left="false"
             allow_right="false"
             allow_backward="false" />
 
@@ -87,67 +87,84 @@
             mesh="WB_GROUND_MESH"/>
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_FB"
-          surface="ground"
-          allow_left="false"
-          allow_right="false"
-          mesh="WB_GROUND_MESH_2"/>
+            surface="ground"
+            allow_left="false"
+            allow_right="false"
+            mesh="WB_GROUND_MESH_2" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER"
-          surface="ground"
-          mesh="WB_GROUND_MESH_CORNER_1"
-          allow_right="false"
-            allow_backward="false"
-            />
+            surface="ground"
+            mesh="WB_GROUND_MESH_CORNER_1"
+            allow_right="false"
+            allow_backward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_2"
-          surface="ground"
-          mesh="WB_GROUND_MESH_CORNER_2"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_CORNER_2"
+            allow_left="false"
+            allow_backward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_3"
-        surface="ground"
-        mesh="WB_GROUND_MESH_CORNER_3"
+            surface="ground"
+            mesh="WB_GROUND_MESH_CORNER_3"
             allow_left="false"
-             allow_forward="false"
-            />
+            allow_forward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_4"
-        surface="ground"
-        mesh="WB_GROUND_MESH_CORNER_4"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_CORNER_4"
+            allow_right="false"
+            allow_forward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W"
-        surface="ground"
-        mesh="WB_GROUND_MESH_3W"
-            allow_forward="false"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_3W"
+            allow_forward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_2"
-        surface="ground"
-        mesh="WB_GROUND_MESH_3W_2"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_3W_2" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_3"
-        surface="ground"
-        mesh="WB_GROUND_MESH_3W_3"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_3W_3" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_4"
-        surface="ground"
-        mesh="WB_GROUND_MESH_3W_4"/>
+            surface="ground"
+            mesh="WB_GROUND_MESH_3W_4" />
 
+  <resource type="tile_template" id="TILE_FRONT_PIECE_3W"
+            surface="wall_front"
+            mesh="WB_SIDE_MESH_3W"
+            allow_left="false" />
+  
+  <resource type="tile_template" id="TILE_FRONT_PIECE_3W_4"
+            surface="wall_front"
+            mesh="WB_SIDE_MESH_3W_4"
+            allow_forward="false" />
+  
   <resource type="tile_template" id="TILE_FRONT_PIECE"
-              surface="wall_front"
+            surface="wall_front"
             mesh="WB_SIDE_MESH"
-              allow_left="false"
-          allow_right="false"
-            />
+            allow_left="false"
+            allow_right="false" />
 
   <resource type="tile_template" id="TILE_FRONT_PIECE_2"
-              surface="wall_front"
+            surface="wall_front"
             mesh="WB_SIDE_MESH_3"
             allow_right="false"
-            allow_backward="false"/>
+            allow_backward="false" />
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE_4"
+            surface="wall_front"
+            mesh="WB_SIDE_MESH_2"
+            allow_forward="false"
+            allow_backward="false" />
 
   <resource type="tile_template" id="TILE_FRONT_PIECE_3"
-              surface="wall_front"
+            surface="wall_front"
             mesh="WB_SIDE_MESH_4"
-          allow_left="false"
+            allow_left="false"
             allow_forward="false" />
 
 </resources>
