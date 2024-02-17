@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
+  <mesh filename="models/level_4_test.obj" />
+  <route name="A Clever Climb">
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_3" />
+    </tile>
+
+    <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="2 0 0" template="TILE_GROUND_PIECE_3W_3" />
+    <tile cell="2 0 1" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="2 0 2" template="TILE_GROUND_PIECE_FB" />
+
+    <tile cell="2 0 -1" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="2 0 -2" template="TILE_GROUND_PIECE_CORNER_2" />
+    <tile cell="3 0 -2" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="4 0 -2" template="TILE_GROUND_PIECE_3W_3" />
+    <tile cell="4 1 -3" template="TILE_FRONT_PIECE" />
+    <tile cell="4 2 -3" template="TILE_FRONT_PIECE" is_trap="true" />
+    <tile cell="4 2 -3" template="TILE_GROUND_PIECE">
+      <trigger_switch toggle="switch_1" />
+    </tile>
+
+    <tile cell="6 1 -3" template="TILE_FRONT_PIECE" />
+    <tile cell="6 2 -3" template="TILE_FRONT_PIECE" />
+    <tile cell="6 2 -3" template="TILE_GROUND_PIECE_CORNER_2" />
+    <tile cell="6 0 -2" template="TILE_GROUND_PIECE_FB" />
+
+    <!-- this section slides out when trigger is pressed-->
+    <tile cell="4 0 -1" template="TILE_GROUND_PIECE_CORNER_3" trigger="switch_1">
+      <trigger value="false">
+        <cell offset="2 0 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+    <tile cell="5 0 -1" template="TILE_GROUND_PIECE_LR" trigger="switch_1">
+      <trigger value="false">
+        <cell offset="2 0 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+    <tile cell="6 0 -1" template="TILE_GROUND_PIECE_CORNER_4" trigger="switch_1">
+      <trigger value="false">
+        <cell offset="2 0 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+
+    <tile cell="7 2 -3" template="TILE_GROUND_PIECE_LR" is_trap="true" /> <!-- is this right -->
+   
+    <tile cell="8 2 -3" template="TILE_GROUND_PIECE_LR">
+      <trigger_switch toggle="switch_1" />
+    </tile>
+
+    <tile cell="7 2 -3" template="TILE_FRONT_PIECE_3" />
+    <tile cell="8 2 -3" template="TILE_FRONT_PIECE_3" />
+
+
+    <tile cell="8 0 -2" template="TILE_GROUND_PIECE_CORNER_2" />
+    <tile cell="9 0 -2" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_5" />
+    </tile>
+    <tile cell="10 0 -2" template="TILE_GROUND_PIECE_LR" />
+
+  </route>
+
+
+  <auto_nav>
+    <!-- 0 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="right" />
+    <!-- 5 -->
+    <event id="right" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="interact" />
+    <!-- 10 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <!-- 15 -->
+    <event id="right" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="backward" />
+    <!-- 20 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="interact" />
+    <event id="left" />
+    <event id="left" />
+    <!-- 25 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <!-- 30 -->
+    <event id="right" />
+    <event id="backward" />
+    <event id="right" />
+    
+  </auto_nav>
+</object>

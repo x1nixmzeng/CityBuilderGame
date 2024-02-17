@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-Container::Container(const std::string& id, Gui* gui, const glm::vec4& backgroundColor)
+Container::Container(const std::string& id, Gui* gui, const Color& backgroundColor)
     : Widget(id, gui, backgroundColor) {
 }
 

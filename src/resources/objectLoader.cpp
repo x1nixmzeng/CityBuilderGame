@@ -4,7 +4,13 @@
 #include "resources/meshLoader.hpp"
 #include "resources/resourceManager.hpp"
 
-#include <iostream>
+#include "misc/cells.hpp"
+
+#include <raylib.h>
+#include <raymath.h>
+
+#include <sstream>
+#include <string>
 
 using namespace pugi;
 
@@ -12,77 +18,151 @@ ObjectLoader::ObjectLoader(ResourceManager& resourceManager)
     : resourceManager(resourceManager) {
 }
 
-template<>
-CarComponent ObjectLoader::loadComponent<CarComponent>(const xml_node& node) {
-    return CarComponent();
+CellPos ReadI3(const xml_node& node, const char* name) {
+    const std::string& position = node.attribute(name).as_string();
+
+    CellPos i3;
+    std::stringstream posStream(position);
+    posStream >> i3.x;
+    posStream >> i3.y;
+    posStream >> i3.z;
+
+    return i3;
 }
 
-// template<>
-// LightComponent ObjectLoader::loadComponent<LightComponent>(const xml_node& node) {
-//
-// }
+Vector3 ReadF3(const xml_node& node, const char* name) {
+    const std::string& position = node.attribute(name).as_string();
+
+    Vector3 f3;
+    std::stringstream posStream(position);
+    posStream >> f3.x;
+    posStream >> f3.y;
+    posStream >> f3.z;
+
+    return f3;
+}
+
+Surface ReadSurface(const xml_node& node) {
+    std::string surfaceAttrib = node.attribute("surface").as_string();
+
+    return SurfaceFromString(surfaceAttrib);
+}
+
+template<>
+LaraComponent ObjectLoader::loadComponent<LaraComponent>(const xml_node& node) {
+
+    auto initialPos = ReadI3(node, "cell");
+    auto offset = ReadF3(node, "offset");
+    auto surface = ReadSurface(node);
+
+    return LaraComponent(initialPos, offset, surface);
+}
 
 template<>
 MeshComponent ObjectLoader::loadComponent<MeshComponent>(const xml_node& node) {
     const std::string& filename = node.attribute("filename").as_string();
 
-    MeshPtr mesh = MeshLoader::loadMesh(resourceManager.resourceDir + filename);
-    return MeshComponent(mesh);
+    auto meshPath = resourceManager.resourceDir + filename;
+    
+    MeshResPtr meshRes = MeshLoader::loadMesh(meshPath);
+    return MeshComponent(meshRes);
 }
 
-template<>
-ParkingComponent ObjectLoader::loadComponent<ParkingComponent>(const xml_node& node) {
-    std::vector<ParkingSpot> spots;
+void ReadTrigger(RouteNode& n, const xml_node& node) {
 
-    float x, y, z;
-    for (const xml_node& parkingSpotNode : node.children("parkingSpot")) {
-        const std::string& id = parkingSpotNode.attribute("id").as_string();
-        const std::string& position = parkingSpotNode.attribute("position").as_string();
+    Trigger triggerData;
+    triggerData.value = std::string(node.attribute("value").as_string());
 
-        std::stringstream posStream(position);
-        posStream >> x;
-        posStream >> y;
-        posStream >> z;
-        spots.emplace_back(id, glm::vec3(x, y, z));
-    }
-
-    return ParkingComponent(spots);
-}
-
-template<>
-CarPathComponent ObjectLoader::loadComponent<CarPathComponent>(const xml_node& node) {
-    std::unordered_map<std::string, CarPath> paths;
-
-    float x, y, z;
-    for (const xml_node& pathNode : node.children("path")) {
-        const std::string& id = pathNode.attribute("id").as_string();
-        const std::string& direction = pathNode.attribute("direction").as_string();
-
-        std::vector<glm::vec3> positions;
-        for (const xml_node& positionNode : pathNode.children("node")) {
-            const std::string& position = positionNode.attribute("position").as_string();
-
-            std::stringstream posStream(position);
-            posStream >> x;
-            posStream >> y;
-            posStream >> z;
-            positions.emplace_back(glm::vec3(x, y, z));
+    for (const xml_node& childNode : node.children()) {
+        auto name = std::string_view(childNode.name());
+        if (name == "cell") {
+            triggerData.cellOffset = ReadI3(childNode, "offset");
         }
-
-        if (direction == "in") {
-            paths[id].pathIn = positions;
-        }
-        else if (direction == "out") {
-            paths[id].pathOut = positions;
+        else {
+            assert(false);
         }
     }
 
-    return CarPathComponent(paths);
+    n.triggers.push_back(triggerData);
+}
+
+void ReadRouteNode(RouteNode& n, const xml_node& tileNode) {
+
+    auto key = ReadI3(tileNode, "cell");
+    // RouteNode& navPoint = points[key];
+
+    std::string templateString = tileNode.attribute("template").as_string();
+
+    n.templateName = templateString;
+    n.cell = key;
+
+    auto triggerNameAttrib = tileNode.attribute("trigger");
+    if (triggerNameAttrib) {
+        n.trigger = std::string(triggerNameAttrib.as_string());
+    }
+
+    auto trapAttrib = tileNode.attribute("is_trap");
+    if (trapAttrib) {
+        n.trap = trapAttrib.as_bool();
+    }
+
+    for (const xml_node& childNode : tileNode.children()) {
+        auto name = std::string_view(childNode.name());
+        if (name == "trigger_camera") {
+            n.cameraTrigger = ReadF3(childNode, "position");
+        }
+        else if (name == "trigger_level") {
+            n.levelTrigger = std::string(childNode.attribute("target").as_string());
+        }
+        else if (name == "trigger_switch") {
+            n.switchTrigger = std::string(childNode.attribute("toggle").as_string());
+        }
+        else if (name == "trigger") {
+            ReadTrigger(n, childNode);
+        }
+    }
 }
 
 template<>
-VelocityComponent ObjectLoader::loadComponent<VelocityComponent>(const xml_node& node) {
-    return VelocityComponent();
+RouteComponent ObjectLoader::loadComponent<RouteComponent>(const xml_node& node) {
+    std::vector<RouteNode> staticPoints;
+
+    for (const xml_node& tileNode : node.children("tile")) {
+        RouteNode n;
+        ReadRouteNode(n, tileNode);
+        staticPoints.push_back(n);
+    }
+
+    return RouteComponent(staticPoints);
+}
+
+template<>
+AutoNavComponent ObjectLoader::loadComponent<AutoNavComponent>(const xml_node& node) {
+    std::vector<OskEvent> events;
+
+    for (const xml_node& eventNode : node.children("event")) {
+        auto id = std::string_view(eventNode.attribute("id").as_string());
+        if (id == "left") {
+            events.push_back(OskEvent::MoveLeft);
+        }
+        else if (id == "right") {
+            events.push_back(OskEvent::MoveRight);
+        }
+        else if (id == "forward") {
+            events.push_back(OskEvent::MoveForward);
+        }
+        else if (id == "backward") {
+            events.push_back(OskEvent::MoveBackward);
+        }
+        else if (id == "interact") {
+            events.push_back(OskEvent::Interact);
+        }
+        else {
+            assert(false);
+        }
+    }
+
+    return AutoNavComponent(events);
 }
 
 ObjectPtr ObjectLoader::loadObject(const std::string& filename) {
@@ -106,17 +186,14 @@ ObjectPtr ObjectLoader::loadObject(const std::string& filename) {
         else if (name == "mesh") {
             object->addComponent<MeshComponent>(loadComponent<MeshComponent>(node));
         }
-        else if (name == "parking") {
-            object->addComponent<ParkingComponent>(loadComponent<ParkingComponent>(node));
+        else if (name == "route") {
+            object->addComponent<RouteComponent>(loadComponent<RouteComponent>(node));
         }
-        else if (name == "car") {
-            object->addComponent<CarComponent>(loadComponent<CarComponent>(node));
+        else if (name == "auto_nav") {
+            object->addComponent<AutoNavComponent>(loadComponent<AutoNavComponent>(node));
         }
-        else if (name == "carPath") {
-            object->addComponent<CarPathComponent>(loadComponent<CarPathComponent>(node));
-        }
-        else if (name == "velocity") {
-            object->addComponent<VelocityComponent>(loadComponent<VelocityComponent>(node));
+        else if (name == "lara") {
+            object->addComponent<LaraComponent>(loadComponent<LaraComponent>(node));
         }
     }
 

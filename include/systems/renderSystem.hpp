@@ -5,70 +5,58 @@
 #include "components/instancedMeshComponent.hpp"
 #include "components/meshComponent.hpp"
 #include "components/transformationComponent.hpp"
-#include "rendering/shadowBuffer.hpp"
 
-#if DEBUG
-#include "rendering/debug/shadowMapRenderer.hpp"
-#endif
+#include <raylib.h>
+#include <raymath.h>
 
-struct LightComponent;
-struct CameraComponent;
-struct Shader;
+#include "misc/rlights.h"
 
 class RenderSystem : public System {
   protected:
-    unsigned int uboCamera;
-    unsigned int uboLight;
-
-    ShadowBuffer shadowBuffer;
-#if DEBUG
-    ShadowMapRenderer shadowMapRenderer;
-#endif
-
-    unsigned int cameraWidth;
-
-    std::shared_ptr<Shader> shadowShader;
-    std::shared_ptr<Shader> instancedShadowShader;
-
     void init() override;
 
-    void onCameraUpdated(CameraUpdateEvent& event) const;
-    void onEntityMoved(EntityMoveEvent& event) const;
+    Shader shader;
+    Light lights[MAX_LIGHTS] = {0};
 
     template<typename... T>
-    inline void renderScene(ShaderPtr shader, entt::exclude_t<T...> exclude = {}) const {
-        shader->use();
-        shader->setInt("shadowMaps", ShadowBuffer::depthMapOffset);
-
+    inline void renderScene(entt::exclude_t<T...> exclude = {}) const {
         registry.view<MeshComponent, TransformationComponent>(exclude)
             .each([&](const MeshComponent& mesh, const TransformationComponent& transform) {
-                shader->setMatrix4("model", transform.transform);
-                mesh.mesh->render(shader);
+                // fake the lighting
+                for (int i = 0; i < mesh.mesh->model.materialCount; ++i) {
+                    mesh.mesh->model.materials[i].shader = shader;
+                }
+
+                // todo: rip apart the transformations
+                DrawModel(mesh.mesh->model, transform.position, 1.0f, WHITE);
             });
     }
 
     template<typename... T>
-    inline void renderSceneInstanced(ShaderPtr shader, entt::exclude_t<T...> exclude = {}) const {
-        shader->use();
-        shader->setInt("shadowMaps", ShadowBuffer::depthMapOffset);
-
+    inline void renderSceneInstanced(entt::exclude_t<T...> exclude = {}) const {
         registry.view<InstancedMeshComponent, TransformationComponent>(exclude)
             .each([&](const InstancedMeshComponent& mesh, const TransformationComponent& transform) {
-                shader->setMatrix4("model", transform.transform);
-                mesh.mesh->renderInstanced(shader, mesh.instanceBuffer);
-            });
+                for (auto& trans : mesh.transformations) {
+                    // todo: rip apart the transformations?
+                    // Vector3 finalPos = Vector3Add(trans.position, transform.position);
+                    for (int i = 0; i < mesh.mesh->model.materialCount; ++i) {
+                        mesh.mesh->model.materials[i].shader = shader;
+                    }
 
-        registry.view<MultiInstancedMeshComponent, TransformationComponent>(exclude)
-            .each([&](const MultiInstancedMeshComponent& mesh, const TransformationComponent& transform) {
-                shader->setMatrix4("model", transform.transform);
-
-                for (const auto& [name, instances] : mesh.transforms) {
-                    mesh.mesh->renderObjectInstanced(shader, name, instances.instanceBuffer);
+                    DrawModel(mesh.mesh->model, trans.position, 1.0f, WHITE);
+                    DrawModelWires(mesh.mesh->model, trans.position, 1.0f, BLACK);
                 }
             });
-    }
 
-    void updateLightBuffer(const LightComponent& sunLight, const CameraComponent& component) const;
+        // registry.view<MultiInstancedMeshComponent, TransformationComponent>(exclude)
+        //     .each([&](const MultiInstancedMeshComponent& mesh, const TransformationComponent& transform) {
+        //         shader->setMatrix4("model", transform.transform);
+
+        //        for (const auto& [name, instances] : mesh.transforms) {
+        //            mesh.mesh->renderObjectInstanced(shader, name, instances.instanceBuffer);
+        //        }
+        //    });
+    }
 
   public:
     RenderSystem(Game* app);

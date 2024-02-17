@@ -1,5 +1,4 @@
 #pragma once
-#include "../../misc/buildingType.hpp"
 #include "../components/stackPanel.hpp"
 
 class IconButton;
@@ -16,8 +15,6 @@ class BuildMenu : public StackPanel {
     IconButton* lowerTerrainButton;
     IconButton* streetButton;
     IconButton* parkingLotButton;
-
-    void selectBuildingType(BuildingType type) const;
 
   public:
     BuildMenu(Gui* gui);

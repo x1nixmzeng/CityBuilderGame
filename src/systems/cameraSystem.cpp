@@ -3,16 +3,22 @@
 #include "components/components.hpp"
 #include "events/cameraUpdateEvent.hpp"
 
-#include "misc/coordinateTransform.hpp"
-
-#include <GLFW/glfw3.h>
 #include <iostream>
+#include <raylib.h>
 
 void CameraSystem::init() {
     cameraEntity = registry.create();
 
-    const TransformationComponent& transform = registry.emplace<TransformationComponent>(cameraEntity, glm::vec3(0.0f, 10.0f, 0.0f), glm::quat(), glm::vec3(1.0f, 1.0f, 1.0f));
-    registry.emplace<CameraComponent>(cameraEntity).calculateMatrices(transform);
+    CameraComponent& cameraComponent = registry.emplace<CameraComponent>(cameraEntity);
+    // Initial position is here
+    cameraComponent.camera.position = {5.0f, 10.0f, 20.0f}; // Camera position
+    cameraComponent.camera.target = {0.0f, 0.4f, 0.0f};     // Camera looking at point
+    cameraComponent.camera.up = {0.0f, 1.0f, 0.0f};         // Camera up vector (rotation towards target)
+    cameraComponent.camera.fovy = 45.0f;                    // Camera field-of-view Y
+    cameraComponent.camera.projection = CAMERA_PERSPECTIVE; // Camera projection type
+
+    // Target component too
+    registry.emplace<CameraTargetComponent>(cameraEntity).valid = false;
 }
 
 CameraSystem::CameraSystem(Game* game)
@@ -20,82 +26,25 @@ CameraSystem::CameraSystem(Game* game)
 
     init();
 
-    eventDispatcher.sink<FramebufferSizeEvent>()
-        .connect<&CameraSystem::onFramebufferSize>(*this);
+    eventDispatcher.sink<RequestCameraLookAt>()
+        .connect<&CameraSystem::handleRequestCameraLookAt>(*this);
 }
 
 void CameraSystem::update(float dt) {
-    CameraComponent& camera = registry.get<CameraComponent>(cameraEntity);
-    TransformationComponent& transform = registry.get<TransformationComponent>(cameraEntity);
 
-    glm::vec3 xzCameraFront = glm::vec3(camera.front.x, 0.0f, camera.front.z);
-    glm::vec3 xzCameraRight = glm::vec3(camera.right.x, 0.0f, camera.right.z);
+    CameraComponent& cameraComponent = registry.get<CameraComponent>(cameraEntity);
 
-    const static float cameraSpeed = 10.0f;
-    const static float cameraRotationSpeed = 10.0f;
-
-    glm::vec3 cameraMoveDirection = glm::vec3(0.0f);
-    glm::vec2 cameraRotationDirection = glm::vec2(0.0f);
-
-    if (game->getKey(GLFW_KEY_W) == GLFW_PRESS) {
-        cameraMoveDirection += xzCameraFront;
-    }
-    if (game->getKey(GLFW_KEY_S) == GLFW_PRESS) {
-        cameraMoveDirection -= xzCameraFront;
-    }
-    if (game->getKey(GLFW_KEY_D) == GLFW_PRESS) {
-        cameraMoveDirection += xzCameraRight;
-    }
-    if (game->getKey(GLFW_KEY_A) == GLFW_PRESS) {
-        cameraMoveDirection -= xzCameraRight;
-    }
-    if (game->getKey(GLFW_KEY_E) == GLFW_PRESS) {
-        cameraRotationDirection.x += 1;
-    }
-    if (game->getKey(GLFW_KEY_Q) == GLFW_PRESS) {
-        cameraRotationDirection.x -= 1;
-    }
-    if (game->getKey(GLFW_KEY_R) == GLFW_PRESS) {
-        cameraRotationDirection.y += 1;
-    }
-    if (game->getKey(GLFW_KEY_F) == GLFW_PRESS) {
-        cameraRotationDirection.y -= 1;
-    }
-
-    bool cameraPositionUpdated = false;
-    if (cameraMoveDirection.x != 0 || cameraMoveDirection.z != 0) {
-        transform.position += dt * cameraSpeed * glm::normalize(cameraMoveDirection);
-
-        const glm::vec2& cameraGridPos = utility::worldToNormalizedWorldGridCoords(transform.position);
-        transform.position.y = glm::max(0.0f, game->terrain.getTerrainHeight(cameraGridPos)) + Configuration::cameraHeight;
-
-        cameraPositionUpdated = true;
-    }
-
-    bool cameraRotationUpdated = false;
-    if (cameraRotationDirection.x != 0 || cameraRotationDirection.y != 0) {
-        camera.yaw += dt * cameraRotationDirection.x * cameraRotationSpeed;
-        camera.pitch = glm::clamp(camera.pitch + cameraRotationDirection.y * dt * cameraRotationSpeed, -89.0f, 89.0f);
-        cameraRotationUpdated = true;
-    }
-
-    if (cameraPositionUpdated || cameraRotationUpdated) {
-        camera.calculateMatrices(transform);
-
-        CameraUpdateEvent event{cameraEntity, false, cameraPositionUpdated, cameraRotationUpdated};
-        game->raiseEvent<CameraUpdateEvent>(event);
+    // only when the control key is down
+    if (IsKeyDown(KEY_C)) {
+        UpdateCamera(&cameraComponent.camera, CAMERA_FREE);
     }
 }
 
-void CameraSystem::onFramebufferSize(const FramebufferSizeEvent& e) {
-    CameraComponent& camera = registry.get<CameraComponent>(cameraEntity);
-    const TransformationComponent& cameraTransform = registry.get<TransformationComponent>(cameraEntity);
+void CameraSystem::handleRequestCameraLookAt(const RequestCameraLookAt& e) {
 
-    camera.width = e.width;
-    camera.height = e.height;
+    CameraComponent& cameraComponent = registry.get<CameraComponent>(cameraEntity);
+    const CameraTargetComponent& cameraTargetComponent = registry.get<CameraTargetComponent>(cameraEntity);
 
-    camera.calculateMatrices(cameraTransform);
-
-    CameraUpdateEvent event{cameraEntity, true, false, false};
-    game->raiseEvent<CameraUpdateEvent>(event);
+    // why is this passed through a component?
+    cameraComponent.camera.target = cameraTargetComponent.target;
 }

@@ -3,10 +3,11 @@
 #include "gui/gui.hpp"
 
 #include "events/mouseEvents.hpp"
+#include "gui/rectangle.hpp"
 
 #include <iostream>
 
-Widget::Widget(const std::string& id, Gui* gui, const glm::vec4& backgroundColor)
+Widget::Widget(const std::string& id, Gui* gui, const Color& backgroundColor)
     : id{id}, gui{gui}, backgroundColor{backgroundColor} {
 }
 
@@ -20,15 +21,15 @@ void Widget::handleMouseMoveEvent(MouseMoveEvent& event) {
     const Rectangle& area = getBox();
 
     // mouse enter
-    if (area.pointInside(event.lastX, event.lastY)) {
-        if (area.pointInside(event.x, event.y)) {
+    if (pointInside(area, event.lastX, event.lastY)) {
+        if (pointInside(area, event.x, event.y)) {
             onMouseEnter.invoke(event);
         }
     }
 
     // mouse leave
-    if (!area.pointInside(event.x, event.y)) {
-        if (area.pointInside(event.lastX, event.lastY)) {
+    if (!pointInside(area, event.x, event.y)) {
+        if (pointInside(area, event.lastX, event.lastY)) {
             onMouseLeave.invoke(event);
         }
     }
@@ -60,14 +61,13 @@ void Widget::render() const {
 
     Rectangle area = getBox();
 
-    Shader* guiShader = gui->getShader();
-    guiShader->setVector4("color", backgroundColor);
-    guiShader->setVector2("widgetArea.position", glm::vec2{area.x, area.y});
-    guiShader->setVector2("widgetArea.size", glm::vec2{area.width, area.height});
-    guiShader->setFloat("cornerRadius", cornerRadius);
+    if (cornerRadius > 0.0f) {
+        DrawRectangleRounded(area, cornerRadius, 10, backgroundColor);
+    }
+    else {
 
-    const RenderQuad& quad = gui->getRenderQuad();
-    quad.draw(area.x, area.y, area.width, area.height);
+        DrawRectangle(area.x, area.y, area.width, area.height, backgroundColor);
+    }
 }
 
 Rectangle Widget::getBox() const {

@@ -6,21 +6,16 @@
 #include "gui/components/widget.hpp"
 
 #include "gui/menus/buildMenu.hpp"
+#include "gui/menus/controlsPanel.hpp"
 #include "gui/menus/debugPanel.hpp"
+#include "gui/menus/levelSelectMenu.hpp"
 #include "gui/menus/optionsMenu.hpp"
 #include "gui/menus/pauseMenu.hpp"
 
 #include "events/keyEvent.hpp"
 #include "events/mouseEvents.hpp"
 
-#include "rendering/texture.hpp"
-
 #include "application.hpp"
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <GL/glew.h>
 
 Gui::Gui(Application* app, float width, float height)
     : app(app), width(width), height(height) {
@@ -30,14 +25,14 @@ Gui::Gui(Application* app, float width, float height)
 void Gui::init() {
     pauseMenu = new PauseMenu(this);
     optionsMenu = new OptionsMenu(this);
+    levelSelectMenu = new LevelSelectMenu(this);
+    controlsPanel = new ControlsPanel(this);
     buildMenu = new BuildMenu(this);
     debugPanel = new DebugPanel(this);
     warningWidget = new Label("warning_label", this, colors::transparent, "", colors::warning);
     warningWidget->hide();
 
-    widgets = {pauseMenu, optionsMenu, buildMenu, debugPanel};
-
-    textRenderer.init();
+    widgets = {pauseMenu, optionsMenu, buildMenu, debugPanel, levelSelectMenu, controlsPanel};
 }
 
 void Gui::showMenu(GameMenus menu) {
@@ -51,6 +46,7 @@ void Gui::showMenu(GameMenus menu) {
             while (!navigation.empty()) {
                 navigation.pop();
             }
+
             app->setGameState(GameState::RUNNING);
             return;
         case GameMenus::PAUSE_MENU:
@@ -58,6 +54,9 @@ void Gui::showMenu(GameMenus menu) {
             break;
         case GameMenus::OPTIONS_MENU:
             navigation.push(optionsMenu);
+            break;
+        case GameMenus::LEVEL_SELECT_MENU:
+            navigation.push(levelSelectMenu);
             break;
         default:
             return;
@@ -99,20 +98,10 @@ Application* Gui::getApp() const {
     return app;
 }
 
-Shader* Gui::getShader() const {
-    return guiShader;
-}
-
-const RenderQuad& Gui::getRenderQuad() const {
-    return quad;
-}
-
 void Gui::setScreenSize(float width, float height) {
     // set new screen size and update the text renderer screen size
     this->width = width;
     this->height = height;
-
-    textRenderer.setScreenSize(width, height);
 
     // update widgets
     for (const auto& widget : widgets) {
@@ -134,45 +123,25 @@ void Gui::update() {
 }
 
 void Gui::render() const {
-    // bind the shader
-    guiShader->use();
-
-    // disable depth test and enable blend
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-
-    // set default uniforms
-    glm::mat4 projection = glm::ortho(0.0f, width, height, 0.0f);
-    guiShader->setMatrix4("projection", projection);
-    guiShader->setBool("text", false);
-    guiShader->setBool("useTexture", false);
-    guiShader->setInt("tex", 0);
 
     // render top menu
     if (!navigation.empty()) {
         navigation.top()->render();
     }
-
-    if (app->getGameState() == GameState::BUILD_MODE) {
-        buildMenu->show();
-        buildMenu->render();
-    }
-    else {
-        buildMenu->hide();
-    }
+    controlsPanel->render();
 
     debugPanel->render();
 
     warningWidget->render();
-
-    // enable depth test and disable blend
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
 }
 
 void Gui::handleMouseButtonEvent(MouseButtonEvent& event) {
     if (!navigation.empty()) {
         navigation.top()->handleMouseButtonEvent(event);
+    }
+
+    if (controlsPanel->isVisible()) {
+        controlsPanel->handleMouseButtonEvent(event);
     }
 
     if (debugPanel->isVisible()) {
@@ -185,10 +154,10 @@ void Gui::handleMouseButtonEvent(MouseButtonEvent& event) {
 }
 
 void Gui::handleKeyEvent(KeyEvent& e) {
-    if (e.action == GLFW_PRESS) {
+    if (e.action == KeyAction::Press) {
         if (app->getGameState() == GameState::RUNNING) {
             switch (e.key) {
-                case GLFW_KEY_ESCAPE:
+                case KEY_ESCAPE:
                     if (!navigation.empty()) {
                         popMenu();
                     }
@@ -198,12 +167,22 @@ void Gui::handleKeyEvent(KeyEvent& e) {
 
                     e.handled = true;
                     break;
-                case GLFW_KEY_F1:
+                case KEY_F1:
                     if (debugPanel->isVisible()) {
                         debugPanel->hide();
                     }
                     else {
                         debugPanel->show();
+                    }
+                    e.handled = true;
+                    break;
+
+                case KEY_F2:
+                    if (controlsPanel->isVisible()) {
+                        controlsPanel->hide();
+                    }
+                    else {
+                        controlsPanel->show();
                     }
                     e.handled = true;
                     break;
@@ -216,6 +195,10 @@ void Gui::handleMouseMoveEvent(MouseMoveEvent& event) {
 
     if (!navigation.empty()) {
         navigation.top()->handleMouseMoveEvent(event);
+    }
+
+    if (controlsPanel->isVisible()) {
+        controlsPanel->handleMouseMoveEvent(event);
     }
 
     if (debugPanel->isVisible()) {

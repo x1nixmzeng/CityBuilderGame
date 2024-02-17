@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" surface="wall_front" offset="0.0000 1.0000 0.0000" />
+  <mesh filename="models/level_2_test.obj" />
+  <route name="A Sleepy Cave">
+    <tile cell="0 0 0" template="TILE_FRONT_PIECE">
+      <trigger_level target="level_1" />
+    </tile>
+    <tile cell="0 -1 0" template="TILE_FRONT_PIECE" />
+    <tile cell="0 -2 1" template="TILE_GROUND_PIECE_CORNER_3" />
+    <tile cell="1 -2 1" template="TILE_GROUND_PIECE_CORNER" />
+    <tile cell="1 -2 1" template="TILE_FRONT_PIECE_3" />
+    
+    <tile cell="2 -2 1" template="TILE_FRONT_PIECE_2" />
+    
+    <tile cell="2 -3 1" template="TILE_FRONT_PIECE" />
+    <tile cell="2 -4 2" template="TILE_GROUND_PIECE_CORNER_3" />
+    <tile cell="3 -4 2" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="4 -4 2" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_3" />
+    </tile>
+
+    <!-- auto level skip -->
+    <tile cell="5 -4 2" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="6 -4 2" template="TILE_GROUND_PIECE_LR" />
+  </route>
+
+  <auto_nav>
+    <!-- 0 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <event id="forward" />
+    <event id="right" />
+    <!-- 5 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+  </auto_nav>
+</object>
+

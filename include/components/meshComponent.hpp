@@ -1,13 +1,13 @@
 #pragma once
 #include "component.hpp"
-#include "resources/mesh.hpp"
+#include "resources/meshRes.hpp"
 
-#include <string>
+#include <raylib.h>
 
 struct MeshComponent : public AssignableComponent {
-    MeshPtr mesh;
+    MeshResPtr mesh;
 
-    inline MeshComponent(const MeshPtr& mesh)
+    inline MeshComponent(const MeshResPtr& mesh)
         : mesh(mesh) {
     }
 

@@ -1,6 +1,6 @@
 #include "gui/components/stackPanel.hpp"
 
-StackPanel::StackPanel(const std::string& id, Gui* gui, StackOrientation orientation, const glm::vec4 backgroundColor, ItemAligment itemAligment)
+StackPanel::StackPanel(const std::string& id, Gui* gui, StackOrientation orientation, const Color& backgroundColor, ItemAligment itemAligment)
     : Container(id, gui, backgroundColor), orientation{orientation}, itemAligment{itemAligment} {
 }
 

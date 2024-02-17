@@ -1,15 +1,24 @@
-![Image](docs/image.jpeg)
+![Image](docs/demo.png)
 # City Builder Game
 ## Overview
-A simple city-building game using C++ and OpenGL.
+A simple turn-based puzzle game based on the 2016 video game 'Lara Croft Go' (https://store.steampowered.com/app/540840/Lara_Croft_GO/)
+
+This was a weekend project to make a game using an entity-component system (entt) that has since evolved into porting the renderer to raylib.
+
+The project was forked from CityBuilderGame (https://github.com/PhiGei2000/CityBuilderGame) and still takes inspiration.
+
 ### Features
 - [x] GUI
-- [x] Street placement
-- [x] procedural terrain generation and terrain editing
-- [ ] Traffic
-- [ ] Buildings
-- [ ] Savegames
-- ...
+- [x] Turn-based movement
+- [x] Example levels (currently the first 5 from Lara Croft Go)
+- [x] Level switches
+- [ ] Character animations
+- [ ] Traps / Falling
+- [ ] Level dressing
+- [ ] Directional Lighting
+- [ ] Fog
+- [ ] Volumetric shadows
+
 ---
 ## Getting started
 ### Check the requirements
@@ -19,19 +28,15 @@ Requirements:
 - OpenGL 4.5
 
 Packages (only on Linux):
-- [glm](https://github.com/g-truc/glm)
-- [glfw](https://github.com/glfw/glfw)
-- [glew](https://github.com/nigels-com/glew)
-- [Freetype2](https://github.com/ubawurinna/freetype-windows-binaries)
 - [stb image](https://github.com/nothings/stb/blob/master/stb_image.h)
 - [entt](https://github.com/skypjack/entt)
 - [pugixml](https://github.com/zeux/pugixml)
-- [libnoise](https://github.com/PhiGei2000/libnoise)
+- [raylib](https://github.com/raysan5/raylib)
 
 ### Clone and build
 **1. Clone the repository**
 
-    git clone --recursive https://github.com/PhiGei2000/CityBuildingGame.git
+    git clone --recursive https://github.com/x1nixmzeng/CityBuildingGame.git
 
 the `--recursive` option is only needed on windows to download the libraries from github.
 
@@ -63,18 +68,15 @@ or to create a symbolic link
 
 | Button(s) | Description |
 | --- | ---|
-| WASD | Move |
-| QE | Rotate camera left/right |
-| RF | Rotate camera up/down |
-| ESC | Main menu |
-| B | Enter/Leave build mode |
-| F3 | Enter debug mode |
+| LEFT/RIGHT/UP/DOWN | Move |
+| SPACE | Interact |
+| ESC | Pause menu |
+| (Hold) C| Free camera |
+| WASD | Move free camera |
+| 1/2/3/4 | Toggle the light |
 
 ## Issues and questions
-Feel free to report issues and questions to the [issues section](https://github.com/PhiGei2000/CityBuilderGame/issues).
-
-## Demonstration videos
-Check out my [YouTube playlist](https://www.youtube.com/playlist?list=PLi1TZVQkw_fLyYXfnZGTGli4pqM7FvHVu) for demonstration of some features in the game.
+Feel free to report issues and questions to the [issues section](https://github.com/x1nixmzeng/CityBuilderGame/issues).
 
 ## License
 This code is licensed under the [GNU GLP license](LICENSE)

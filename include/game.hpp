@@ -1,23 +1,20 @@
 #pragma once
 #include "resources/resourceManager.hpp"
 
-#include "misc/terrain.hpp"
 #include "misc/typedefs.hpp"
 
 #include <entt/entt.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtx/hash.hpp>
-#include <noise/noise.h>
 
 #include <fstream>
+#include <raylib.h>
 
 class System;
 class Application;
+class RenderSystem;
 
 enum class GameState {
     PAUSED,
     RUNNING,
-    BUILD_MODE
 };
 
 class Game {
@@ -38,10 +35,11 @@ class Game {
     std::ofstream logStream;
 #endif
 
+    RenderSystem* renderSystem;
+
+
   public:
     entt::entity camera;
-    entt::entity sun = entt::null;
-    Terrain terrain;
 
     Game(Application* app);
 
@@ -56,7 +54,7 @@ class Game {
 
     int getKey(int key) const;
 
-    glm::vec2 getMousePos() const;
+    Vector2 getMousePos() const;
 
     void setState(GameState state);
     GameState getState() const;

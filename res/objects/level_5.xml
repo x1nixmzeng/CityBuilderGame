@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
+  <mesh filename="models/level_5_test.obj" />
+  <route name="The entrance">
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_4" />
+    </tile>
+
+    <tile cell="1 0 0" template="TILE_GROUND_PIECE_CORNER" />
+    <tile cell="1 0 1" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="1 0 2" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="1 0 3" template="TILE_GROUND_PIECE_3W_4" />
+
+    <tile cell="1 0 4" template="TILE_GROUND_PIECE_3W_4" trigger="switch_2">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 0 1" />
+      </trigger>
+    </tile>
+
+    <tile cell="1 0 6" template="TILE_GROUND_PIECE_3W_4" />
+
+    <tile cell="2 1 3" template="TILE_SIDE_PIECE_V" />
+    <tile cell="2 2 3" template="TILE_SIDE_PIECE_V" />
+    <tile cell="2 3 3" template="TILE_SIDE_PIECE_CAP">
+      <trigger_switch toggle="switch_1" />
+    </tile>
+
+    <!-- this whole wall moves -->
+    <tile cell="2 2 4" template="TILE_SIDE_PIECE_3W" trigger="switch_1">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 -1 0" />
+      </trigger>
+    </tile>
+    <tile cell="2 3 4" template="TILE_SIDE_PIECE_3W" trigger="switch_1">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 -1 0" />
+      </trigger>
+    </tile>
+    <tile cell="2 4 4" template="TILE_SIDE_PIECE_3W" trigger="switch_1">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 -1 0" />
+      </trigger>
+    </tile>
+    <tile cell="2 4 4" template="TILE_GROUND_PIECE_LR" trigger="switch_1">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 -1 0" />
+      </trigger>
+    </tile>
+
+    <!-- top part - level exit -->
+    <tile cell="3 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="4 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="5 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="6 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="7 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="8 4 4" template="TILE_GROUND_PIECE_LR">
+      <!-- level exit -->
+      <trigger_level target="level_1" />
+    </tile>
+
+    <tile cell="2 3 5" template="TILE_SIDE_PIECE_H" is_trap="true" />
+
+    <tile cell="2 3 6" template="TILE_SIDE_PIECE_H2">
+      <trigger_switch toggle="switch_2" />
+    </tile>
+    <tile cell="2 2 6" template="TILE_SIDE_PIECE_H3">
+      <trigger_switch toggle="switch_1" />
+    </tile>
+    <tile cell="2 1 6" template="TILE_SIDE_PIECE_V" />
+    <tile cell="2 2 5" template="TILE_SIDE_PIECE_H" />
+  </route>
+
+  <auto_nav>
+    <!-- 0 -->
+    <event id="right" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <!-- 5 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="interact" />
+    <event id="left" />
+    <event id="left" />
+    <!-- 10 -->
+    <event id="left" />
+    <event id="forward" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <!-- 15 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="interact" />
+    <event id="backward" />
+    <event id="backward" /> <!-- player should fall here -->
+    <!-- 20 -->
+    <event id="left" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="interact" />
+    <event id="backward" />
+    <!-- 25 -->
+    <event id="backward" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <!-- 30 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+  </auto_nav>
+</object>

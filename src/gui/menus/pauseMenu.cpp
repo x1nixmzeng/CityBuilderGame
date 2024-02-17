@@ -3,6 +3,8 @@
 #include "gui/components/button.hpp"
 #include "gui/gui.hpp"
 
+#include "events/laraEvents.hpp"
+
 #include "application.hpp"
 
 PauseMenu::PauseMenu(Gui* gui)
@@ -29,7 +31,21 @@ PauseMenu::PauseMenu(Gui* gui)
     options->cornerRadius = 15.0f;
     addChild(options);
 
-    TextButton* saveAndExit = new TextButton("mainMenu_saveExit", gui, colors::anthraziteGrey, "Save and Exit");
+    TextButton* automation = new TextButton("mainMenu_automation", gui, colors::anthraziteGrey, "Bot Mode");
+    automation->constraints.height = AbsoluteConstraint(45.0f);
+    automation->constraints.width = RelativeConstraint(0.9f);
+    automation->onClick += [&](const MouseButtonEvent& e) {
+        // gotcha: must use this->gui otherwise gui is captured from ctor
+        Application* app = this->gui->getApp();
+        OnStartBot startBot;
+        app->getGame()->raiseEvent(startBot);
+
+        this->gui->showMenu(GameMenus::NONE);
+    };
+    automation->cornerRadius = 15.0f;
+    addChild(automation);
+
+    TextButton* saveAndExit = new TextButton("mainMenu_saveExit", gui, colors::anthraziteGrey, "Close Game");
     saveAndExit->constraints.height = AbsoluteConstraint(45.0f);
     saveAndExit->constraints.width = RelativeConstraint(0.9f);
     saveAndExit->onClick += [&](const MouseButtonEvent& e) {

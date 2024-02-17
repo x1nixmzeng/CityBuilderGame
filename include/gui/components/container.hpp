@@ -4,12 +4,14 @@
 
 #include <vector>
 
+#include <raylib.h>
+
 class Container : public Widget {
   protected:
     std::vector<Widget*> children;
 
   public:
-    Container(const std::string& id, Gui* gui, const glm::vec4& backgroundColor);
+    Container(const std::string& id, Gui* gui, const Color& backgroundColor);
     virtual void addChild(Widget* child);
     Widget* getChild(const std::string& id) const;
 

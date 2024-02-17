@@ -1,6 +1,8 @@
 #pragma once
 #include "container.hpp"
 
+#include <raylib.h>
+
 class StackPanel : public Container {
   public:
     enum class StackOrientation {
@@ -22,7 +24,7 @@ class StackPanel : public Container {
     float spacing = 30.0f;
     bool outerSpacing = true;
 
-    StackPanel(const std::string& id, Gui* gui, StackOrientation orientation, const glm::vec4 backgroundColor, ItemAligment itemAligment = ItemAligment::CENTER);
+    StackPanel(const std::string& id, Gui* gui, StackOrientation orientation, const Color& backgroundColor, ItemAligment itemAligment = ItemAligment::CENTER);
 
     void setChildConstraints() override;
 

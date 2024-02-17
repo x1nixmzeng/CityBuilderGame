@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
+  <mesh filename="models/level_3_test.obj" />
+  <route name="A Ruined Route">
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_2" />
+      <!--<trigger_camera position="-1.0000 10.0000 14.0000" />-->
+    </tile>
+    <tile cell="1 0 0" template="TILE_GROUND_PIECE_3W">
+      <trigger_camera position="-1.0000 10.0000 14.0000" />
+    </tile>
+    <tile cell="1 1 -1" template="TILE_FRONT_PIECE" />
+    <tile cell="1 1 -1" template="TILE_GROUND_PIECE">
+      <trigger_switch toggle="switch_1" />
+    </tile>
+    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_camera position="7.0000 10.0000 14.0000" />
+    </tile>
+
+    <!-- triggered -->
+    <tile cell="3 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_1">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+
+    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="5 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="7 0 0" template="TILE_GROUND_PIECE_3W_2" />
+    <tile cell="7 0 1" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="7 0 2" template="TILE_GROUND_PIECE_CORNER_3">
+      <trigger_switch toggle="switch_2" />
+    </tile>
+
+    <!-- triggered 2 (a) -->
+    <tile cell="8 0 2" template="TILE_GROUND_PIECE_LR" trigger="switch_2">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+
+    <!-- triggered 2 (b) -->
+    <tile cell="8 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_2">
+      <trigger value="false" />
+      <trigger value="true">
+        <cell offset="0 -3 0" />
+      </trigger>
+    </tile>
+
+    <tile cell="9 0 2" template="TILE_GROUND_PIECE_LR">
+      <trigger_switch toggle="switch_3" />
+    </tile>
+
+    <!-- triggered 3 -->
+    <tile cell="9 0 0" template="TILE_GROUND_PIECE_3W" trigger="switch_3">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+
+    <tile cell="9 0 -1" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="9 0 -2" template="TILE_GROUND_PIECE">
+      <trigger_switch toggle="switch_4" />
+    </tile>
+
+    <tile cell="10 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+    <tile cell="11 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+    <tile cell="12 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+    <tile cell="13 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+      <trigger value="false">
+        <cell offset="0 -3 0" />
+      </trigger>
+      <trigger value="true" />
+    </tile>
+
+    <tile cell="14 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_level target="level_4" />
+    </tile>
+    <tile cell="15 0 0" template="TILE_GROUND_PIECE_LR" />
+
+  </route>
+
+  <auto_nav>
+    <!-- 0 -->
+    <event id="right" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="interact" />
+    <event id="forward" />
+    <!-- 5 -->
+    <event id="forward" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <!-- 10 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="interact" />
+    <!-- 15 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="interact" />
+    <event id="left" />
+    <event id="left" />
+    <!-- 20 -->
+    <event id="interact" />
+    <event id="backward" />
+    <event id="backward" />
+    <event id="right" />
+    <event id="right" />
+    <!-- 25 -->
+    <event id="backward" />
+    <event id="backward" />
+    <event id="interact" />
+    <event id="forward" />
+    <event id="forward" />
+    <!-- 30 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+  </auto_nav>
+</object>
+

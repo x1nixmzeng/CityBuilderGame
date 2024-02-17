@@ -2,14 +2,15 @@
 
 #include "gui/gui.hpp"
 
-#include <GL/glew.h>
-
-Icon::Icon(const std::string& id, Gui* gui, Texture* texture, const glm::vec4& backgroundColor)
+Icon::Icon(const std::string& id, Gui* gui, Texture* texture, const Color& backgroundColor)
     : Widget(id, gui, backgroundColor), texture(texture) {
 }
 
 void Icon::render() const {
+
     Widget::render();
+
+    /*
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -23,5 +24,5 @@ void Icon::render() const {
 
     gui->getRenderQuad().draw(box.x, box.y, box.width, box.height);
 
-    guiShader->setBool("useTexture", false);
+    guiShader->setBool("useTexture", false);*/
 }

@@ -4,21 +4,23 @@
 #include "widget.hpp"
 #include "icon.hpp"
 
+#include <raylib.h>
+
 class Button : public virtual Widget {
   public:
     EventDispatcher<MouseButtonEvent> onClick;
 
-    Button(const std::string& id, Gui* gui, const glm::vec4& backgroundColor);
+    Button(const std::string& id, Gui* gui, const Color& backgroundColor);
 
     void handleMouseButtonEvent(MouseButtonEvent& e) override;
 };
 
 class TextButton : public Label, public Button {
   public:
-    TextButton(const std::string& id, Gui* gui, const glm::vec4& backgroundColor, const std::string& text);
+    TextButton(const std::string& id, Gui* gui, const Color& backgroundColor, const std::string& text);
 };
 
 class IconButton : public Icon, public Button {
   public:
-   IconButton(const std::string& id, Gui* gui, const glm::vec4& backgroundColor, Texture* icon);
+   IconButton(const std::string& id, Gui* gui, const Color& backgroundColor, Texture* icon);
 };

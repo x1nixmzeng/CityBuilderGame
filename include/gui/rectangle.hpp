@@ -1,10 +1,8 @@
 #pragma once
 
-struct Rectangle {
-    float x, y, width, height;
+#include <raylib.h>
 
-    inline bool pointInside(float x, float y) const {
-        return x >= this->x && x <= this->x + this->width &&
-               y >= this->y && y <= this->y + this->height;
-    }
-};
+inline bool pointInside(Rectangle const& rect, float x, float y) {
+    return x >= rect.x && x <= rect.x + rect.width &&
+           y >= rect.y && y <= rect.y + rect.height;
+}

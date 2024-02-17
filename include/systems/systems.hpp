@@ -1,10 +1,6 @@
 #pragma once
-#include "buildSystem.hpp"
 #include "cameraSystem.hpp"
-#include "carSystem.hpp"
-#include "debugSystem.hpp"
-#include "environmentSystem.hpp"
-#include "physicsSystem.hpp"
 #include "renderSystem.hpp"
-#include "roadSystem.hpp"
-#include "terrainSystem.hpp"
+#include "levelSystem.hpp"
+#include "movementSystem.hpp"
+#include "inputSystem.hpp"

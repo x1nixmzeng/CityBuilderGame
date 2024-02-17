@@ -4,9 +4,7 @@
 #include "game.hpp"
 #include "gui/gui.hpp"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#include <raylib.h>
 
 class System;
 struct KeyEvent;
@@ -15,22 +13,22 @@ struct MouseButtonEvent;
 struct MouseMoveEvent;
 struct MouseScrollEvent;
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-static void cursorPos_callback(GLFWwindow* window, double x, double y);
-static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+//static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+//static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+//static void cursorPos_callback(GLFWwindow* window, double x, double y);
+//static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 class Application {
   private:
-    GLFWwindow* window;
+    //GLFWwindow* window;
 
     Gui* gui = nullptr;
     Game* game = nullptr;
 
     bool stopRequested = false;
 
-    friend void cursorPos_callback(GLFWwindow*, double, double);
-    glm::vec2 lastCursorPos = glm::vec2(400.0f, 300.0f);
+    //friend void cursorPos_callback(GLFWwindow*, double, double);
+    Vector2 lastCursorPos = Vector2(400.0f, 300.0f);
 
     void init();
 
@@ -59,7 +57,7 @@ class Application {
         return game->getState();
     }
 
-    GLFWwindow* getWindow() const;
+    //GLFWwindow* getWindow() const;
 
     void onKeyEvent(KeyEvent& e);
     void onFramebufferSizeEvent(FramebufferSizeEvent& e);

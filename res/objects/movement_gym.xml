@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
+  <route name="Movement Gym">
+    <tile cell="0 0 0" surface="ground">
+    </tile>
+
+    <tile cell="1 0 0" surface="ground" />
+
+    <tile cell="0 0 0" surface="wall_side" />
+    <tile cell="0 -1 0" surface="wall_side" />
+
+    <tile cell="1 0 1" surface="ground" />
+    <tile cell="1 0 -1" surface="ground" />
+    <tile cell="2 0 -1" surface="ground" />
+    <tile cell="3 0 -1" surface="ground" />
+
+    <tile cell="3 0 -1" surface="wall_front" />
+    <tile cell="3 -1 -1" surface="wall_front" />
+
+
+
+  </route>
+</object>

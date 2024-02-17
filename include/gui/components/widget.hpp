@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include <glm/glm.hpp>
+#include <raylib.h>
 
 class Gui;
 struct MouseMoveEvent;
@@ -25,10 +25,10 @@ class Widget {
     EventDispatcher<MouseMoveEvent> onMouseEnter;
     EventDispatcher<MouseMoveEvent> onMouseLeave;
 
-    Widget(const std::string& id, Gui* gui, const glm::vec4& backgroundColor);
+    Widget(const std::string& id, Gui* gui, const Color& backgroundColor);
 
     Widget* parent = nullptr;
-    glm::vec4 backgroundColor;
+    Color backgroundColor;
     float cornerRadius = 15.0f;
     Constraints constraints;
 

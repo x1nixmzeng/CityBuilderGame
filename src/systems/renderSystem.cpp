@@ -1,166 +1,86 @@
 #include "systems/renderSystem.hpp"
 
-#include "events/framebufferSizeEvent.hpp"
-#include "events/keyEvent.hpp"
-#include "events/mouseEvents.hpp"
-
 #include "components/components.hpp"
+#include <resources/configValue.hpp>
 
-#include "misc/configuration.hpp"
+#define RLIGHTS_IMPLEMENTATION
+#include "misc/rlights.h"
 
-#include <iostream>
-#include <numeric>
-
-#include <GL/glew.h>
-#include <glm/gtc/type_ptr.hpp>
+// #if defined(PLATFORM_DESKTOP)
+// #define GLSL_VERSION 330
+// #else // PLATFORM_ANDROID, PLATFORM_WEB
+// #define GLSL_VERSION 100
+// #endif
 
 void RenderSystem::init() {
-    // camera buffer
-    glGenBuffers(1, &uboCamera);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboCamera);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + 2 * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    CameraUpdateEvent e{game->camera, true, true, true};
-    onCameraUpdated(e);
+    ConfigValuePtr fs = resourceManager.getResource<ConfigValue>("LIGHTING_SHADER_FS");
+    ConfigValuePtr vs = resourceManager.getResource<ConfigValue>("LIGHTING_SHADER_VS");
 
-    // sun light buffer
-    glGenBuffers(1, &uboLight);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboLight);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4) + (4 + Configuration::SHADOW_CASCADE_COUNT) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // Load basic lighting shader
+    shader = LoadShader(vs->value.c_str(), fs->value.c_str());
 
-    // shadow rendering
-    shadowShader = resourceManager.getResource<Shader>("SHADOW_SHADER");
-    instancedShadowShader = resourceManager.getResource<Shader>("SHADOW_INSTANCED_SHADER");
+    // Get some required shader locations
+    shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
+    // NOTE: "matModel" location name is automatically assigned on shader loading,
+    // no need to get the location again if using that uniform name
+    // shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
+
+    // Ambient light level (some basic lighting)
+    int ambientLoc = GetShaderLocation(shader, "ambient");
+
+    float data[4] = {1.0f, 0.1f, 0.1f, 1.0f};
+    SetShaderValue(shader, ambientLoc, data, SHADER_UNIFORM_VEC4);
+
+    // Create lights
+    lights[0] = CreateLight(LIGHT_POINT, {-5, 5, -5}, Vector3Zero(), YELLOW, shader);
+    lights[1] = CreateLight(LIGHT_POINT, {5, 5, 5}, Vector3Zero(), RED, shader);
+    lights[2] = CreateLight(LIGHT_POINT, {-5, 5, 5}, Vector3Zero(), GREEN, shader);
+    lights[3] = CreateLight(LIGHT_POINT, {5, 5, -5}, Vector3Zero(), BLUE, shader);
 }
 
 RenderSystem::RenderSystem(Game* game)
     : System(game) {
     init();
-
-    // connect event handlers
-    eventDispatcher.sink<CameraUpdateEvent>()
-        .connect<&RenderSystem::onCameraUpdated>(*this);
-
-    eventDispatcher.sink<EntityMoveEvent>()
-        .connect<&RenderSystem::onEntityMoved>(*this);
-}
-
-void RenderSystem::onCameraUpdated(CameraUpdateEvent& event) const {
-    // get components and calculate camera target
-    const entt::entity& cameraEntity = event.entity;
-    const CameraComponent& camera = registry.get<CameraComponent>(cameraEntity);
-    const TransformationComponent& cameraTransform = registry.get<TransformationComponent>(cameraEntity);
-
-    const glm::vec3& cameraTarget = cameraTransform.position + camera.front;
-
-    // bind camera buffer to location 1
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboCamera);
-    // view matrix
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(camera.viewMatrix));
-    // projection matrix
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera.projectionMatrix));
-    // camera position
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), glm::value_ptr(cameraTransform.position));
-    // camera target
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(cameraTarget));
-
-    if (game->sun != entt::null) {
-        SunLightComponent& sunLight = registry.get<SunLightComponent>(game->sun);
-        sunLight.calculateLightMatrices(camera);
-        updateLightBuffer(sunLight, camera);
-    }
-}
-
-void RenderSystem::onEntityMoved(EntityMoveEvent& event) const {
-    // update sun uniform buffer
-    if (event.entity == game->sun) {
-        const CameraComponent& camera = registry.get<CameraComponent>(game->camera);
-        SunLightComponent& sunLight = registry.get<SunLightComponent>(game->sun);
-
-        // recalculate matrices and update light buffer
-        sunLight.calculateLightMatrices(camera);
-        updateLightBuffer(sunLight, camera);
-    }
-}
-
-void RenderSystem::updateLightBuffer(const LightComponent& sunLight, const CameraComponent& camera) const {
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboLight);
-    for (int i = 0; i < Configuration::SHADOW_CASCADE_COUNT; i++) {
-        // light view
-        glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(sunLight.lightView[i]));
-        // light projection
-        glBufferSubData(GL_UNIFORM_BUFFER, (Configuration::SHADOW_CASCADE_COUNT + i) * sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(sunLight.lightProjection[i]));
-        // cascade far planes
-        float value = (camera.far - camera.near) * Configuration::CASCADE_FAR_PLANE_FACTORS[i] + camera.near;
-        glBufferSubData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4) + (4 + i) * sizeof(glm::vec4), sizeof(float), &value);
-    }
-    // light direction
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4), sizeof(glm::vec3), glm::value_ptr(sunLight.direction));
-    // light ambient
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4) + sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(sunLight.ambient));
-    // light diffuse
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4) + 2 * sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(sunLight.diffuse));
-    // light specular
-    glBufferSubData(GL_UNIFORM_BUFFER, 2 * Configuration::SHADOW_CASCADE_COUNT * sizeof(glm::mat4) + 3 * sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(sunLight.specular));
 }
 
 void RenderSystem::update(float dt) {
-    // shadows
-    shadowBuffer.use();
-    shadowShader->use();
-    glClear(GL_DEPTH_BUFFER_BIT);
+    CameraComponent& cameraComponent = registry.get<CameraComponent>(game->camera);
 
-    glCullFace(GL_FRONT);
-    renderScene(shadowShader, entt::exclude<DebugComponent>);
-    renderSceneInstanced(instancedShadowShader, entt::exclude<DebugComponent>);
-    glCullFace(GL_BACK);
+    // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
+    float cameraPos[3] = {cameraComponent.camera.position.x, cameraComponent.camera.position.y, cameraComponent.camera.position.z};
+    SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    const CameraComponent& camera = registry.get<CameraComponent>(game->camera);
-    glViewport(0, 0, camera.width, camera.height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-#if DEBUG
-    const entt::entity& debugEntity = registry.view<DebugComponent>().front();
-    const DebugComponent& debugComponent = registry.get<DebugComponent>(debugEntity);
-    if (debugComponent.mode == DebugMode::SHADOW_MAPS) {
-        glDisable(GL_CULL_FACE);
-        shadowMapRenderer.render(shadowBuffer);
-        glEnable(GL_CULL_FACE);
-
-        return;
+    if (IsKeyPressed(KEY_ONE)) {
+        lights[0].enabled = !lights[0].enabled;
     }
-#endif
-
-    shadowBuffer.bindTextures();
-    ShaderPtr meshShader = resourceManager.getResource<Shader>("MESH_SHADER");
-    ShaderPtr instancedMeshShader = resourceManager.getResource<Shader>("MESH_INSTANCED_SHADER");
-
-    renderScene(meshShader, entt::exclude<DebugComponent>);
-    renderSceneInstanced(instancedMeshShader, entt::exclude<DebugComponent>);
-
-    meshShader->use();
-    if (game->getState() == GameState::BUILD_MODE) {
-        registry.view<TransformationComponent, MeshComponent, BuildMarkerComponent>()
-            .each([&](const TransformationComponent& transform, const MeshComponent& mesh, const BuildMarkerComponent& buildMarker) {
-                meshShader->setMatrix4("model", transform.transform);
-                mesh.mesh->render(meshShader);
-            });
+    if (IsKeyPressed(KEY_TWO)) {
+        lights[1].enabled = !lights[1].enabled;
+    }
+    if (IsKeyPressed(KEY_THREE)) {
+        lights[2].enabled = !lights[2].enabled;
+    }
+    if (IsKeyPressed(KEY_FOUR)) {
+        lights[3].enabled = !lights[3].enabled;
     }
 
-    if (game->debugMode) {
-        entt::entity debugEntity = registry.view<DebugComponent>().front();
-
-        // const DebugComponent& debug = registry.get<DebugComponent>(debugEntity);
-        const MeshComponent& mesh = registry.get<MeshComponent>(debugEntity);
-        const TransformationComponent& transform = registry.get<TransformationComponent>(debugEntity);
-        ShaderPtr axisShader = resourceManager.getResource<Shader>("AXIS_SHADER");
-
-        axisShader->use();
-        axisShader->setMatrix4("model", transform.transform);
-        mesh.mesh->render(meshShader);
+    for (int i = 0; i < MAX_LIGHTS; i++) {
+        UpdateLightValues(shader, lights[i]);
     }
+
+    BeginMode3D(cameraComponent.camera);
+
+    // DrawGrid(10, 1.0f); // Draw a grid
+
+    renderScene(entt::exclude<DebugComponent>);
+    renderSceneInstanced(entt::exclude<DebugComponent>);
+
+    for (int i = 0; i < MAX_LIGHTS; i++) {
+        if (lights[i].enabled)
+            DrawSphereEx(lights[i].position, 0.2f, 8, 8, lights[i].color);
+        else
+            DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
+    }
+
+    EndMode3D();
 }

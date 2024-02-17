@@ -11,3 +11,6 @@ struct CameraUpdateEvent : public EntityEvent {
         : EntityEvent(entity), sizeUpdated(sizeUpdated), positionUpdated(positionUpdated), rotationUpdated(rotationUpdated) {
     }
 };
+
+struct RequestCameraLookAt : public Event {
+};

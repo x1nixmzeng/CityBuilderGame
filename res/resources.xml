@@ -1,34 +1,160 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
+  <!-- config -->
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_3" />
 
-	<!-- shaders -->
-	<resource type="shader" id="MESH_SHADER" filename="shaders/mesh" />
-	<resource type="shader" id="MESH_INSTANCED_SHADER" vertex="shaders/meshInstanced.vert" fragment="shaders/mesh.frag" />
-	<resource type="shader" id="SHADOW_SHADER" filename="shaders/shadow" />
-	<resource type="shader" id="SHADOW_INSTANCED_SHADER" vertex="shaders/shadowInstanced.vert" geometry="shaders/shadow.geom" fragment="shaders/shadow.frag" />
-	<resource type="shader" id="AXIS_SHADER" filename="shaders/axis" />
-	<resource type="shader" id="RENDER_QUAD_SHADER" filename="shaders/renderQuad" />
-	<resource type="shader" id="STREET_DEBUG_SHADER" filename="shaders/streetDebug" />
-	<resource type="shader" id="TERRAIN_NORMAL_SHADER" filename="shaders/terrainNormal" />
+  <!-- hero -->
+  <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
 
-	<!-- meshes -->
-	<resource type="mesh" id="BUILDMARKER_MESH" filename="models/buildMarker.obj" />
-	<resource type="mesh" id="CAR_MESH" filename="models/car.obj" />	
-	<resource type="mesh" id="TREE_MESH" filename="models/tree.obj" />
+  <!-- world tiles -->
+  <resource type="mesh" id="WB_FRONT_MESH" filename="models/whitebox_front.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH" filename="models/whitebox_side.obj" />
+  <resource type="mesh" id="WB_TOP_MESH" filename="models/whitebox_top.obj" />
 
-	<!-- materials -->
-	<resource type="material" filename="models/basic_street.mtl">
-		<material name="basic_street" id="BASIC_STREET_MATERIAL" />
-		<material name="basic_street_preview" id="BASIC_STREET_PREVIEW_MATERIAL" />
-	</resource>
-	<resource type="material" filename="models/ground.mtl">
-		<material name="ground" id="GROUND_MATERIAL"/>
-	</resource>
-	<resource type="material" filename="models/water.mtl" >
-		<material name="water" id="WATER_MATERIAL" />
-	</resource>
+  <resource type="mesh" id="WB_GROUND_MESH" filename="models/ground_straight.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_2" filename="models/ground_straight_180.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_CORNER_1" filename="models/ground_corner.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_CORNER_2" filename="models/ground_corner_90.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_CORNER_3" filename="models/ground_corner_180.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_CORNER_4" filename="models/ground_corner_270.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W" filename="models/ground_straight_3w.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W_2" filename="models/ground_straight_3w_180.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W_3" filename="models/ground_straight_3w_90.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W_4" filename="models/ground_straight_3w_270.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH" filename="models/side_straight.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH_2" filename="models/side_straight_180.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH_3" filename="models/side_straight_90.obj" />
+  <resource type="mesh" id="WB_SIDE_MESH_4" filename="models/side_straight_270.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_1" filename="models/front_straight.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_2" filename="models/front_straight_90.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_4" filename="models/front_straight_270.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_1_3W" filename="models/front_straight_3w.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_1W" filename="models/ground_1w.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_1W" filename="models/front_1w.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_1W_2" filename="models/front_1w_270.obj" />
 
-	<!-- streets -->
-	<resource type="streetPack" id="BASIC_STREETS" roadwayWidth="3.0" roadwayHeight="0.1" sidewalkHeight="0.2" verticesPerCircle="64" shader="MESH_SHADER" material="BASIC_STREET_MATERIAL" />
-	<resource type="streetPack" id="BASIC_STREETS_PREVIEW" roadwayWidth="3.0" roadwayHeight="0.1" sidewalkHeight="0.2" verticesPerCircle="64" shader="MESH_SHADER" material="BASIC_STREET_PREVIEW_MATERIAL" />
+  <resource type="mesh" id="WB_TRIGGER_ON" filename="models/trigger_on.obj" />
+  <resource type="mesh" id="WB_TRIGGER_OFF" filename="models/trigger_off.obj" />
+
+  <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
+  <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
+
+  <!-- walkables - todo: reference the meshes above -->
+  <resource type="tile_template"
+            id="TILE_SIDE_PIECE"
+            surface="wall_side" />
+
+  <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"
+            mesh="WB_FRONT_MESH_1W"
+            surface="wall_side"
+            allow_right="false"
+            allow_forward="false"
+            allow_backward="false" />
+  
+<resource type="tile_template" id="TILE_SIDE_PIECE_V"
+            mesh="WB_FRONT_MESH_1"
+            surface="wall_side"
+            allow_forward="false"
+            allow_backward="false" />
+
+  <resource type="tile_template" id="TILE_SIDE_PIECE_H3"
+            mesh="WB_FRONT_MESH_4"
+            surface="wall_side"
+            allow_forward="false"
+            allow_right="false"/> 
+  
+  <resource type="tile_template" id="TILE_SIDE_PIECE_H2"
+            mesh="WB_FRONT_MESH_1W_2"
+            surface="wall_side"
+            allow_left="false"
+            allow_right="false"/>
+  
+  <resource type="tile_template" id="TILE_SIDE_PIECE_H"
+            mesh="WB_FRONT_MESH_2"
+            surface="wall_side"
+            allow_left="false"
+            allow_right="false"/>
+
+  <resource type="tile_template" id="TILE_SIDE_PIECE_3W"
+            mesh="WB_FRONT_MESH_1_3W"
+            surface="wall_side"
+            allow_backward="false" />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE"
+            surface="ground"
+            mesh="WB_GROUND_MESH_1W"
+            allow_left="false"
+            allow_right="false"
+            allow_backward="false" />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_LR"
+            surface="ground"
+            allow_forward="false"
+            allow_backward="false"
+            mesh="WB_GROUND_MESH"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_FB"
+          surface="ground"
+          allow_left="false"
+          allow_right="false"
+          mesh="WB_GROUND_MESH_2"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER"
+          surface="ground"
+          mesh="WB_GROUND_MESH_CORNER_1"
+          allow_right="false"
+            allow_backward="false"
+            />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_2"
+          surface="ground"
+          mesh="WB_GROUND_MESH_CORNER_2"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_3"
+        surface="ground"
+        mesh="WB_GROUND_MESH_CORNER_3"
+            allow_left="false"
+             allow_forward="false"
+            />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_CORNER_4"
+        surface="ground"
+        mesh="WB_GROUND_MESH_CORNER_4"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_3W"
+        surface="ground"
+        mesh="WB_GROUND_MESH_3W"
+            allow_forward="false"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_3W_2"
+        surface="ground"
+        mesh="WB_GROUND_MESH_3W_2"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_3W_3"
+        surface="ground"
+        mesh="WB_GROUND_MESH_3W_3"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_3W_4"
+        surface="ground"
+        mesh="WB_GROUND_MESH_3W_4"/>
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE"
+              surface="wall_front"
+            mesh="WB_SIDE_MESH"
+              allow_left="false"
+          allow_right="false"
+            />
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE_2"
+              surface="wall_front"
+            mesh="WB_SIDE_MESH_3"
+            allow_right="false"
+            allow_backward="false"/>
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE_3"
+              surface="wall_front"
+            mesh="WB_SIDE_MESH_4"
+          allow_left="false"
+            allow_forward="false" />
+
 </resources>

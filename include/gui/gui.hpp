@@ -1,10 +1,6 @@
 #pragma once
 #include "gui/components/widget.hpp"
 
-#include "rendering/renderQuad.hpp"
-#include "rendering/shader.hpp"
-#include "rendering/textRenderer.hpp"
-
 #include <stack>
 
 class Application;
@@ -13,6 +9,8 @@ class PauseMenu;
 class OptionsMenu;
 class BuildMenu;
 class DebugPanel;
+class ControlsPanel;
+class LevelSelectMenu;
 class Label;
 
 struct KeyEvent;
@@ -23,18 +21,21 @@ enum class GameMenus {
   NONE,
   MAIN_MENU,
   PAUSE_MENU,
-  OPTIONS_MENU
+  OPTIONS_MENU,
+  LEVEL_SELECT_MENU,
 };
 
 class Gui {
   private:
     Application* app;
 
-    RenderQuad quad;
+    //RenderQuad quad;
     float width, height;
 
     PauseMenu* pauseMenu;
     OptionsMenu* optionsMenu;
+    LevelSelectMenu* levelSelectMenu;
+    ControlsPanel* controlsPanel;
 
     BuildMenu* buildMenu;
     DebugPanel* debugPanel;
@@ -43,14 +44,11 @@ class Gui {
     std::stack<Widget*> navigation;
     std::vector<Widget*> widgets;
 
-    Shader* guiShader = new Shader("res/shaders/renderQuad.vert", "res/shaders/renderQuad.frag");
-
     void init();
 
   public:
     Gui(Application* app, float width, float height);
 
-    TextRenderer textRenderer;
 
     void showMenu(GameMenus gameMenu);
     void popMenu();
@@ -59,8 +57,6 @@ class Gui {
     void hideWarning() const;
 
     Application* getApp() const;
-    Shader* getShader() const;
-    const RenderQuad& getRenderQuad() const;
 
     void setScreenSize(float width, float height);
     Rectangle getBox() const;

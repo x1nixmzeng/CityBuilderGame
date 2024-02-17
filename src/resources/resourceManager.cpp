@@ -1,18 +1,17 @@
 #include "resources/resourceManager.hpp"
 
-#include "misc/roads/roadSpecs.hpp"
-#include "rendering/geometry.hpp"
-#include "rendering/material.hpp"
-#include "resources/mesh.hpp"
+#include "resources/configValue.hpp"
 #include "resources/meshLoader.hpp"
+#include "resources/meshRes.hpp"
 #include "resources/objectLoader.hpp"
-#include "resources/roadGeometryGenerator.hpp"
-#include "resources/roadPack.hpp"
+#include "resources/tileTemplate.hpp"
 
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
+
+#include <raylib.h>
 
 #include <pugixml.hpp>
 
@@ -32,42 +31,6 @@ const char* ResourceManager::ResourceTypeException::what() const noexcept {
     return message;
 }
 
-template<>
-void ResourceManager::loadResource<Shader>(const std::string& id, const std::string& filename) {
-    const std::string& vertexPath = resourceDir + filename + ".vert";
-    const std::string& fragmentPath = resourceDir + filename + ".frag";
-    const std::string& geometryPath = resourceDir + filename + ".geom";
-
-    Shader* shader;
-    if (std::filesystem::exists(geometryPath)) {
-        shader = new Shader(vertexPath, fragmentPath, geometryPath);
-    }
-    else {
-        shader = new Shader(vertexPath, fragmentPath);
-    }
-
-    setResource(id, ShaderPtr(shader));
-}
-
-template<>
-void ResourceManager::loadResource<Shader>(const std::string& id, const std::string& vertexPath, const std::string& fragmentPath) {
-    Shader* shader = new Shader(resourceDir + vertexPath, resourceDir + fragmentPath);
-    setResource(id, ShaderPtr(shader));
-}
-
-template<>
-void ResourceManager::loadResource<Shader>(const std::string& id, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath) {
-    Shader* shader = new Shader(resourceDir + vertexPath, resourceDir + fragmentPath, resourceDir + geometryPath);
-    setResource(id, ShaderPtr(shader));
-}
-
-template<>
-void ResourceManager::loadResource<Texture>(const std::string& id, const std::string& filename, bool alpha) {
-    Texture* texture = alpha ? new Texture(resourceDir + filename, GL_RGBA) : new Texture(resourceDir + filename);
-
-    setResource(id, TexturePtr(texture));
-}
-
 void ResourceManager::loadResources() {
     xml_document doc;
     xml_parse_result result = doc.load_file((resourceDir + "resources.xml").c_str());
@@ -84,67 +47,53 @@ void ResourceManager::loadResources() {
         const std::string& id = resourceNode.attribute("id").as_string();
         const std::string& filename = resourceNode.attribute("filename").as_string();
 
-        if (type == "shader") {
-            if (filename.empty()) {
-                const std::string& vertexPath = resourceNode.attribute("vertex").as_string();
-                const std::string& fragmentPath = resourceNode.attribute("fragment").as_string();
-                const std::string& geometryPath = resourceNode.attribute("geometry").as_string();
+        if (type == "mesh") {
 
-                if (geometryPath.empty()) {
-                    loadResource<Shader, const std::string&>(id, vertexPath, fragmentPath);
-                }
-                else {
-                    loadResource<Shader, const std::string&, const std::string&>(id, vertexPath, fragmentPath, geometryPath);
-                }
+            auto meshPath = resourceDir + filename;
+            MeshResPtr meshRes = MeshLoader::loadMesh(meshPath);
+
+            setResource(id, meshRes);
+        }
+        else if (type == "shader") {
+            ConfigValue* shader = new ConfigValue();
+
+            auto shaderPath = resourceDir + resourceNode.attribute("filename").as_string();
+            shader->value = shaderPath;
+
+            setResource(id, ConfigValuePtr(shader));
+        }
+        else if (type == "tile_template") {
+            TileTemplate* tileTemplate = new TileTemplate();
+
+            auto surfaceAttrib = resourceNode.attribute("surface").as_string();
+            tileTemplate->surface = SurfaceFromString(surfaceAttrib);
+
+            auto const allowForward = resourceNode.attribute("allow_forward").as_bool(true);
+            auto const allowBackward = resourceNode.attribute("allow_backward").as_bool(true);
+            auto const allowLeft = resourceNode.attribute("allow_left").as_bool(true);
+            auto const allowRight = resourceNode.attribute("allow_right").as_bool(true);
+
+            tileTemplate->navigation.allowForward = allowForward;
+            tileTemplate->navigation.allowBackward = allowBackward;
+            tileTemplate->navigation.allowLeft = allowLeft;
+            tileTemplate->navigation.allowRight = allowRight;
+
+            if (allowForward && allowBackward && allowLeft && allowRight) {
+                std::cout << "Tile template '" << id << "' missing navigation hints" << std::endl;
             }
-            else {
-                loadResource<Shader>(id, filename);
-            }
+
+            tileTemplate->meshName = resourceNode.attribute("mesh").as_string();
+
+            setResource(id, TileTemplatePtr(tileTemplate));
         }
-        else if (type == "texture") {
-            bool rgba = resourceNode.attribute("rgba").as_bool();
-            loadResource<Texture>(id, filename, rgba);
+        else if (type == "config_value") {
+            ConfigValue* defaultLevel = new ConfigValue();
+            defaultLevel->value = resourceNode.attribute("value").as_string();
+
+            setResource(id, ConfigValuePtr(defaultLevel));
         }
-        else if (type == "material") {
-            std::unordered_map<std::string, MaterialPtr> materials = MeshLoader::loadMaterials(resourceDir + filename);
-
-            for (const auto& materialNode : resourceNode.children("material")) {
-                const std::string& materialName = materialNode.attribute("name").as_string();
-                const std::string& materialId = materialNode.attribute("id").as_string();
-
-                try {
-                    MaterialPtr material = materials.at(materialName);
-
-                    setResource(materialId, material);
-                }
-                catch (std::out_of_range e) {
-                    std::cerr << "Material \"" << materialName << "\" not found in file \"" << filename << "\"" << std::endl;
-
-                    throw e;
-                }
-            }
-        }
-        else if (type == "mesh") {
-            MeshPtr mesh = MeshLoader::loadMesh(resourceDir + filename);
-
-            setResource(id, mesh);
-        }
-        else if (type == "streetPack") {
-            const std::string& shaderId = resourceNode.attribute("shader").as_string();
-            const std::string& materialId = resourceNode.attribute("material").as_string();
-
-            float roadwayWidth = resourceNode.attribute("roadwayWidth").as_float();
-            float roadwayHeight = resourceNode.attribute("roadwayHeight").as_float();
-            float sidewalkHeight = resourceNode.attribute("sidewalkHeight").as_float();
-            unsigned int verticesPerCircle = resourceNode.attribute("verticesPerCircle").as_uint();
-
-            RoadPack* pack = new RoadPack();
-            pack->roadGeometries = RoadGeometryGenerator::generateRoadPackGeometries(RoadSpecs{roadwayWidth, roadwayHeight, sidewalkHeight, verticesPerCircle});
-
-            pack->shader = getResource<Shader>(shaderId);
-            pack->material = getResource<Material>(materialId);
-
-            setResource(id, ResourcePtr<RoadPack>(pack));
+        else {
+            assert(false);
         }
     }
 
@@ -152,9 +101,8 @@ void ResourceManager::loadResources() {
     std::string buildingsPath = resourceDir + "objects";
     for (const auto& entry : std::filesystem::directory_iterator(buildingsPath)) {
         if (entry.path().extension() == ".xml") {
-            const std::string& id = "object." + entry.path().stem().string();
+            std::string const id = "object." + entry.path().stem().string();
             ObjectPtr object = objectLoader.loadObject(entry.path().string());
-
             setResource(id, object);
         }
     }

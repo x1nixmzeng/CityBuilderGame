@@ -8,9 +8,12 @@ OptionsMenu::OptionsMenu(Gui* gui)
     constraints.width = RelativeConstraint(0.6f);
     constraints.height = AbsoluteConstraint(120.0f);
 
-    TextButton* test = new TextButton("options_menu.test", gui, colors::anthraziteGrey, "Test");
+    TextButton* test = new TextButton("options_menu.level_select", gui, colors::anthraziteGrey, "Level Select");
     test->constraints.height = AbsoluteConstraint(45.0f);
     test->constraints.width = RelativeConstraint(1.0f);
+    test->onClick += [&](const MouseButtonEvent& e) {
+        this->gui->showMenu(GameMenus::LEVEL_SELECT_MENU);
+    };
     addChild(test);
 
     StackPanel* row = new StackPanel("options_menu.last_row", gui, StackOrientation::ROW, colors::transparent);

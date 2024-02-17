@@ -2,9 +2,9 @@
 
 #include "events/mouseEvents.hpp"
 
-#include <GLFW/glfw3.h>
+#include <raymath.h>
 
-Button::Button(const std::string& id, Gui* gui, const glm::vec4& backgroundColor)
+Button::Button(const std::string& id, Gui* gui, const Color& backgroundColor)
     : Widget(id, gui, backgroundColor) {
 
     // hover effect
@@ -22,16 +22,16 @@ void Button::handleMouseButtonEvent(MouseButtonEvent& event) {
 
     const Rectangle& area = getBox();
 
-    if (!area.pointInside(event.x, event.y)) {
+    if (!pointInside(area, event.x, event.y)) {
         return;
     }
 
-    if (event.action == GLFW_RELEASE && event.button == GLFW_MOUSE_BUTTON_LEFT) {
+    if (event.action == 1 && event.button == MOUSE_BUTTON_LEFT) {
         onClick.invoke(event);
     }
 }
 
-TextButton::TextButton(const std::string& id, Gui* gui, const glm::vec4& backgroundColor, const std::string& text)
+TextButton::TextButton(const std::string& id, Gui* gui, const Color& backgroundColor, const std::string& text)
     : Label(id, gui, backgroundColor, text), Widget(id, gui, backgroundColor), Button(id, gui, backgroundColor) {
 
     // hover effect text color
@@ -43,7 +43,7 @@ TextButton::TextButton(const std::string& id, Gui* gui, const glm::vec4& backgro
     };
 }
 
-IconButton::IconButton(const std::string& id, Gui* gui, const glm::vec4& backgroundColor, Texture* icon)
+IconButton::IconButton(const std::string& id, Gui* gui, const Color& backgroundColor, Texture* icon)
     : Icon(id, gui, icon, backgroundColor),
       Widget(id, gui, backgroundColor),
       Button(id, gui, backgroundColor) {

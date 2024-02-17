@@ -63,6 +63,11 @@ class ResourceManager {
         throw ResourceTypeException(message.append(type.name()).c_str());
       }
 
+      if (resource.data == nullptr)
+      {
+        int i = 0;
+      }
+
       return std::reinterpret_pointer_cast<T>(resource.data);
     }
 };

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" surface="ground" offset="0.0000 1.0000 0.0000" />
+  <mesh filename="models/level_1_test.obj" />
+  <route name="A Forgotten Path">
+
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+      <trigger_camera position="3.0000 10.0000 13.0000" />
+    </tile>
+    <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" is_trap="true" />
+    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="3 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="4 0 0" template="TILE_GROUND_PIECE_CORNER">
+      <trigger_camera position="3.0000 10.0000 13.0000" />
+    </tile>
+    <tile cell="4 0 1" template="TILE_GROUND_PIECE_FB">
+      <trigger_camera position="5.0000 10.0000 20.0000" />
+    </tile>
+    <tile cell="4 0 2" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="4 0 2" template="TILE_FRONT_PIECE" />
+    <tile cell="4 -1 2" template="TILE_FRONT_PIECE" />
+    <tile cell="4 -2 2" template="TILE_FRONT_PIECE">
+      <trigger_level target="level_2" />
+    </tile>
+  </route>
+
+  <auto_nav>
+    <!-- 0 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="forward" />
+    <!-- 5 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+  </auto_nav>
+</object>
