@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <!-- config -->
-  <resource type="config_value" id="DEFAULT_LEVEL" value="level_3" />
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_4" />
 
   <!-- hero -->
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
 
   <!-- world tiles -->
-  <resource type="mesh" id="WB_FRONT_MESH" filename="models/whitebox_front.obj" />
-  <resource type="mesh" id="WB_SIDE_MESH" filename="models/whitebox_side.obj" />
-  <resource type="mesh" id="WB_TOP_MESH" filename="models/whitebox_top.obj" />
-
   <resource type="mesh" id="WB_GROUND_MESH" filename="models/ground_straight.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_2" filename="models/ground_straight_180.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_CORNER_1" filename="models/ground_corner.obj" />
@@ -39,10 +35,7 @@
   <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
 
-  <!-- walkables - todo: reference the meshes above -->
-  <resource type="tile_template"
-            id="TILE_SIDE_PIECE"
-            surface="wall_side" />
+  <!-- walkables -->
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"
             mesh="WB_FRONT_MESH_1W"
@@ -51,7 +44,7 @@
             allow_forward="false"
             allow_backward="false" />
   
-<resource type="tile_template" id="TILE_SIDE_PIECE_V"
+  <resource type="tile_template" id="TILE_SIDE_PIECE_V"
             mesh="WB_FRONT_MESH_1"
             surface="wall_side"
             allow_forward="false"
