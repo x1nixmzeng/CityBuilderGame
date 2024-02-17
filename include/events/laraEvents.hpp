@@ -23,12 +23,18 @@ struct RequestLevelEvent : public Event {
     }
 };
 
+struct RequestLevelRestart : public Event {
+};
+
 struct RequestToggleSwitchEvent : public Event {
     std::string name;
 
     inline RequestToggleSwitchEvent(const std::string& switchName)
         : name(switchName) {
     }
+};
+
+struct OnLaraDiedEvent : public Event {
 };
 
 struct OnLaraMoveEvent : public Event {

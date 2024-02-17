@@ -30,6 +30,9 @@ LevelSystem::LevelSystem(Game* game)
 
     eventDispatcher.sink<RequestToggleSwitchEvent>()
         .connect<&LevelSystem::handleRequestToggleSwitchEvent>(*this);
+
+    eventDispatcher.sink<RequestLevelRestart>()
+        .connect<&LevelSystem::handleRequestLevelRestart>(*this);
 }
 
 void LevelSystem::init() {
@@ -58,8 +61,13 @@ void LevelSystem::handleResourceUpdatedEvent(const ResourceUpdatedEvent& e) {
 
 void LevelSystem::handleRequestLevelEvent(const RequestLevelEvent& e) {
 
-    // todo: should this be deferred?
     levelName = e.name;
+    generateLevel();
+}
+
+void LevelSystem::handleRequestLevelRestart(const RequestLevelRestart& e) {
+
+    // restart whole level
     generateLevel();
 }
 

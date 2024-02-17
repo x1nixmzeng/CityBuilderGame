@@ -1,6 +1,7 @@
 #pragma once
 #include "gui/components/widget.hpp"
 
+#include "gui/menus.hpp"
 #include <stack>
 
 class Application;
@@ -10,19 +11,13 @@ class OptionsMenu;
 class DebugPanel;
 class ControlsPanel;
 class LevelSelectMenu;
+class DeathMenu;
 class Label;
 
 struct KeyEvent;
 struct MouseButtonEvent;
 struct MouseMoveEvent;
-
-enum class GameMenus {
-    NONE,
-    MAIN_MENU,
-    PAUSE_MENU,
-    OPTIONS_MENU,
-    LEVEL_SELECT_MENU,
-};
+struct OnLaraDiedEvent;
 
 class Gui {
   private:
@@ -34,6 +29,7 @@ class Gui {
     OptionsMenu* optionsMenu;
     LevelSelectMenu* levelSelectMenu;
     ControlsPanel* controlsPanel;
+    DeathMenu* deathMenu;
 
     DebugPanel* debugPanel;
     Label* warningWidget;
@@ -64,4 +60,5 @@ class Gui {
     void handleMouseButtonEvent(MouseButtonEvent& e);
     void handleKeyEvent(KeyEvent& e);
     void handleMouseMoveEvent(MouseMoveEvent& e);
+    void handleOnLaraDiedEvent(OnLaraDiedEvent& e);
 };

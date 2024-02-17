@@ -4,6 +4,8 @@
 #include "components/components.hpp"
 #include "events/events.hpp"
 #include "systems/systems.hpp"
+#include "gui/gui.hpp"
+#include "gui/menus.hpp"
 
 Game::Game(Application* app)
     : app(app), resourceManager("res/") {
@@ -16,14 +18,13 @@ void Game::init() {
     // init systems
     systems.push_back(new CameraSystem(this));
     camera = registry.view<CameraComponent>().front();
-    
+
     renderSystem = new RenderSystem(this);
     systems.push_back(renderSystem);
 
     systems.push_back(new LevelSystem(this));
     systems.push_back(new MovementSystem(this));
     systems.push_back(new InputSystem(this));
-
 }
 
 entt::registry& Game::getRegistry() {
@@ -89,6 +90,16 @@ void Game::raiseEvent<OnLevelSpawned>(OnLevelSpawned& e) {
 template<>
 void Game::raiseEvent<RequestLevelEvent>(RequestLevelEvent& e) {
     eventDispatcher.trigger<RequestLevelEvent&>(e);
+}
+
+template<>
+void Game::raiseEvent<RequestLevelRestart>(RequestLevelRestart& e) {
+    eventDispatcher.trigger<RequestLevelRestart&>(e);
+}
+
+template<>
+void Game::raiseEvent<OnLaraDiedEvent>(OnLaraDiedEvent& e) {
+    eventDispatcher.trigger<OnLaraDiedEvent&>(e);
 }
 
 template<>

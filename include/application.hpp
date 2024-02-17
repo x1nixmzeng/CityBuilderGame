@@ -20,8 +20,7 @@ struct MouseScrollEvent;
 
 class Application {
   private:
-    //GLFWwindow* window;
-
+    
     Gui* gui = nullptr;
     Game* game = nullptr;
 
@@ -56,8 +55,6 @@ class Application {
     inline GameState getGameState() const {
         return game->getState();
     }
-
-    //GLFWwindow* getWindow() const;
 
     void onKeyEvent(KeyEvent& e);
     void onFramebufferSizeEvent(FramebufferSizeEvent& e);

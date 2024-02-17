@@ -1,7 +1,7 @@
 #include "gui/menus/pauseMenu.hpp"
 
 #include "gui/components/button.hpp"
-#include "gui/gui.hpp"
+#include "gui/menus.hpp"
 
 #include "events/laraEvents.hpp"
 

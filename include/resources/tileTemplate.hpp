@@ -16,6 +16,7 @@ struct TileTemplate {
     Surface surface;
     TileNavigation navigation;
     std::string meshName;
+    std::string meshCrackedName;
 };
 
 using TileTemplatePtr = ResourcePtr<TileTemplate>;

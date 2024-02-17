@@ -6,6 +6,7 @@
 #include "gui/components/widget.hpp"
 
 #include "gui/menus/controlsPanel.hpp"
+#include "gui/menus/deathMenu.hpp"
 #include "gui/menus/debugPanel.hpp"
 #include "gui/menus/levelSelectMenu.hpp"
 #include "gui/menus/optionsMenu.hpp"
@@ -13,6 +14,7 @@
 
 #include "events/keyEvent.hpp"
 #include "events/mouseEvents.hpp"
+#include "events/laraEvents.hpp"
 
 #include "application.hpp"
 
@@ -27,10 +29,14 @@ void Gui::init() {
     levelSelectMenu = new LevelSelectMenu(this);
     controlsPanel = new ControlsPanel(this);
     debugPanel = new DebugPanel(this);
+    deathMenu = new DeathMenu(this);
     warningWidget = new Label("warning_label", this, colors::transparent, "", colors::warning);
     warningWidget->hide();
 
-    widgets = {pauseMenu, optionsMenu, debugPanel, levelSelectMenu, controlsPanel};
+    widgets = {pauseMenu, optionsMenu, debugPanel, levelSelectMenu, controlsPanel, deathMenu};
+
+    // not great. breaks abstraction
+    app->getGame()->getEventDispatcher().sink<OnLaraDiedEvent>().connect<&Gui::handleOnLaraDiedEvent>(*this);
 }
 
 void Gui::showMenu(GameMenus menu) {
@@ -55,6 +61,9 @@ void Gui::showMenu(GameMenus menu) {
             break;
         case GameMenus::LEVEL_SELECT_MENU:
             navigation.push(levelSelectMenu);
+            break;
+        case GameMenus::DEATH_MENU:
+            navigation.push(deathMenu);
             break;
         default:
             return;
@@ -198,4 +207,12 @@ void Gui::handleMouseMoveEvent(MouseMoveEvent& event) {
     if (debugPanel->isVisible()) {
         debugPanel->handleMouseMoveEvent(event);
     }
+}
+
+void Gui::handleOnLaraDiedEvent(OnLaraDiedEvent& e) {
+    assert(app->getGameState() == GameState::RUNNING);
+
+    // Replace pause screen with death menu
+    app->setGameState(GameState::PAUSED);
+    showMenu(GameMenus::DEATH_MENU);
 }

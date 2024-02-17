@@ -1,7 +1,6 @@
 #include "gui/menus/controlsPanel.hpp"
 
 #include "gui/components/button.hpp"
-#include "gui/gui.hpp"
 
 #include "application.hpp"
 #include "game.hpp"

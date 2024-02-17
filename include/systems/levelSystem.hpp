@@ -6,6 +6,7 @@
 
 struct ResourceUpdatedEvent;
 struct RequestLevelEvent;
+struct RequestLevelRestart;
 struct RequestToggleSwitchEvent;
 
 class LevelSystem : public System {
@@ -14,6 +15,7 @@ class LevelSystem : public System {
 
     void handleResourceUpdatedEvent(const ResourceUpdatedEvent& e);
     void handleRequestLevelEvent(const RequestLevelEvent& e);
+    void handleRequestLevelRestart(const RequestLevelRestart& e);
     void handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent& e);
 
     bool pendingCreate = false;

@@ -64,11 +64,11 @@ void Application::init() {
     // DisableCursor(); // Limit cursor to relative movement inside the window
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
 
-    // init gui
-    gui = new Gui(this, screenWidth, screenHeight);
-
     // init game
     game = new Game(this);
+
+    // init gui
+    gui = new Gui(this, screenWidth, screenHeight);
 }
 
 Application::Application() {
@@ -82,6 +82,13 @@ void Application::run() {
     // Main game loop
     while (!stopRequested) // Detect window close button or ESC key
     {
+        if (IsWindowResized()) {
+            auto const screenWidth = static_cast<float>(GetScreenWidth());
+            auto const screenHeight = static_cast<float>(GetScreenHeight());
+
+            gui->setScreenSize(screenWidth, screenHeight);
+        }
+
         // float currentTime = (float)glfwGetTime();
         updateTime = 1.0 / 60.0; // currentTime - lastTime;
         // lastTime = currentTime;

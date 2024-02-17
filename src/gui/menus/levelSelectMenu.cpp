@@ -6,7 +6,6 @@
 #include "application.hpp"
 
 #include "gui/components/button.hpp"
-#include "gui/gui.hpp"
 
 #include <format>
 

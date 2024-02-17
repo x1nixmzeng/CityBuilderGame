@@ -350,7 +350,7 @@ void MovementSystem::setLaraInternal(const Vector3& pos) {
     auto finalPos = Vector3Add(pos, laraOffset);
 
     laraTransformation.setPosition(finalPos);
-    laraTransformation.setRotation(laraDirection, 90.0f);//, glm::radians(90.0f));
+    laraTransformation.setRotation(laraDirection, 90.0f); //, glm::radians(90.0f));
     laraTransformation.calculateTransform();
 }
 
@@ -393,7 +393,7 @@ void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceTyp
                         // ground tile - fall to death
                         if (surfaceType == Surface::Ground) {
                             // skip for now
-                            // state = MovementState::WalkToDeath;
+                            state = MovementState::WalkToDeath;
                         }
                         else {
                             // fall down?! how do we code this - how far can lara fall
@@ -452,7 +452,8 @@ void MovementSystem::updateMovement(float dt) {
         if (laraDelta >= 1.0f) {
             if (state == MovementState::WalkToDeath) {
                 // death!
-                assert(false); // lara has died
+                OnLaraDiedEvent laraDiedEvent;
+                game->raiseEvent(laraDiedEvent);
             }
 
             state = MovementState::Idle;
