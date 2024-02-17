@@ -146,9 +146,6 @@ void LevelSystem::generateLevel() {
 
     std::map<std::string, std::vector<TransformationComponent>> instances;
 
-    Quaternion rot;
-    Vector3 scale = {0.0f, 0.0f, 0.0f};
-
     RouteComponent& test = registry.get<RouteComponent>(level1Instance);
 
     for (const auto& node : test.routeNodes) {
@@ -184,9 +181,8 @@ void LevelSystem::generateLevel() {
         navBlockData.cell = node.cell;
         navBlockData.surface = tileTemplate->surface;
         navBlockData.type = blockType;
-        // navBlockData.blocks = node.blocks;
 
-        // todo: copy out blocks
+        // copy out blocks
         navBlockData.blocks.allowForward = tileTemplate->navigation.allowForward;
         navBlockData.blocks.allowBackward = tileTemplate->navigation.allowBackward;
         navBlockData.blocks.allowLeft = tileTemplate->navigation.allowLeft;
@@ -196,30 +192,11 @@ void LevelSystem::generateLevel() {
 
             registry.emplace<NavBlockComponent>(entity, navBlockData);
 
-            if (!tileTemplate->meshName.empty()) {
-                instances[tileTemplate->meshName].emplace_back(position, rot, scale);
-            }
-            else {
-                // legacy: to swap out entirely with template names
-
-                switch (tileTemplate->surface) {
-                    case Surface::Ground: {
-                        instances["WB_TOP_MESH"].emplace_back(position, rot, scale);
-                    } break;
-
-                    case Surface::Wall_Front: {
-                        instances["WB_FRONT_MESH"].emplace_back(position, rot, scale);
-                    } break;
-
-                    case Surface::Wall_Side: {
-                        instances["WB_SIDE_MESH"].emplace_back(position, rot, scale);
-                    } break;
-                }
-            }
+            instances[tileTemplate->meshName].emplace_back(position, Quaternion(), Vector3One());
         }
         else {
             // use this as our default value too
-            registry.emplace<TransformationComponent>(entity, Vector3Zero(), rot, scale);
+            registry.emplace<TransformationComponent>(entity, Vector3Zero(), Quaternion(), Vector3One());
 
             // common trigger data between all surfaces
             std::vector<TriggerData> triggerData;
@@ -246,51 +223,14 @@ void LevelSystem::generateLevel() {
 
             registry.emplace<NavBlockComponent>(entity, navBlockData);
 
-            if (!tileTemplate->meshName.empty()) {
-                MeshResPtr wbMesh = resourceManager.getResource<MeshRes>(tileTemplate->meshName);
+            MeshResPtr wbMesh = resourceManager.getResource<MeshRes>(tileTemplate->meshName);
 
-                // add single transformation
-                std::vector<TransformationComponent> dynMeshTrans;
+            // add single transformation
+            std::vector<TransformationComponent> dynMeshTrans;
 
-                auto pos = CellToWorldPosition(cell);
-                dynMeshTrans.emplace_back(pos, rot, Vector3(1.0f));
-                registry.emplace<InstancedMeshComponent>(entity, wbMesh, dynMeshTrans);
-            }
-            else {
-                switch (tileTemplate->surface) {
-                    case Surface::Ground: {
-                        MeshResPtr wbTopMesh = resourceManager.getResource<MeshRes>("WB_TOP_MESH");
-
-                        // add single transformation
-                        std::vector<TransformationComponent> dynMeshTrans;
-
-                        auto pos = CellToWorldPosition(cell);
-                        dynMeshTrans.emplace_back(pos, rot, Vector3(1.0f));
-                        registry.emplace<InstancedMeshComponent>(entity, wbTopMesh, dynMeshTrans);
-                    } break;
-
-                    case Surface::Wall_Side: {
-                        MeshResPtr wbSideMesh = resourceManager.getResource<MeshRes>("WB_SIDE_MESH");
-
-                        // add single transformation
-                        std::vector<TransformationComponent> dynMeshTrans;
-
-                        auto pos = CellToWorldPosition(cell);
-                        dynMeshTrans.emplace_back(pos, rot, Vector3(1.0f));
-                        registry.emplace<InstancedMeshComponent>(entity, wbSideMesh, dynMeshTrans);
-                    } break;
-                    case Surface::Wall_Front: {
-                        MeshResPtr wbFrontMesh = resourceManager.getResource<MeshRes>("WB_FRONT_MESH");
-
-                        // add single transformation
-                        std::vector<TransformationComponent> dynMeshTrans;
-
-                        auto pos = CellToWorldPosition(cell);
-                        dynMeshTrans.emplace_back(pos, rot, Vector3(1.0f));
-                        registry.emplace<InstancedMeshComponent>(entity, wbFrontMesh, dynMeshTrans);
-                    } break;
-                }
-            }
+            auto pos = CellToWorldPosition(cell);
+            dynMeshTrans.emplace_back(pos, Quaternion(), Vector3(1.0f));
+            registry.emplace<InstancedMeshComponent>(entity, wbMesh, dynMeshTrans);
         }
     }
 
@@ -298,7 +238,7 @@ void LevelSystem::generateLevel() {
     if (meshComponent) {
         auto entity3 = registry.create();
         dynamicEntities.push_back(entity3);
-        registry.emplace<TransformationComponent>(entity3, Vector3Zero(), Quaternion(), Vector3(1.0f));
+        registry.emplace<TransformationComponent>(entity3, Vector3Zero(), Quaternion(), Vector3One());
         meshComponent->assignToEntity(entity3, registry);
     }
 
@@ -307,7 +247,7 @@ void LevelSystem::generateLevel() {
 
         auto entity2 = registry.create();
         dynamicEntities.push_back(entity2);
-        registry.emplace<TransformationComponent>(entity2, Vector3Zero(), Quaternion(), Vector3(1.0f));
+        registry.emplace<TransformationComponent>(entity2, Vector3Zero(), Quaternion(), Vector3One());
 
         MeshResPtr wbFrontMesh = resourceManager.getResource<MeshRes>(instance.first);
         registry.emplace<InstancedMeshComponent>(entity2, wbFrontMesh, instance.second);
@@ -323,13 +263,13 @@ void LevelSystem::generateLevel() {
 void LevelSystem::addSwitchOn(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOn = resourceManager.getResource<MeshRes>("WB_TRIGGER_ON");
     std::vector<TransformationComponent> trans;
-    trans.emplace_back(pos, Quaternion(), Vector3(1.0f));
+    trans.emplace_back(pos, Quaternion(), Vector3One());
     registry.emplace_or_replace<InstancedMeshComponent>(entity, wbTriggerOn, trans);
 }
 
 void LevelSystem::addSwitchOff(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOff = resourceManager.getResource<MeshRes>("WB_TRIGGER_OFF");
     std::vector<TransformationComponent> trans;
-    trans.emplace_back(pos, Quaternion(), Vector3(1.0f));
+    trans.emplace_back(pos, Quaternion(), Vector3One());
     registry.emplace_or_replace<InstancedMeshComponent>(entity, wbTriggerOff, trans);
 }
