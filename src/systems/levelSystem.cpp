@@ -93,9 +93,6 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
                 // set entity transform to false
                 addSwitchOff(entity, blockComponent.position);
             }
-
-            // we found it
-            break;
         }
     }
 
