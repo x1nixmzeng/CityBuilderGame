@@ -73,7 +73,7 @@
       <trigger_switch toggle="switch_1" />
     </tile>
     <tile cell="2 1 6" template="TILE_SIDE_PIECE_V" />
-    <tile cell="2 2 5" template="TILE_SIDE_PIECE_H" />
+    <tile cell="2 2 5" template="TILE_SIDE_PIECE_H" is_trap="true" />
   </route>
 
   <auto_nav>

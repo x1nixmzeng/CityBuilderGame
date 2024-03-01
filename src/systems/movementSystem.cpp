@@ -402,8 +402,15 @@ void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceTyp
                             laraTarget.y -= 1;
                             laraTarget.z += 1;
                         }
+                        else if (surfaceType == Surface::Wall_Side) {
+                            // assume lara can fall? check for ground immediately?
+                            state = MovementState::Falling;
+
+                            laraTarget.y -= 1;
+                            laraTarget.x -= 1;
+                        }
                         else {
-                            // fall down?! how do we code this - how far can lara fall
+                            assert(false);
                         }
                     }
                 }
@@ -510,6 +517,12 @@ void MovementSystem::updateMovement(float dt) {
 
                 OnLaraMoveEvent laraMoveEvent(lara, currentSurface);
                 game->raiseEvent(laraMoveEvent);
+
+                auto end = getWorldPosition(lara, currentSurface);
+
+                CameraRequestLookAt lookAt;
+                lookAt.target = end;
+                game->raiseEvent(lookAt);
             }
             else {
                 lara = laraTarget;
