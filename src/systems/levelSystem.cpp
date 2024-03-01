@@ -100,7 +100,7 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
     }
 
     // search for switches
-    auto view = registry.view<InstancedMeshComponent, TriggerComponent, NavBlockComponent>();
+    auto view = registry.view<TransformationComponent, TriggerComponent, NavBlockComponent>();
     for (auto entity : view) {
         // find the named switch
         const auto& trigger = view.get<TriggerComponent>(entity);
@@ -115,18 +115,14 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
                 auto newCell = trigger.cell;
                 newCell += data.cellOffset;
 
-                // Update the "nav mesh"
+                // Update the"nav mesh
                 NavBlockComponent& nav = view.get<NavBlockComponent>(entity);
                 nav.data.cell = newCell;
 
-                // Update the "mesh"
-                auto& mesh = view.get<InstancedMeshComponent>(entity);
-                // there should only be one mesh for this entity
-                for (auto& trans : mesh.transformations) {
-                    // recalculate absolute position
-                    trans.position = CellToWorldPosition(newCell);
-                    trans.calculateTransform();
-                }
+                // Update the transform
+                auto& transform = view.get<TransformationComponent>(entity);
+                transform.position = CellToWorldPosition(newCell);
+                transform.calculateTransform();
             }
         }
     }
@@ -166,8 +162,9 @@ void LevelSystem::generateLevel() {
             // add a new switch
             registry.emplace<SwitchBlockComponent>(e, *node.switchTrigger, "false", position);
 
-            // create a transform for the metadata
-            registry.emplace<TransformationComponent>(e, Vector3Zero(), Quaternion(), Vector3(1.0f));
+            // mark this as a debug component
+            registry.emplace<NoHitTestComponent>(e);
+
             addSwitchOff(e, position);
         }
 
@@ -204,7 +201,7 @@ void LevelSystem::generateLevel() {
         }
         else {
             // use this as our default value too
-            registry.emplace<TransformationComponent>(entity, Vector3Zero(), Quaternion(), Vector3One());
+            // registry.emplace<TransformationComponent>(entity, Vector3Zero(), Quaternion(), Vector3One());
 
             // common trigger data between all surfaces
             std::vector<TriggerData> triggerData;
@@ -234,11 +231,10 @@ void LevelSystem::generateLevel() {
             MeshResPtr wbMesh = resourceManager.getResource<MeshRes>(tileTemplate->meshName);
 
             // add single transformation
-            std::vector<TransformationComponent> dynMeshTrans;
-
             auto pos = CellToWorldPosition(cell);
-            dynMeshTrans.emplace_back(pos, Quaternion(), Vector3(1.0f));
-            registry.emplace<InstancedMeshComponent>(entity, wbMesh, dynMeshTrans);
+
+            registry.emplace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
+            registry.emplace<MeshComponent>(entity, wbMesh);
         }
     }
 
@@ -246,6 +242,8 @@ void LevelSystem::generateLevel() {
     if (meshComponent) {
         auto entity3 = registry.create();
         dynamicEntities.push_back(entity3);
+        // Mark this as debug
+        registry.emplace_or_replace<NoHitTestComponent>(entity3);
         registry.emplace<TransformationComponent>(entity3, Vector3Zero(), Quaternion(), Vector3One());
         meshComponent->assignToEntity(entity3, registry);
     }
@@ -255,10 +253,16 @@ void LevelSystem::generateLevel() {
 
         auto entity2 = registry.create();
         dynamicEntities.push_back(entity2);
-        registry.emplace<TransformationComponent>(entity2, Vector3Zero(), Quaternion(), Vector3One());
 
-        MeshResPtr wbFrontMesh = resourceManager.getResource<MeshRes>(instance.first);
-        registry.emplace<InstancedMeshComponent>(entity2, wbFrontMesh, instance.second);
+        if (instance.second.size() == 1) {
+            MeshResPtr meshResource = resourceManager.getResource<MeshRes>(instance.first);
+            registry.emplace<MeshComponent>(entity2, meshResource);
+            registry.emplace<TransformationComponent>(entity2, instance.second[0]);
+        }
+        else {
+            MeshResPtr meshResource = resourceManager.getResource<MeshRes>(instance.first);
+            registry.emplace<InstancedMeshComponent>(entity2, meshResource, instance.second);
+        }
     }
 
     OnLevelSpawned e{level1Instance, levelName};
@@ -270,14 +274,14 @@ void LevelSystem::generateLevel() {
 
 void LevelSystem::addSwitchOn(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOn = resourceManager.getResource<MeshRes>("WB_TRIGGER_ON");
-    std::vector<TransformationComponent> trans;
-    trans.emplace_back(pos, Quaternion(), Vector3One());
-    registry.emplace_or_replace<InstancedMeshComponent>(entity, wbTriggerOn, trans);
+
+    registry.emplace_or_replace<MeshComponent>(entity, wbTriggerOn);
+    registry.emplace_or_replace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
 }
 
 void LevelSystem::addSwitchOff(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOff = resourceManager.getResource<MeshRes>("WB_TRIGGER_OFF");
-    std::vector<TransformationComponent> trans;
-    trans.emplace_back(pos, Quaternion(), Vector3One());
-    registry.emplace_or_replace<InstancedMeshComponent>(entity, wbTriggerOff, trans);
+
+    registry.emplace_or_replace<MeshComponent>(entity, wbTriggerOff);
+    registry.emplace_or_replace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
 }

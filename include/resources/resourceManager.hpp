@@ -22,14 +22,14 @@ class ResourceManager {
 
     template<typename T>
     inline void setResource(const std::string& id, ResourcePtr<T> data) {
-      ResourcePtr<void> dataPtr = ResourcePtr<T>(data);
+        ResourcePtr<void> dataPtr = ResourcePtr<T>(data);
 
-      if (resources.contains(id)) {
-        resources[id].data.swap(dataPtr);
-      }
-      else {
-        resources[id] = ResourceHolder{std::type_index(typeid(T)), dataPtr};
-      }
+        if (resources.contains(id)) {
+            resources[id].data.swap(dataPtr);
+        }
+        else {
+            resources[id] = ResourceHolder{std::type_index(typeid(T)), dataPtr};
+        }
     }
 
   public:
@@ -54,20 +54,29 @@ class ResourceManager {
 
     template<typename T>
     inline ResourcePtr<T> getResource(const std::string& resourceId) const {
-      const std::type_index type = std::type_index(typeid(T));
-      const ResourceHolder& resource = resources.at(resourceId);
+        const std::type_index type = std::type_index(typeid(T));
+        const ResourceHolder& resource = resources.at(resourceId);
 
-      if (type != resource.type) {
-        std::string message = "Resource could not converted to ";
+        if (type != resource.type) {
+            std::string message = "Resource could not converted to ";
 
-        throw ResourceTypeException(message.append(type.name()).c_str());
-      }
+            throw ResourceTypeException(message.append(type.name()).c_str());
+        }
 
-      if (resource.data == nullptr)
-      {
-        int i = 0;
-      }
+        return std::reinterpret_pointer_cast<T>(resource.data);
+    }
 
-      return std::reinterpret_pointer_cast<T>(resource.data);
+    template<typename T>
+    inline std::map<std::string, ResourcePtr<T>> getAllResources() const {
+        const std::type_index type = std::type_index(typeid(T));
+
+        std::map<std::string, ResourcePtr<T>> resourceList;
+        for (const auto& resource : resources) {
+            if (resource.second.type == type) {
+                resourceList[resource.first] = std::reinterpret_pointer_cast<T>(resource.second.data);
+            }
+        }
+
+        return resourceList;
     }
 };

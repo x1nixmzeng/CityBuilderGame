@@ -10,6 +10,7 @@ class PauseMenu;
 class OptionsMenu;
 class DebugPanel;
 class ControlsPanel;
+class InspectorPanel;
 class LevelSelectMenu;
 class DeathMenu;
 class Label;
@@ -29,13 +30,15 @@ class Gui {
     OptionsMenu* optionsMenu;
     LevelSelectMenu* levelSelectMenu;
     ControlsPanel* controlsPanel;
+    InspectorPanel* inspectorPanel;
     DeathMenu* deathMenu;
 
     DebugPanel* debugPanel;
     Label* warningWidget;
 
     std::stack<Widget*> navigation;
-    std::vector<Widget*> widgets;
+    std::vector<Widget*> allWidgets;
+    std::vector<Widget*> panels;
 
     void init();
 

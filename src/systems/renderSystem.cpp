@@ -37,6 +37,14 @@ void RenderSystem::init() {
     lights[1] = CreateLight(LIGHT_POINT, {5, 5, 5}, Vector3Zero(), RED, shader);
     lights[2] = CreateLight(LIGHT_POINT, {-5, 5, 5}, Vector3Zero(), GREEN, shader);
     lights[3] = CreateLight(LIGHT_POINT, {5, 5, -5}, Vector3Zero(), BLUE, shader);
+
+    thumbnailTarget = LoadRenderTexture(400, 300);
+
+    thumbnailCamera.position = {-3.0f, 3.0f, 3.0f};  // Camera position
+    thumbnailCamera.target = {0.0f, 0.4f, 0.0f};     // Camera looking at point
+    thumbnailCamera.up = {0.0f, 1.0f, 0.0f};         // Camera up vector (rotation towards target)
+    thumbnailCamera.fovy = 45.0f;                    // Camera field-of-view Y
+    thumbnailCamera.projection = CAMERA_PERSPECTIVE; // Camera projection type
 }
 
 RenderSystem::RenderSystem(Game* game)
@@ -64,16 +72,125 @@ void RenderSystem::update(float dt) {
         lights[3].enabled = !lights[3].enabled;
     }
 
+    static int subMesh = 0;
+
+    if (IsKeyPressed(KEY_FIVE)) {
+        subMesh++;
+    }
+
+    bool oldLightEnabled[MAX_LIGHTS];
+
     for (int i = 0; i < MAX_LIGHTS; i++) {
+        oldLightEnabled[i] = lights[i].enabled;
+        lights[i].enabled = false;
+        UpdateLightValues(shader, lights[i]);
+    }
+
+    BeginTextureMode(thumbnailTarget); // Enable drawing to texture
+    {
+        ClearBackground(RAYWHITE); // Clear texture background
+
+        BeginMode3D(thumbnailCamera); // Begin 3d mode drawing
+
+        // Returns a sorted list of all meshes
+        auto allMeshes = resourceManager.getAllResources<MeshRes>();
+
+        if (subMesh >= allMeshes.size()) {
+            subMesh = 0;
+        }
+
+        auto it = allMeshes.begin();
+        std::advance(it, subMesh);
+
+        DrawCube(Vector3Zero(), 1.99f, 1.99f, 1.99f, GRAY);
+        DrawCubeWires(Vector3Zero(), 1.99f, 1.99f, 1.99f, BLACK);
+
+        //// Disable the shader for this model (do not do this)
+        // for (int i = 0; i < it->second->model.materialCount; ++i) {
+        //     it->second->model.materials[i].shader = {};
+        // }
+
+        DrawModel(it->second->model, Vector3Zero(), 1.0f, WHITE);
+        DrawGrid(10, 1.0f); // Draw a grid
+
+        EndMode3D(); // End 3d mode drawing, returns to orthographic 2d mode
+
+        DrawText(it->first.c_str(), 0, 0, 32, BLACK);
+
+        auto text = std::format("{} of {}", subMesh + 1, allMeshes.size());
+        DrawText(text.c_str(), 0, 32, 32, BLACK);
+    }
+    EndTextureMode(); // End drawing to texture (now we have a texture available for next passes)
+
+    for (int i = 0; i < MAX_LIGHTS; i++) {
+        lights[i].enabled = oldLightEnabled[i];
         UpdateLightValues(shader, lights[i]);
     }
 
     BeginMode3D(cameraComponent.camera);
 
-    // DrawGrid(10, 1.0f); // Draw a grid
-
     renderScene(entt::exclude<DebugComponent>);
     renderSceneInstanced(entt::exclude<DebugComponent>);
+
+    // Get ray and test against objects
+    auto ray = GetMouseRay(GetMousePosition(), cameraComponent.camera);
+
+    {
+        // Check ray collision against model meshes
+        RayCollision collision = {0};
+        RayCollision meshHitInfo = {0};
+
+        registry.view<MeshComponent, TransformationComponent>(entt::exclude<NoHitTestComponent>)
+            .each([&](const MeshComponent& mesh, const TransformationComponent& transform) {
+                auto& model = mesh.mesh->model;
+
+                auto finalPos = MatrixMultiply(model.transform, MatrixTranslate(transform.position.x, transform.position.y, transform.position.z));
+
+                for (int i = 0; i < model.meshCount; ++i) {
+                    meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
+                    if (meshHitInfo.hit) {
+                        // Save the closest hit mesh
+                        if ((!collision.hit) || (collision.distance > meshHitInfo.distance)) {
+                            collision = meshHitInfo;
+                        }
+
+                        break;
+                    }
+                }
+            });
+
+        registry.view<InstancedMeshComponent>(entt::exclude<NoHitTestComponent>)
+            .each([&](const InstancedMeshComponent& mesh) {
+                auto& model = mesh.mesh->model;
+                for (int i = 0; i < model.meshCount; ++i) {
+
+                    for (const auto& t : mesh.transformations) {
+                        auto finalPos = MatrixMultiply(model.transform, MatrixTranslate(t.position.x, t.position.y, t.position.z));
+                        meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
+                        if (meshHitInfo.hit) {
+                            // Save the closest hit mesh
+                            if ((!collision.hit) || (collision.distance > meshHitInfo.distance)) {
+                                collision = meshHitInfo;
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            });
+
+        if (collision.hit) {
+            DrawCube(collision.point, 0.3f, 0.3f, 0.3f, BLUE);
+            DrawCubeWires(collision.point, 0.3f, 0.3f, 0.3f, RED);
+
+            Vector3 normalEnd;
+            normalEnd.x = collision.point.x + collision.normal.x;
+            normalEnd.y = collision.point.y + collision.normal.y;
+            normalEnd.z = collision.point.z + collision.normal.z;
+
+            DrawLine3D(collision.point, normalEnd, RED);
+        }
+    }
 
     for (int i = 0; i < MAX_LIGHTS; i++) {
         if (lights[i].enabled)
@@ -83,4 +200,7 @@ void RenderSystem::update(float dt) {
     }
 
     EndMode3D();
+
+    // NOTE: Render texture must be y-flipped due to default OpenGL coordinates (left-bottom)
+    // DrawTextureRec(thumbnailTarget.texture, {0, 0, (float)thumbnailTarget.texture.width, (float)-thumbnailTarget.texture.height}, {0, 0}, WHITE);
 }

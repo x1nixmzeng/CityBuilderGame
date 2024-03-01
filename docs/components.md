@@ -28,6 +28,9 @@ Stores the camera properties
 ### DebugComponent
 Used to hint which components to include for rendering
 
+### NoHitTestComponent
+Used to hint which components can be ignored by picking
+
 ### InstancedMeshComponent
 Allows the same mesh to be rendered multiple times using an array of transformation
 

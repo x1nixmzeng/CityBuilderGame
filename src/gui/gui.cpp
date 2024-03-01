@@ -8,13 +8,14 @@
 #include "gui/menus/controlsPanel.hpp"
 #include "gui/menus/deathMenu.hpp"
 #include "gui/menus/debugPanel.hpp"
+#include "gui/menus/inspectorPanel.hpp"
 #include "gui/menus/levelSelectMenu.hpp"
 #include "gui/menus/optionsMenu.hpp"
 #include "gui/menus/pauseMenu.hpp"
 
 #include "events/keyEvent.hpp"
-#include "events/mouseEvents.hpp"
 #include "events/laraEvents.hpp"
+#include "events/mouseEvents.hpp"
 
 #include "application.hpp"
 
@@ -28,12 +29,14 @@ void Gui::init() {
     optionsMenu = new OptionsMenu(this);
     levelSelectMenu = new LevelSelectMenu(this);
     controlsPanel = new ControlsPanel(this);
+    inspectorPanel = new InspectorPanel(this);
     debugPanel = new DebugPanel(this);
     deathMenu = new DeathMenu(this);
     warningWidget = new Label("warning_label", this, colors::transparent, "", colors::warning);
     warningWidget->hide();
 
-    widgets = {pauseMenu, optionsMenu, debugPanel, levelSelectMenu, controlsPanel, deathMenu};
+    allWidgets = {pauseMenu, optionsMenu, levelSelectMenu, controlsPanel, inspectorPanel, debugPanel, deathMenu};
+    panels = {inspectorPanel, debugPanel, controlsPanel};
 
     // not great. breaks abstraction
     app->getGame()->getEventDispatcher().sink<OnLaraDiedEvent>().connect<&Gui::handleOnLaraDiedEvent>(*this);
@@ -111,7 +114,7 @@ void Gui::setScreenSize(float width, float height) {
     this->height = height;
 
     // update widgets
-    for (const auto& widget : widgets) {
+    for (const auto& widget : allWidgets) {
         Container* container;
         if ((container = dynamic_cast<Container*>(widget)) != nullptr) {
             container->setChildConstraints();
@@ -124,7 +127,7 @@ Rectangle Gui::getBox() const {
 }
 
 void Gui::update() {
-    for (Widget* widget : widgets) {
+    for (Widget* widget : allWidgets) {
         widget->update();
     }
 }
@@ -135,11 +138,16 @@ void Gui::render() const {
     if (!navigation.empty()) {
         navigation.top()->render();
     }
-    controlsPanel->render();
 
-    debugPanel->render();
+    for (const auto& panel : panels) {
+        if (panel->isVisible()) {
+            panel->render();
+        }
+    }
 
-    warningWidget->render();
+    if (warningWidget->isVisible()) {
+        warningWidget->render();
+    }
 }
 
 void Gui::handleMouseButtonEvent(MouseButtonEvent& event) {
@@ -147,12 +155,10 @@ void Gui::handleMouseButtonEvent(MouseButtonEvent& event) {
         navigation.top()->handleMouseButtonEvent(event);
     }
 
-    if (controlsPanel->isVisible()) {
-        controlsPanel->handleMouseButtonEvent(event);
-    }
-
-    if (debugPanel->isVisible()) {
-        debugPanel->handleMouseButtonEvent(event);
+    for (const auto& panel : panels) {
+        if (panel->isVisible()) {
+            panel->handleMouseButtonEvent(event);
+        }
     }
 }
 
@@ -170,6 +176,7 @@ void Gui::handleKeyEvent(KeyEvent& e) {
 
                     e.handled = true;
                     break;
+
                 case KEY_F1:
                     if (debugPanel->isVisible()) {
                         debugPanel->hide();
@@ -189,6 +196,16 @@ void Gui::handleKeyEvent(KeyEvent& e) {
                     }
                     e.handled = true;
                     break;
+
+                case KEY_F3:
+                    if (inspectorPanel->isVisible()) {
+                        inspectorPanel->hide();
+                    }
+                    else {
+                        inspectorPanel->show();
+                    }
+                    e.handled = true;
+                    break;
             }
         }
     }
@@ -200,12 +217,10 @@ void Gui::handleMouseMoveEvent(MouseMoveEvent& event) {
         navigation.top()->handleMouseMoveEvent(event);
     }
 
-    if (controlsPanel->isVisible()) {
-        controlsPanel->handleMouseMoveEvent(event);
-    }
-
-    if (debugPanel->isVisible()) {
-        debugPanel->handleMouseMoveEvent(event);
+    for (const auto& panel : panels) {
+        if (panel->isVisible()) {
+            panel->handleMouseMoveEvent(event);
+        }
     }
 }
 

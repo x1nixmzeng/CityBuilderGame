@@ -18,27 +18,30 @@ class RenderSystem : public System {
     Shader shader;
     Light lights[MAX_LIGHTS] = {0};
 
+    // thumbnail rendering
+    RenderTexture2D thumbnailTarget;
+    Camera thumbnailCamera = {0};
+
     template<typename... T>
-    inline void renderScene(entt::exclude_t<T...> exclude = {}) const {
+    inline void renderScene (entt::exclude_t<T...> exclude = {}) const {
         registry.view<MeshComponent, TransformationComponent>(exclude)
             .each([&](const MeshComponent& mesh, const TransformationComponent& transform) {
-                // fake the lighting
+                // Temporarily light this model
                 for (int i = 0; i < mesh.mesh->model.materialCount; ++i) {
                     mesh.mesh->model.materials[i].shader = shader;
                 }
 
-                // todo: rip apart the transformations
                 DrawModel(mesh.mesh->model, transform.position, 1.0f, WHITE);
+                DrawModelWires(mesh.mesh->model, transform.position, 1.0f, BLACK);
             });
     }
 
     template<typename... T>
     inline void renderSceneInstanced(entt::exclude_t<T...> exclude = {}) const {
-        registry.view<InstancedMeshComponent, TransformationComponent>(exclude)
-            .each([&](const InstancedMeshComponent& mesh, const TransformationComponent& transform) {
+        registry.view<InstancedMeshComponent>(exclude)
+            .each([&](const InstancedMeshComponent& mesh) {
                 for (auto& trans : mesh.transformations) {
-                    // todo: rip apart the transformations?
-                    // Vector3 finalPos = Vector3Add(trans.position, transform.position);
+                    // Temporarily light this model
                     for (int i = 0; i < mesh.mesh->model.materialCount; ++i) {
                         mesh.mesh->model.materials[i].shader = shader;
                     }
@@ -47,19 +50,14 @@ class RenderSystem : public System {
                     DrawModelWires(mesh.mesh->model, trans.position, 1.0f, BLACK);
                 }
             });
-
-        // registry.view<MultiInstancedMeshComponent, TransformationComponent>(exclude)
-        //     .each([&](const MultiInstancedMeshComponent& mesh, const TransformationComponent& transform) {
-        //         shader->setMatrix4("model", transform.transform);
-
-        //        for (const auto& [name, instances] : mesh.transforms) {
-        //            mesh.mesh->renderObjectInstanced(shader, name, instances.instanceBuffer);
-        //        }
-        //    });
     }
 
   public:
     RenderSystem(Game* app);
 
     void update(float dt) override;
+
+    RenderTexture2D const& getThumbnail() const {
+        return thumbnailTarget;
+    }
 };

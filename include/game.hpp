@@ -35,15 +35,11 @@ class Game {
     std::ofstream logStream;
 #endif
 
-    RenderSystem* renderSystem;
-
-
   public:
     entt::entity camera;
+    RenderSystem* renderSystem;
 
     Game(Application* app);
-
-    bool debugMode = false;
 
     entt::registry& getRegistry();
     entt::dispatcher& getEventDispatcher();

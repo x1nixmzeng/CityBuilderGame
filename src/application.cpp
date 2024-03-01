@@ -110,6 +110,11 @@ void Application::run() {
             onKeyEvent(event);
         }
 
+        if (IsKeyPressed(KEY_F3)) {
+            KeyEvent event = KeyEvent(KEY_F3, 0, KeyAction::Press, 0);
+            onKeyEvent(event);
+        }
+
         auto md = GetMouseDelta();
         if (md.x != 0.0f || md.y != 0.0f) {
             auto cursorPos = GetMousePosition();
@@ -129,18 +134,19 @@ void Application::run() {
             onMouseButtonEvent(event);
         }
 
-        // raylib doesn't support callbacks. ugly workaround
         //----------------------------------------------------------------------------------
+
+        // Main draw loop
         BeginDrawing();
+        {
+            // imgui background colours
+            ClearBackground(ColorFromNormalized(Vector4(0.45f, 0.55f, 0.60f, 1.00f)));
 
-        // imgui background colours
-        ClearBackground(ColorFromNormalized(Vector4(0.45f, 0.55f, 0.60f, 1.00f)));
+            game->update(updateTime);
 
-        game->update(updateTime);
-
-        gui->update();
-        gui->render();
-
+            gui->update();
+            gui->render();
+        }
         EndDrawing();
 
         stopRequested |= WindowShouldClose();

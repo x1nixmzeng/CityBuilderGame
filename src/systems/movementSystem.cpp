@@ -503,6 +503,7 @@ void MovementSystem::createLara() {
     registry.emplace<TransformationComponent>(laraEntity, Vector3Zero(), Quaternion(), Vector3(1.0f));
     MeshResPtr laraMesh = resourceManager.getResource<MeshRes>("LARA_MESH");
     registry.emplace<MeshComponent>(laraEntity, laraMesh);
+    registry.emplace<NoHitTestComponent>(laraEntity);
 
     setLaraInternal(getWorldPosition(spawnPoint, Surface::Ground));
     lara = spawnPoint;

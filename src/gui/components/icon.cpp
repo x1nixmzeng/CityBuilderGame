@@ -10,19 +10,13 @@ void Icon::render() const {
 
     Widget::render();
 
-    /*
+    if (texture) {
+        Rectangle box = getBox();
 
-    glActiveTexture(GL_TEXTURE0);
+        Rectangle source = {0.0f, 0.0f, (float)texture->width, (float)texture->height};
+        Rectangle dest = {box.x, box.y, box.width, box.height};
+        Vector2 origin = {0.0f, 0.0f};
 
-    const Rectangle& box = getBox();
-
-    Shader* guiShader = gui->getShader();
-    guiShader->setInt("tex", 0);
-    guiShader->setBool("useTexture", true);
-
-    texture->use(0);
-
-    gui->getRenderQuad().draw(box.x, box.y, box.width, box.height);
-
-    guiShader->setBool("useTexture", false);*/
+        DrawTexturePro(*texture, source, dest, origin, 0.0f, backgroundColor);
+    }
 }
