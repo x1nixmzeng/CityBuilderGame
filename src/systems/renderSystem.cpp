@@ -88,7 +88,7 @@ void RenderSystem::update(float dt) {
 
     BeginTextureMode(thumbnailTarget); // Enable drawing to texture
     {
-        ClearBackground(RAYWHITE); // Clear texture background
+        ClearBackground(WHITE); // Clear texture background
 
         BeginMode3D(thumbnailCamera); // Begin 3d mode drawing
 
@@ -134,12 +134,10 @@ void RenderSystem::update(float dt) {
 
     // Get ray and test against objects
     auto ray = GetMouseRay(GetMousePosition(), cameraComponent.camera);
+    RayCollision collision = {0};
+    std::string collisionName;
 
     {
-        // Check ray collision against model meshes
-        RayCollision collision = {0};
-        RayCollision meshHitInfo = {0};
-
         registry.view<MeshComponent, TransformationComponent>(entt::exclude<NoHitTestComponent>)
             .each([&](const MeshComponent& mesh, const TransformationComponent& transform) {
                 auto& model = mesh.mesh->model;
@@ -147,11 +145,12 @@ void RenderSystem::update(float dt) {
                 auto finalPos = MatrixMultiply(model.transform, MatrixTranslate(transform.position.x, transform.position.y, transform.position.z));
 
                 for (int i = 0; i < model.meshCount; ++i) {
-                    meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
+                    auto meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
                     if (meshHitInfo.hit) {
                         // Save the closest hit mesh
                         if ((!collision.hit) || (collision.distance > meshHitInfo.distance)) {
                             collision = meshHitInfo;
+                            collisionName = mesh.mesh->debugName;
                         }
 
                         break;
@@ -166,11 +165,12 @@ void RenderSystem::update(float dt) {
 
                     for (const auto& t : mesh.transformations) {
                         auto finalPos = MatrixMultiply(model.transform, MatrixTranslate(t.position.x, t.position.y, t.position.z));
-                        meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
+                        auto meshHitInfo = GetRayCollisionMesh(ray, model.meshes[i], finalPos);
                         if (meshHitInfo.hit) {
                             // Save the closest hit mesh
                             if ((!collision.hit) || (collision.distance > meshHitInfo.distance)) {
                                 collision = meshHitInfo;
+                                collisionName = mesh.mesh->debugName;
                             }
 
                             break;
@@ -200,6 +200,28 @@ void RenderSystem::update(float dt) {
     }
 
     EndMode3D();
+
+    if (collision.hit) {
+        DrawCube(collision.point, 0.3f, 0.3f, 0.3f, BLUE);
+        DrawCubeWires(collision.point, 0.3f, 0.3f, 0.3f, RED);
+
+        Vector3 normalEnd;
+        normalEnd.x = collision.point.x + collision.normal.x;
+        normalEnd.y = collision.point.y + collision.normal.y;
+        normalEnd.z = collision.point.z + collision.normal.z;
+
+        DrawLine3D(collision.point, normalEnd, RED);
+
+        // Draw the text
+        auto screenPosition = GetWorldToScreen(collision.point, cameraComponent.camera);
+
+        screenPosition.y -= 24 + 100;
+
+        auto textSize = MeasureText(collisionName.c_str(), 24);
+        screenPosition.x -= textSize * 0.5f;
+
+        DrawText(collisionName.c_str(), screenPosition.x, screenPosition.y, 24, RED);
+    }
 
     // NOTE: Render texture must be y-flipped due to default OpenGL coordinates (left-bottom)
     // DrawTextureRec(thumbnailTarget.texture, {0, 0, (float)thumbnailTarget.texture.width, (float)-thumbnailTarget.texture.height}, {0, 0}, WHITE);

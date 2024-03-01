@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <!-- config -->
-  <resource type="config_value" id="DEFAULT_LEVEL" value="level_1" />
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_4" />
 
   <!-- hero -->
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
@@ -13,6 +13,8 @@
   <resource type="mesh" id="WB_GROUND_MESH_CORNER_2" filename="models/ground_corner_90.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_CORNER_3" filename="models/ground_corner_180.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_CORNER_4" filename="models/ground_corner_270.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W_3_CRACKED" filename="models/ground_straight_3w_90_crack.obj" />
+  <resource type="mesh" id="WB_GROUND_MESH_3W_3_CRACKED2" filename="models/ground_straight_3w_90_crack2.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_3W" filename="models/ground_straight_3w.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_3W_2" filename="models/ground_straight_3w_180.obj" />
   <resource type="mesh" id="WB_GROUND_MESH_3W_3" filename="models/ground_straight_3w_90.obj" />
@@ -116,6 +118,12 @@
             allow_right="false"
             allow_forward="false" />
 
+  <resource type="tile_template" id="TILE_GROUND_PIECE_3W_3_CRACKED"
+            surface="ground"
+            mesh="WB_GROUND_MESH_3W_3_CRACKED"
+            mesh_cracked="WB_GROUND_MESH_3W_3_CRACKED2" 
+            allow_right="false" />
+  
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W"
             surface="ground"
             mesh="WB_GROUND_MESH_3W"
@@ -127,7 +135,8 @@
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_3"
             surface="ground"
-            mesh="WB_GROUND_MESH_3W_3" />
+            mesh="WB_GROUND_MESH_3W_3"
+            allow_right="false" />
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_4"
             surface="ground"

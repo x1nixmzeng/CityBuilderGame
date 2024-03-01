@@ -51,6 +51,7 @@ void ResourceManager::loadResources() {
 
             auto meshPath = resourceDir + filename;
             MeshResPtr meshRes = MeshLoader::loadMesh(meshPath);
+            meshRes->debugName = id;
 
             setResource(id, meshRes);
         }
@@ -83,6 +84,8 @@ void ResourceManager::loadResources() {
             }
 
             tileTemplate->meshName = resourceNode.attribute("mesh").as_string();
+            assert(tileTemplate->meshName.empty() == false);
+            tileTemplate->meshCrackedName = resourceNode.attribute("mesh_cracked").as_string();
 
             setResource(id, TileTemplatePtr(tileTemplate));
         }

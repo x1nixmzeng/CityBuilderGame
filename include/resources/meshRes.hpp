@@ -3,10 +3,13 @@
 
 #include <raylib.h>
 
+#include <string>
+
 struct MeshRes {
 
   public:
     Model model = {0};
+    std::string debugName;
 
     MeshRes();
 
