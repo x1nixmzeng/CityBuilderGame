@@ -27,6 +27,8 @@ void MovementSystem::handleOskMoveRequested(const OskMoveRequested& e) {
 
 void MovementSystem::handleOnLevelSpawned(const OnLevelSpawned& e) {
 
+    state = MovementState::Idle;
+
     levelEntityRef = e.entity;
 
     LaraComponent& laraComponent = registry.get<LaraComponent>(e.entity);
@@ -41,6 +43,7 @@ void MovementSystem::handleOnStartBot(const OnStartBot& e) {
     // tiny tiny lengths
     interactLength *= 0.01f;
     walkSpeed *= 100.0f;
+    fallSpeed *= 100.0f;
 }
 
 bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) const {
@@ -57,8 +60,6 @@ bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, O
 }
 
 bool MovementSystem::tryMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) {
-
-    // todo: check target tile has access from this direction
 
     if (canMoveTo(pos, surfaceType, dir)) {
         setLaraTarget(pos, surfaceType);
@@ -392,8 +393,14 @@ void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceTyp
                     if (navBlock.data.steps > 1) {
                         // ground tile - fall to death
                         if (surfaceType == Surface::Ground) {
-                            // skip for now
                             state = MovementState::WalkToDeath;
+                        }
+                        else if (surfaceType == Surface::Wall_Front) {
+                            // assume lara can fall? check for ground immediately?
+                            state = MovementState::Falling;
+
+                            laraTarget.y -= 1;
+                            laraTarget.z += 1;
                         }
                         else {
                             // fall down?! how do we code this - how far can lara fall
@@ -463,29 +470,63 @@ void MovementSystem::updateMovement(float dt) {
             OnLaraMoveEvent laraMoveEvent(lara, currentSurface);
             game->raiseEvent(laraMoveEvent);
 
-            //// todo: lookat component?
-            // CameraTargetComponent& camTarget = registry.get<CameraTargetComponent>(game->camera);
-            // camTarget.target = laraPos;
-            ////camTarget.up = // ignored
-            // camTarget.valid = true;
-
-            // RequestCameraLookAt lookAt;
-            // game->raiseEvent(lookAt);
-
-            // if (cameraTrigger) {
-            //     // todo: move camera
-
-            //    //TransformationComponent& cameraTransform = registry.get<TransformationComponent>(game->camera);
-            //    //cameraTransform.position = *cameraTrigger;
-
-            //    RequestCameraLookAt lookAt;
-            //    game->raiseEvent(lookAt);
-            //}
-
             // handle events
             if (levelTrigger) {
                 RequestLevelEvent newLevel(*levelTrigger);
                 game->raiseEvent(newLevel);
+            }
+        }
+    }
+
+    else if (state == MovementState::Falling) {
+        laraDelta = std::clamp<float>(laraDelta + dt * fallSpeed, 0.0f, 1.0f);
+
+        // always start from the ground
+        auto start = getWorldPosition(laraInitial, Surface::Ground);
+        auto end = getWorldPosition(laraTarget, Surface::Ground);
+
+        Vector3 laraPos;
+
+        laraPos.x = std::lerp(start.x, end.x, laraDelta);
+        laraPos.y = std::lerp(start.y, end.y, laraDelta);
+        laraPos.z = std::lerp(start.z, end.z, laraDelta);
+
+        laraDirection = {};
+        currentSurface = Surface::Ground;
+
+        setLaraInternal(laraPos);
+
+        if (laraDelta >= 1.0f) {
+
+            // check again for target??
+
+            if (canMoveTo(laraTarget, Surface::Ground, OskEvent::Interact)) {
+
+                // lara has landed
+
+                state = MovementState::Idle;
+                lara = laraTarget;
+                currentSurface = laraTargetSurface;
+
+                OnLaraMoveEvent laraMoveEvent(lara, currentSurface);
+                game->raiseEvent(laraMoveEvent);
+            }
+            else {
+                lara = laraTarget;
+
+                // Keep moving down
+                laraInitial = lara;
+                laraTarget = lara;
+                laraTarget.y -= 1;
+
+                if (laraTarget.y < -2) {
+                    // Fallen to our death
+                    OnLaraDiedEvent laraDiedEvent;
+                    game->raiseEvent(laraDiedEvent);
+                }
+
+                laraTargetSurface = Surface::Ground;
+                laraDelta = 0.0f;
             }
         }
     }

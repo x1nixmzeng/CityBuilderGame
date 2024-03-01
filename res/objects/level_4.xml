@@ -8,7 +8,7 @@
     </tile>
 
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="2 0 0" template="TILE_GROUND_PIECE_3W_3" />
+    <tile cell="2 0 0" template="TILE_GROUND_PIECE_3W_3_CRACKED" is_trap="true" />
     <tile cell="2 0 1" template="TILE_GROUND_PIECE_FB" />
     <tile cell="2 0 2" template="TILE_GROUND_PIECE_FB" />
 
@@ -17,14 +17,14 @@
     <tile cell="3 0 -2" template="TILE_GROUND_PIECE_LR" />
     <tile cell="4 0 -2" template="TILE_GROUND_PIECE_3W_3" />
     <tile cell="4 1 -3" template="TILE_FRONT_PIECE" />
-    <tile cell="4 2 -3" template="TILE_FRONT_PIECE" is_trap="true" />
+    <tile cell="4 2 -3" template="TILE_FRONT_PIECE" is_trap="true" /> <!-- lara can safely fall -->
     <tile cell="4 2 -3" template="TILE_GROUND_PIECE">
       <trigger_switch toggle="switch_1" />
     </tile>
 
     <tile cell="6 1 -3" template="TILE_FRONT_PIECE" />
     <tile cell="6 2 -3" template="TILE_FRONT_PIECE_3W" />
-    <tile cell="6 2 -3" template="TILE_GROUND_PIECE_CORNER_2" />
+    <tile cell="6 2 -3" template="TILE_GROUND_PIECE_CORNER_2" is_trap="true" />
     <tile cell="6 0 -2" template="TILE_GROUND_PIECE_FB" />
 
     <!-- this section slides out when trigger is pressed-->
@@ -53,7 +53,7 @@
       <trigger_switch toggle="switch_1" />
     </tile>
 
-    <tile cell="7 2 -3" template="TILE_FRONT_PIECE_4" />
+    <tile cell="7 2 -3" template="TILE_FRONT_PIECE_4" is_trap="true" />
     <tile cell="8 2 -3" template="TILE_FRONT_PIECE_3W_4" /> <!-- 3 way -->
     <tile cell="9 2 -3" template="TILE_FRONT_PIECE_4" />
 
@@ -83,30 +83,28 @@
     <!-- 10 -->
     <event id="forward" />
     <event id="forward" />
-    <event id="forward" />
-    <event id="forward" />
     <event id="right" />
+    <event id="right" />
+    <event id="backward" />
     <!-- 15 -->
+    <event id="backward" />
+    <event id="backward" />
+    <event id="backward" />
     <event id="right" />
-    <event id="backward" />
-    <event id="backward" />
-    <event id="backward" />
-    <event id="backward" />
+    <event id="right" />
     <!-- 20 -->
-    <event id="right" />
-    <event id="right" />
     <event id="interact" />
+    <event id="forward" />
     <event id="left" />
     <event id="left" />
+    <event id="forward" />
     <!-- 25 -->
     <event id="forward" />
     <event id="forward" />
-    <event id="forward" />
-    <event id="forward" />
     <event id="right" />
-    <!-- 30 -->
     <event id="right" />
     <event id="backward" />
+    <!-- 30 -->
     <event id="right" />
     
   </auto_nav>

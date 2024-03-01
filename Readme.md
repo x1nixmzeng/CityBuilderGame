@@ -13,7 +13,7 @@ The project was forked from CityBuilderGame (https://github.com/PhiGei2000/CityB
 - [x] Example levels (currently the first 5 from Lara Croft Go)
 - [x] Level switches
 - [ ] Character animations
-- [ ] Traps / Falling
+- [x] Traps / Falling
 - [ ] Level dressing
 - [ ] Directional Lighting
 - [ ] Fog
@@ -36,7 +36,7 @@ Packages (only on Linux):
 ### Clone and build
 **1. Clone the repository**
 
-    git clone --recursive https://github.com/x1nixmzeng/CityBuildingGame.git
+    git clone --recursive https://github.com/x1nixmzeng/CityBuilderGame.git
 
 the `--recursive` option is only needed on windows to download the libraries from github.
 

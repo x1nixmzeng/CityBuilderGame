@@ -23,6 +23,7 @@ class MovementSystem : public System {
         WalkTo,
         Interacting,
         WalkToDeath,
+        Falling,
     };
 
     entt::entity levelEntityRef = entt::null;
@@ -61,6 +62,7 @@ class MovementSystem : public System {
     void handleOnStartBot(const OnStartBot& e);
 
     float walkSpeed = 3.0f;
+    float fallSpeed = 6.0f;
     float interactLength = 0.1f;
 
     bool canMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) const;
