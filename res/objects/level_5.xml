@@ -56,7 +56,7 @@
     <!-- top part - level exit -->
     <tile cell="3 4 4" template="TILE_GROUND_PIECE_LR" />
     <tile cell="4 4 4" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="5 4 4" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="5 4 4" template="TILE_GROUND_PIECE_LR" is_trap="true" />
     <tile cell="6 4 4" template="TILE_GROUND_PIECE_LR" />
     <tile cell="7 4 4" template="TILE_GROUND_PIECE_LR" />
     <tile cell="8 4 4" template="TILE_GROUND_PIECE_LR">
@@ -100,21 +100,20 @@
     <event id="forward" />
     <event id="interact" />
     <event id="backward" />
-    <event id="backward" /> <!-- player should fall here -->
+    <event id="forward" />
     <!-- 20 -->
-    <event id="left" />
-    <event id="forward" />
-    <event id="forward" />
+    <event id="right" />
+    <event id="right" />
     <event id="interact" />
     <event id="backward" />
-    <!-- 25 -->
     <event id="backward" />
+    <!-- 25 -->
+    <event id="right" />
     <event id="right" />
     <event id="right" />
     <event id="right" />
     <event id="right" />
     <!-- 30 -->
-    <event id="right" />
     <event id="right" />
     <event id="right" />
     <event id="right" />
