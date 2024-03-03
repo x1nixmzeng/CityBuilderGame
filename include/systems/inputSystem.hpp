@@ -10,6 +10,11 @@ struct OnStartBot;
 
 class InputSystem : public System {
   protected:
+    bool isLeftPressed() const;
+    bool isRightPressed() const;
+    bool isBackwardPressed() const;
+    bool isForwardPressed() const;
+    bool isInteractPressed() const;
 
     void updatePlayer(float dt);
     void updateBot(float dt);

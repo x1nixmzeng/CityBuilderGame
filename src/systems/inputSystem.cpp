@@ -54,25 +54,81 @@ void InputSystem::update(float dt) {
     (this->*updateMethod)(dt);
 }
 
+bool InputSystem::isLeftPressed() const {
+    bool pressed = false;
+
+    if (IsGamepadAvailable(0)) {
+        pressed |= IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+    }
+
+    pressed |= game->getKey(KEY_LEFT) == 1;
+    return pressed;
+}
+
+bool InputSystem::isRightPressed() const {
+    bool pressed = false;
+
+    if (IsGamepadAvailable(0)) {
+        pressed |= IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+    }
+
+    pressed |= game->getKey(KEY_RIGHT) == 1;
+    return pressed;
+}
+
+bool InputSystem::isBackwardPressed() const {
+    bool pressed = false;
+
+    if (IsGamepadAvailable(0)) {
+        pressed |= IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
+    }
+
+    pressed |= game->getKey(KEY_UP) == 1;
+    return pressed;
+}
+
+bool InputSystem::isForwardPressed() const {
+    bool pressed = false;
+
+    if (IsGamepadAvailable(0)) {
+        pressed |= IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+    }
+
+    pressed |= game->getKey(KEY_DOWN) == 1;
+    return pressed;
+}
+
+bool InputSystem::isInteractPressed() const {
+    bool pressed = false;
+
+    if (IsGamepadAvailable(0)) {
+        pressed |= IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+    }
+
+    pressed |= game->getKey(KEY_SPACE) == 1;
+    return pressed;
+}
+
 void InputSystem::updatePlayer(float dt) {
-    if (game->getKey(KEY_SPACE) == 1) {
+
+    if (isInteractPressed()) {
         OskMoveRequested oskEvent(OskEvent::Interact);
         game->raiseEvent(oskEvent);
     }
-    else if (game->getKey(KEY_LEFT) == 1) {
+    else if (isLeftPressed()) {
         OskMoveRequested oskEvent(OskEvent::MoveLeft);
         game->raiseEvent(oskEvent);
     }
-    else if (game->getKey(KEY_RIGHT) == 1) {
+    else if (isRightPressed()) {
         OskMoveRequested oskEvent(OskEvent::MoveRight);
         game->raiseEvent(oskEvent);
     }
-    else if (game->getKey(KEY_UP) == 1) {
+    else if (isBackwardPressed()) {
         // todo: depends on screen orientation (the camera may twist around in later levels)
         OskMoveRequested oskEvent(OskEvent::MoveBackward);
         game->raiseEvent(oskEvent);
     }
-    else if (game->getKey(KEY_DOWN) == 1) {
+    else if (isForwardPressed()) {
         OskMoveRequested oskEvent(OskEvent::MoveForward);
         game->raiseEvent(oskEvent);
     }
