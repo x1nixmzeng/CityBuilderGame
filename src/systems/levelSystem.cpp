@@ -44,6 +44,15 @@ void LevelSystem::init() {
     if (defaultLevel) {
         levelName = defaultLevel->value;
     }
+
+    // Create static skybox
+    auto skyEntity = registry.create();
+
+    registry.emplace<TransformationComponent>(skyEntity, Vector3Zero(), Quaternion(), Vector3(1.0f));
+    MeshResPtr skyMesh = resourceManager.getResource<MeshRes>("SKY_MESH");
+    registry.emplace<MeshComponent>(skyEntity, skyMesh);
+    registry.emplace<NoHitTestComponent>(skyEntity);
+
 }
 
 void LevelSystem::update(float dt) {

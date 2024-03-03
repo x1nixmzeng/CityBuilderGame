@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <!-- config -->
-  <resource type="config_value" id="DEFAULT_LEVEL" value="level_4" />
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_1" />
 
   <!-- hero -->
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
+  <resource type="mesh" id="SKY_MESH" filename="models/sky_cube.obj" />
 
   <!-- world tiles -->
   <resource type="mesh" id="WB_GROUND_MESH" filename="models/ground_straight.obj" />
@@ -36,6 +37,7 @@
   <resource type="mesh" id="WB_TRIGGER_ON" filename="models/trigger_on.obj" />
   <resource type="mesh" id="WB_TRIGGER_OFF" filename="models/trigger_off.obj" />
 
+  <resource type="shader" id="FOG_SHADER_FS" filename="shaders/glsl330/fog.fs" />
   <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
 

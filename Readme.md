@@ -12,11 +12,13 @@ The project was forked from CityBuilderGame (https://github.com/PhiGei2000/CityB
 - [x] Turn-based movement
 - [x] Example levels (currently the first 5 from Lara Croft Go)
 - [x] Level switches
-- [ ] Character animations
 - [x] Traps / Falling
-- [ ] Level dressing
+- [x] Fog
 - [ ] Directional Lighting
-- [ ] Fog
+- [ ] Enemies (saws, snakes)
+- [ ] Level dressing
+- [ ] Character animations
+- [ ] Collectables
 - [ ] Volumetric shadows
 
 ---

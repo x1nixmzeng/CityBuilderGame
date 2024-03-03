@@ -16,12 +16,11 @@
     <tile cell="2 -3 1" template="TILE_FRONT_PIECE" />
     <tile cell="2 -4 2" template="TILE_GROUND_PIECE_CORNER_3" />
     <tile cell="3 -4 2" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="4 -4 2" template="TILE_GROUND_PIECE_LR">
+    <tile cell="4 -4 2" template="TILE_GROUND_PIECE_LR" />
+
+    <tile cell="5 -4 2" template="TILE_GROUND_PIECE_LR">
       <trigger_level target="level_3" />
     </tile>
-
-    <!-- auto level skip -->
-    <tile cell="5 -4 2" template="TILE_GROUND_PIECE_LR" />
     <tile cell="6 -4 2" template="TILE_GROUND_PIECE_LR" />
   </route>
 

@@ -14,7 +14,7 @@
 
 void RenderSystem::init() {
 
-    ConfigValuePtr fs = resourceManager.getResource<ConfigValue>("LIGHTING_SHADER_FS");
+    ConfigValuePtr fs = resourceManager.getResource<ConfigValue>("FOG_SHADER_FS");
     ConfigValuePtr vs = resourceManager.getResource<ConfigValue>("LIGHTING_SHADER_VS");
 
     // Load basic lighting shader
@@ -31,6 +31,10 @@ void RenderSystem::init() {
 
     float data[4] = {1.0f, 0.1f, 0.1f, 1.0f};
     SetShaderValue(shader, ambientLoc, data, SHADER_UNIFORM_VEC4);
+
+    float fogDensity = 0.06f;
+    int fogDensityLoc = GetShaderLocation(shader, "fogDensity");
+    SetShaderValue(shader, fogDensityLoc, &fogDensity, SHADER_UNIFORM_FLOAT);
 
     // Create lights
     lights[0] = CreateLight(LIGHT_POINT, {-5, 5, -5}, Vector3Zero(), YELLOW, shader);
