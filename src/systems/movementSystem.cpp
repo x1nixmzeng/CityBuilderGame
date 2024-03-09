@@ -6,7 +6,9 @@
 
 #include "events/events.hpp"
 
+#include <format>
 #include <raymath.h>
+#include <string_view>
 
 MovementSystem::MovementSystem(Game* game)
     : System(game) {
@@ -19,6 +21,9 @@ MovementSystem::MovementSystem(Game* game)
 
     eventDispatcher.sink<OnStartBot>()
         .connect<&MovementSystem::handleOnStartBot>(*this);
+
+    eventDispatcher.sink<OnLaraMoveEvent>()
+        .connect<&MovementSystem::handleOnLaraMoveEvent>(*this);
 }
 
 void MovementSystem::handleOskMoveRequested(const OskMoveRequested& e) {
@@ -44,6 +49,90 @@ void MovementSystem::handleOnStartBot(const OnStartBot& e) {
     interactLength *= 0.01f;
     walkSpeed *= 100.0f;
     fallSpeed *= 100.0f;
+}
+
+void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
+
+    auto killLara = false;
+
+    auto bladeView = registry.view<BladeComponent, TransformationComponent>();
+    for (const auto& bladeEntity : bladeView) {
+        auto& blade = bladeView.get<BladeComponent>(bladeEntity);
+
+        // Test cell
+        auto cell = blade.initialCell;
+        handleBladeMove(cell, blade);
+
+        // Can the blade move here
+        if (!canMoveTo(cell, Surface::Ground, OskEvent::MoveBackward)) {
+
+            // Test cell in other direction
+            cell = blade.initialCell;
+            blade.step *= -1;
+            handleBladeMove(cell, blade);
+
+            auto canMoveAgain = canMoveTo(cell, Surface::Ground, OskEvent::MoveBackward);
+            assert(canMoveAgain == true);
+        }
+
+        // Apply this back to the blade
+        blade.initialCell = cell;
+
+        auto worldPos = CellToWorldPosition(cell);
+        worldPos = Vector3Add(worldPos, blade.offset);
+
+        auto& trans = bladeView.get<TransformationComponent>(bladeEntity);
+
+        switch (blade.pattern) {
+            case MovementPattern::LeftRight:
+                trans.rotationAxis = Vector3(1.0, 0.0f, 0.0f);
+                trans.rotationAngle = 90.0f;
+                break;
+            case MovementPattern::ForwardBack:
+                trans.rotationAxis = Vector3(1.0, 0.0f, 0.0f);
+                trans.rotationAngle = 0.0f;
+                break;
+        }
+
+        trans.position = worldPos;
+
+        // TODO: Temporarily not killing Lara
+        if (e.pos == cell) {
+            // killLara = true;
+        }
+    }
+
+    if (killLara) {
+        OnLaraDiedEvent laraDiedEvent;
+        game->raiseEvent(laraDiedEvent);
+    }
+}
+
+void MovementSystem::handleBladeMove(CellPos& cell, BladeComponent const& blade) {
+    // blade cannot not be moving
+    assert(blade.step != 0);
+
+    switch (blade.pattern) {
+        case MovementPattern::ForwardBack:
+            if (blade.step > 0) {
+                // move left
+                cell.z += 1;
+            }
+            else {
+                cell.z -= 1;
+            }
+            break;
+
+        case MovementPattern::LeftRight:
+            if (blade.step > 0) {
+                // move forwards
+                cell.x += 1;
+            }
+            else {
+                cell.x -= 1;
+            }
+            break;
+    }
 }
 
 bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) const {
@@ -176,10 +265,29 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
         }
     }
 
+    auto oskName = [oskEvent]() -> std::string_view {
+        switch (oskEvent) {
+            case OskEvent::MoveLeft:
+                return "left";
+            case OskEvent::MoveRight:
+                return "right";
+            case OskEvent::MoveForward:
+                return "forward";
+            case OskEvent::MoveBackward:
+                return "back";
+            case OskEvent::Interact:
+                return "interact";
+        }
+
+        return "";
+    }();
+
     if (!allowMove) {
-        puts("Current cell prevents this action\n");
+        puts(std::format("Current cell prevents move {}\n", oskName).c_str());
         return;
     }
+
+    bool handled = true;
 
     switch (oskEvent) {
         case OskEvent::MoveLeft: {
@@ -193,7 +301,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
                     target = lara;
                     if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
-                        // assert?
+                        handled = false;
                     }
                 }
             }
@@ -201,7 +309,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 auto target = lara;
                 target.x -= 1;
                 if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
-                    // assert?
+                    handled = false;
                 }
             }
             else if (currentSurface == Surface::Wall_Side) {
@@ -211,7 +319,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
                     target.x -= 1;
                     if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
-                        // assert?
+                        handled = false;
                     }
                 }
             }
@@ -226,7 +334,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
                     target.y += 1;
                     if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
-                        // assert?
+                        handled = false;
                     }
                 }
             }
@@ -234,7 +342,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 auto target = lara;
                 target.x += 1;
                 if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
-                    // assert?
+                    handled = false;
                 }
             }
             else if (currentSurface == Surface::Wall_Side) {
@@ -243,7 +351,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
                     target = lara;
                     if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
-                        // assert?
+                        handled = false;
                     }
                 }
             }
@@ -282,6 +390,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 target.z -= 1;
                 if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
                     // not sure what else can be done here
+                    handled = false;
                 }
             }
             else {
@@ -318,6 +427,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 target.z += 1;
                 if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
                     // not sure what else can be done here
+                    handled = false;
                 }
             }
             else {
@@ -343,6 +453,11 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 
         } break;
     }
+
+    if (!handled) {
+        puts(std::format("Unable to file valid target for move {}\n", oskName).c_str());
+        return;
+    }
 }
 
 void MovementSystem::setLaraInternal(const Vector3& pos) {
@@ -351,8 +466,9 @@ void MovementSystem::setLaraInternal(const Vector3& pos) {
     auto finalPos = Vector3Add(pos, laraOffset);
 
     laraTransformation.setPosition(finalPos);
-    laraTransformation.setRotation(laraDirection, 90.0f); //, glm::radians(90.0f));
-    laraTransformation.calculateTransform();
+
+    // TODO: Would be good for "lara" to be facing the right direction here
+    laraTransformation.setRotation(Vector3(0.0f, 1.0f, 0.0f), 90.0f);
 }
 
 void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceType) {
@@ -444,6 +560,7 @@ void MovementSystem::updateMovement(float dt) {
         laraPos.z = std::lerp(start.z, end.z, laraDelta);
 
         laraDirection = {};
+        laraDirection.y = 1.0f;
 
         // todo: offset for position?
         switch (laraTargetSurface) {
@@ -499,6 +616,7 @@ void MovementSystem::updateMovement(float dt) {
         laraPos.z = std::lerp(start.z, end.z, laraDelta);
 
         laraDirection = {};
+        laraDirection.y = 1.0f;
         currentSurface = Surface::Ground;
 
         setLaraInternal(laraPos);
@@ -554,7 +672,7 @@ void MovementSystem::createLara() {
 
     laraEntity = registry.create();
 
-    registry.emplace<TransformationComponent>(laraEntity, Vector3Zero(), Quaternion(), Vector3(1.0f));
+    registry.emplace<TransformationComponent>(laraEntity, Vector3Zero(), Vector3(1.0f, 0.0f, 0.0f), 0.0f, Vector3One());
     MeshResPtr laraMesh = resourceManager.getResource<MeshRes>("LARA_MESH");
     registry.emplace<MeshComponent>(laraEntity, laraMesh);
     registry.emplace<NoHitTestComponent>(laraEntity);

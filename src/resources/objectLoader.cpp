@@ -63,7 +63,7 @@ MeshComponent ObjectLoader::loadComponent<MeshComponent>(const xml_node& node) {
     const std::string& filename = node.attribute("filename").as_string();
 
     auto meshPath = resourceManager.resourceDir + filename;
-    
+
     MeshResPtr meshRes = MeshLoader::loadMesh(meshPath);
     return MeshComponent(meshRes);
 }
@@ -125,15 +125,29 @@ void ReadRouteNode(RouteNode& n, const xml_node& tileNode) {
 
 template<>
 RouteComponent ObjectLoader::loadComponent<RouteComponent>(const xml_node& node) {
-    std::vector<RouteNode> staticPoints;
+    std::vector<RouteNode> tiles;
 
     for (const xml_node& tileNode : node.children("tile")) {
         RouteNode n;
         ReadRouteNode(n, tileNode);
-        staticPoints.push_back(n);
+        tiles.push_back(n);
     }
 
-    return RouteComponent(staticPoints);
+    std::vector<Enemy> enemies;
+
+    for (const xml_node& enemyNode : node.children("enemy")) {
+
+        Enemy e;
+        auto cell = ReadI3(enemyNode, "cell");
+        auto offset = ReadF3(enemyNode, "offset");
+        auto enemyTemplate = std::string_view(enemyNode.attribute("template").as_string());
+        e.cell = cell;
+        e.offset = offset;
+        e.templateName = enemyTemplate;
+        enemies.push_back(e);
+    }
+
+    return RouteComponent(tiles, enemies);
 }
 
 template<>

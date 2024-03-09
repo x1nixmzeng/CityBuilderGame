@@ -7,6 +7,7 @@
 #include "events/events.hpp"
 
 #include "resources/configValue.hpp"
+#include "resources/enemyTemplate.hpp"
 
 #include "components/components.hpp"
 #include "events/resourceEvents.hpp"
@@ -48,11 +49,10 @@ void LevelSystem::init() {
     // Create static skybox
     auto skyEntity = registry.create();
 
-    registry.emplace<TransformationComponent>(skyEntity, Vector3Zero(), Quaternion(), Vector3(1.0f));
+    registry.emplace<TransformationComponent>(skyEntity, Vector3Zero(), Vector3Zero(), 0.0f, Vector3One());
     MeshResPtr skyMesh = resourceManager.getResource<MeshRes>("SKY_MESH");
     registry.emplace<MeshComponent>(skyEntity, skyMesh);
     registry.emplace<NoHitTestComponent>(skyEntity);
-
 }
 
 void LevelSystem::update(float dt) {
@@ -128,7 +128,6 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
                 // Update the transform
                 auto& transform = view.get<TransformationComponent>(entity);
                 transform.position = CellToWorldPosition(newCell);
-                transform.calculateTransform();
             }
         }
     }
@@ -157,6 +156,21 @@ void LevelSystem::generateLevel() {
     std::map<std::string, std::vector<TransformationComponent>> instances;
 
     RouteComponent& test = registry.get<RouteComponent>(level1Instance);
+
+    for (const auto& enemy : test.enemies) {
+        Vector3 position = CellToWorldPosition(enemy.cell);
+        position = Vector3Add(position, enemy.offset);
+
+        auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(enemy.templateName);
+
+        auto sawEntity = registry.create();
+        dynamicEntities.push_back(sawEntity);
+        registry.emplace<TransformationComponent>(sawEntity, position, Vector3Zero(), 0.0f, Vector3One());
+        MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
+        registry.emplace<MeshComponent>(sawEntity, skyMesh);
+        registry.emplace<NoHitTestComponent>(sawEntity);
+        registry.emplace<BladeComponent>(sawEntity, enemy.cell, enemy.offset, enemyTemplate->pattern);
+    }
 
     for (const auto& node : test.routeNodes) {
         Vector3 position = CellToWorldPosition(node.cell);
@@ -203,11 +217,11 @@ void LevelSystem::generateLevel() {
 
             registry.emplace<NavBlockComponent>(entity, navBlockData);
 
-            instances[tileTemplate->meshName].emplace_back(position, Quaternion(), Vector3One());
+            instances[tileTemplate->meshName].emplace_back(position, Vector3Zero(), 0.0f, Vector3One());
         }
         else {
             // use this as our default value too
-            // registry.emplace<TransformationComponent>(entity, Vector3Zero(), Quaternion(), Vector3One());
+            // registry.emplace<TransformationComponent>(entity, Vector3Zero(), Vector3Zero(), 0.0f,Vector3One());
 
             // common trigger data between all surfaces
             std::vector<TriggerData> triggerData;
@@ -239,7 +253,7 @@ void LevelSystem::generateLevel() {
             // add single transformation
             auto pos = CellToWorldPosition(cell);
 
-            registry.emplace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
+            registry.emplace<TransformationComponent>(entity, pos, Vector3Zero(), 0.0f, Vector3One());
             registry.emplace<MeshComponent>(entity, wbMesh);
         }
     }
@@ -250,7 +264,7 @@ void LevelSystem::generateLevel() {
         dynamicEntities.push_back(entity3);
         // Mark this as debug
         registry.emplace_or_replace<NoHitTestComponent>(entity3);
-        registry.emplace<TransformationComponent>(entity3, Vector3Zero(), Quaternion(), Vector3One());
+        registry.emplace<TransformationComponent>(entity3, Vector3Zero(), Vector3Zero(), 0.0f, Vector3One());
         meshComponent->assignToEntity(entity3, registry);
     }
 
@@ -282,12 +296,12 @@ void LevelSystem::addSwitchOn(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOn = resourceManager.getResource<MeshRes>("WB_TRIGGER_ON");
 
     registry.emplace_or_replace<MeshComponent>(entity, wbTriggerOn);
-    registry.emplace_or_replace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
+    registry.emplace_or_replace<TransformationComponent>(entity, pos, Vector3Zero(), 0.0f, Vector3One());
 }
 
 void LevelSystem::addSwitchOff(const entt::entity& entity, const Vector3& pos) {
     MeshResPtr wbTriggerOff = resourceManager.getResource<MeshRes>("WB_TRIGGER_OFF");
 
     registry.emplace_or_replace<MeshComponent>(entity, wbTriggerOff);
-    registry.emplace_or_replace<TransformationComponent>(entity, pos, Quaternion(), Vector3One());
+    registry.emplace_or_replace<TransformationComponent>(entity, pos, Vector3Zero(), 0.0f, Vector3One());
 }

@@ -24,6 +24,7 @@ void Game::init() {
 
     systems.push_back(new LevelSystem(this));
     systems.push_back(new MovementSystem(this));
+    systems.push_back(new AnimationSystem(this));
     systems.push_back(new InputSystem(this));
 }
 

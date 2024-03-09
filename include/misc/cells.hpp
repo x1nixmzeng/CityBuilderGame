@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
+#include <string_view>
 #include <raylib.h>
-#include <tuple>
 
 struct CellPos {
     int x, y, z;
@@ -16,7 +16,7 @@ enum class Surface {
     Wall_Side,
 };
 
-Surface SurfaceFromString(std::string const& surfaceString);
+Surface SurfaceFromString(std::string_view const& surfaceString);
 
 enum TileType {
     Static_Geo,

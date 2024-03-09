@@ -1,6 +1,7 @@
 #include "resources/resourceManager.hpp"
 
 #include "resources/configValue.hpp"
+#include "resources/enemyTemplate.hpp"
 #include "resources/meshLoader.hpp"
 #include "resources/meshRes.hpp"
 #include "resources/objectLoader.hpp"
@@ -14,6 +15,7 @@
 #include <raylib.h>
 
 #include <pugixml.hpp>
+#include <string_view>
 
 using namespace pugi;
 
@@ -67,7 +69,7 @@ void ResourceManager::loadResources() {
             TileTemplate* tileTemplate = new TileTemplate();
 
             auto surfaceAttrib = resourceNode.attribute("surface").as_string();
-            tileTemplate->surface = SurfaceFromString(surfaceAttrib);
+            tileTemplate->surface = SurfaceFromString(std::string_view(surfaceAttrib));
 
             auto const allowForward = resourceNode.attribute("allow_forward").as_bool(true);
             auto const allowBackward = resourceNode.attribute("allow_backward").as_bool(true);
@@ -88,6 +90,20 @@ void ResourceManager::loadResources() {
             tileTemplate->meshCrackedName = resourceNode.attribute("mesh_cracked").as_string();
 
             setResource(id, TileTemplatePtr(tileTemplate));
+        }
+        else if (type == "enemy_template") {
+            EnemyTemplate* enemyTemplate = new EnemyTemplate();
+
+            // todo: type? do we need a type here
+            auto surfaceAttrib = resourceNode.attribute("type").as_string();
+
+            auto patternAttrib = resourceNode.attribute("pattern").as_string();
+            enemyTemplate->pattern = MovementPatternFromString(patternAttrib);
+
+            enemyTemplate->meshName = resourceNode.attribute("mesh").as_string();
+            assert(enemyTemplate->meshName.empty() == false);
+
+            setResource(id, EnemyTemplatePtr(enemyTemplate));
         }
         else if (type == "config_value") {
             ConfigValue* defaultLevel = new ConfigValue();

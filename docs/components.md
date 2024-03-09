@@ -6,6 +6,7 @@ The base class of all components is the "Component" class.
 
 ## Table of components
 - [Auto Nav Component](#autonavcomponent)
+- [BladeComponent](#bladecomponent)
 - [CameraComponent](#cameracomponent)
 - [DebugComponent](#debugcomponent)
 - [InstancedMeshComponent](#instancedmeshcomponent)
@@ -21,6 +22,9 @@ The base class of all components is the "Component" class.
 ## Details
 ### AutoNavComponent
 Stores an array of inputs required to navigate a level to the end.
+
+### BladeComponent
+Stores blade enemy properties
 
 ### CameraComponent
 Stores the camera properties

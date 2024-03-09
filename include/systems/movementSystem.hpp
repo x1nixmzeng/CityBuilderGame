@@ -9,6 +9,8 @@
 
 struct OnLevelSpawned;
 struct OnStartBot;
+struct OnLaraMoveEvent;
+struct BladeComponent;
 
 class MovementSystem : public System {
   protected:
@@ -30,7 +32,10 @@ class MovementSystem : public System {
 
     MovementState state = MovementState::Idle;
 
-    void handleOskKey(const OskEvent& oskEvent);
+    void handleOskKey(const OskEvent& e);
+    void handleOnLaraMoveEvent(const OnLaraMoveEvent& e);
+
+    void handleBladeMove(CellPos& cell, BladeComponent const& blade);
 
     void setLaraInternal(const Vector3& pos);
     void setLaraTarget(const CellPos& pos, const Surface& surfaceType);

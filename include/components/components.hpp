@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cameraComponent.hpp"
+#include "bladeComponent.hpp"
 #include "debugComponent.hpp"
 #include "instancedMeshComponent.hpp"
 #include "meshComponent.hpp"

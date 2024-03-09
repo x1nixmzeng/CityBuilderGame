@@ -13,7 +13,7 @@ bool operator==(CellPos const& lhs, CellPos const& rhs) {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
 }
 
-Surface SurfaceFromString(std::string const& surfaceString) {
+Surface SurfaceFromString(std::string_view const& surfaceString) {
     if (surfaceString == "ground") {
         return Surface::Ground;
     }
@@ -24,7 +24,7 @@ Surface SurfaceFromString(std::string const& surfaceString) {
         return Surface::Wall_Side;
     }
     else if (surfaceString.size() > 0) {
-        // assert(false && "Unsupported surface or typo in surface attribute");
+        std::unreachable();
     }
 
     return Surface::Ground;

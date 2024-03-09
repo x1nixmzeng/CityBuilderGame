@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <!-- config -->
-  <resource type="config_value" id="DEFAULT_LEVEL" value="level_1" />
+  <resource type="config_value" id="DEFAULT_LEVEL" value="level_8" />
 
   <!-- hero -->
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
   <resource type="mesh" id="SKY_MESH" filename="models/sky_cube.obj" />
+  <resource type="mesh" id="BLADE_MESH" filename="models/blade.obj" />
 
   <!-- world tiles -->
   <resource type="mesh" id="WB_GROUND_MESH" filename="models/ground_straight.obj" />
@@ -41,6 +42,14 @@
   <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
 
+  <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW"
+            mesh="BLADE_MESH"
+            pattern="leftright" />
+
+  <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW_H"
+            mesh="BLADE_MESH"
+            pattern="forwardback" />
+  
   <!-- walkables -->
   <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"
             mesh="WB_FRONT_MESH_1W"
