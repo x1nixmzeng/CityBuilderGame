@@ -33,9 +33,7 @@
     
     <tile cell="7 0 4" template="TILE_GROUND_PIECE_FB" />
     <tile cell="7 0 5" template="TILE_GROUND_PIECE_3W_3" />
-    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB">
-      <enemy template="ENEMY_TEMPLATE_SAW_H" />
-    </tile>
+    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB" />
     <tile cell="7 0 7" template="TILE_GROUND_PIECE_FB" />
 
     <tile cell="7 0 3" template="TILE_SIDE_PIECE_V" />
@@ -48,6 +46,7 @@
     <tile cell="7 0 5" template="TILE_SIDE_PIECE_V" />
 
     <tile cell="7 0 8" template="TILE_GROUND_PIECE_FB" trigger="switch_1">
+      <enemy template="ENEMY_TEMPLATE_SAW_H" />
       <trigger value="false">
         <cell offset="1 0 0" />
       </trigger>
