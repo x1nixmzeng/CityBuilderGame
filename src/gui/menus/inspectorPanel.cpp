@@ -26,10 +26,20 @@ InspectorPanel::InspectorPanel(Gui* gui)
      activeIcon->constraints.width = AbsoluteConstraint(width);
 
      addChild(activeIcon);*/
+
+    auto info1 = new Label("inspector_menu.info_1", gui, colors::transparent, "Press 5 to cycle", colors::black);
+    info1->constraints.height = AbsoluteConstraint(30);
+    info1->constraints.width = RelativeConstraint(0.9);
+    addChild(info1);
+
+    auto info2 = new Label("inspector_menu.info_2", gui, colors::transparent, "Press 6 to generate", colors::black);
+    info2->constraints.height = AbsoluteConstraint(30);
+    info2->constraints.width = RelativeConstraint(0.9);
+    addChild(info2);
 }
 
 void InspectorPanel::render() const {
-    Widget::render();
+    StackPanel::render();
 
     Rectangle box = getBox();
 
@@ -37,6 +47,4 @@ void InspectorPanel::render() const {
 
     // NOTE: Render texture must be y-flipped due to default OpenGL coordinates (left-bottom)
     DrawTextureRec(iconTexture, {0.0f, 0.0f, (float)iconTexture.width, (float)-iconTexture.height}, {px, box.y}, WHITE);
-
-    DrawText("Press 5 to cycle", box.x, iconTexture.height, 32, BLACK);
 }
