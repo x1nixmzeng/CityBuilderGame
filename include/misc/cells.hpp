@@ -9,6 +9,7 @@ struct CellPos {
 
 CellPos& operator+=(CellPos& lhs, CellPos const& rhs);
 bool operator==(CellPos const& lhs, CellPos const& rhs);
+bool operator<(const CellPos& lhs, const CellPos& rhs);
 
 enum class Surface {
     Ground,

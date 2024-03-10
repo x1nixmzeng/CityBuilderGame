@@ -72,7 +72,13 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
             handleBladeMove(cell, blade);
 
             auto canMoveAgain = canMoveTo(cell, Surface::Ground, OskEvent::MoveBackward);
-            assert(canMoveAgain == true);
+            if (!canMoveAgain) {
+                // This is valid. The blade is constrained to one tile and cannot move
+                // However, we must not move
+                cell = blade.initialCell;
+
+                // Keep blade.step inverted to show that something has happened
+            }
         }
 
         // Apply this back to the blade
@@ -283,7 +289,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 return "interact";
         }
 
-        return "";
+        std::unreachable();
     }();
 
     if (!allowMove) {

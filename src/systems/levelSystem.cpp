@@ -105,6 +105,8 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
         }
     }
 
+    std::map<CellPos, CellPos> movedCells;
+
     // search for switches
     auto view = registry.view<TransformationComponent, TriggerComponent, NavBlockComponent>();
     for (auto entity : view) {
@@ -123,6 +125,10 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
 
                 // Update the"nav mesh
                 NavBlockComponent& nav = view.get<NavBlockComponent>(entity);
+
+                // Cache the moved cells; key = old cell, value = new cell
+                movedCells[nav.data.cell] = newCell;
+
                 nav.data.cell = newCell;
 
                 // Update the transform
@@ -130,6 +136,22 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
                 transform.unseal();
                 transform.position = CellToWorldPosition(newCell);
                 transform.seal();
+            }
+        }
+    }
+
+    if (movedCells.size() > 0) {
+        // Move all enemies to their new cells
+        // TODO not moving any translations - is this ok?
+        auto enemyView = registry.view<TransformationComponent, BladeComponent>();
+        for (auto entity : enemyView) {
+            auto& blade = enemyView.get<BladeComponent>(entity);
+
+            for (auto const& p : movedCells) {
+                if (blade.initialCell == p.first) {
+                    blade.initialCell = p.second;
+                    break;
+                }
             }
         }
     }
@@ -162,6 +184,8 @@ void LevelSystem::generateLevel() {
     for (const auto& node : test.routeNodes) {
         Vector3 position = CellToWorldPosition(node.cell);
 
+        // TODO: We cannot have switched on a trigger at the moment
+        // See how we are handling blades
         if (node.switchTrigger) {
             entt::entity e = registry.create();
             dynamicEntities.push_back(e);
@@ -173,21 +197,6 @@ void LevelSystem::generateLevel() {
             registry.emplace<NoHitTestComponent>(e);
 
             addSwitchOff(e, position);
-        }
-
-        if (node.enemy) {
-            // temp hack around "ground" offsets
-            auto enemyPosition = Vector3Add(position, Vector3(0.0f, 1.0f, 0.0f));
-
-            auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(*node.enemy);
-
-            auto sawEntity = registry.create();
-            dynamicEntities.push_back(sawEntity);
-            registry.emplace<TransformationComponent>(sawEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
-            MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
-            registry.emplace<MeshComponent>(sawEntity, skyMesh);
-            registry.emplace<NoHitTestComponent>(sawEntity);
-            registry.emplace<BladeComponent>(sawEntity, node.cell, enemyTemplate->pattern);
         }
 
         // main entry?
@@ -215,16 +224,17 @@ void LevelSystem::generateLevel() {
         navBlockData.blocks.allowLeft = tileTemplate->navigation.allowLeft;
         navBlockData.blocks.allowRight = tileTemplate->navigation.allowRight;
 
+        CellPos finalCellPos = node.cell;
+
         if (node.trigger.empty()) {
 
             registry.emplace<NavBlockComponent>(entity, navBlockData);
 
+            // position already calculated from finalCellPos
+
             instances[tileTemplate->meshName].emplace_back(position, Vector3Zero(), 0.0f, Vector3One());
         }
         else {
-            // use this as our default value too
-            // registry.emplace<TransformationComponent>(entity, Vector3Zero(), Vector3Zero(), 0.0f,Vector3One());
-
             // common trigger data between all surfaces
             std::vector<TriggerData> triggerData;
             triggerData.reserve(node.triggers.size());
@@ -235,10 +245,9 @@ void LevelSystem::generateLevel() {
                 triggerData.push_back(data);
             }
 
-            CellPos cell = node.cell;
             for (const auto& td : triggerData) {
                 if (td.value == "false") {
-                    cell += td.cellOffset;
+                    finalCellPos += td.cellOffset;
                 }
             }
 
@@ -246,17 +255,35 @@ void LevelSystem::generateLevel() {
             registry.emplace<TriggerComponent>(entity, node.trigger, node.cell, triggerData);
 
             // register a nav block at the starting offset (could be anything)
-            navBlockData.cell = cell;
+            navBlockData.cell = finalCellPos;
 
             registry.emplace<NavBlockComponent>(entity, navBlockData);
 
             MeshResPtr wbMesh = resourceManager.getResource<MeshRes>(tileTemplate->meshName);
 
             // add single transformation
-            auto pos = CellToWorldPosition(cell);
+            auto pos = CellToWorldPosition(finalCellPos);
 
             registry.emplace<TransformationComponent>(entity, pos, Vector3Zero(), 0.0f, Vector3One());
             registry.emplace<MeshComponent>(entity, wbMesh);
+        }
+
+        if (node.enemy) {
+            // temp hack around "ground" offsets
+
+            auto finalPosition = CellToWorldPosition(finalCellPos);
+
+            auto enemyPosition = Vector3Add(finalPosition, Vector3(0.0f, 1.0f, 0.0f));
+
+            auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(*node.enemy);
+
+            auto sawEntity = registry.create();
+            dynamicEntities.push_back(sawEntity);
+            registry.emplace<TransformationComponent>(sawEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
+            MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
+            registry.emplace<MeshComponent>(sawEntity, skyMesh);
+            registry.emplace<NoHitTestComponent>(sawEntity);
+            registry.emplace<BladeComponent>(sawEntity, finalCellPos, enemyTemplate->pattern);
         }
     }
 
