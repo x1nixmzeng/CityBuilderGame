@@ -8,30 +8,38 @@
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
     <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR" />
+    <!-- wall joins here -->
     <tile cell="3 0 0" template="TILE_GROUND_PIECE_3W" />
-    <!-- joining wall -->
-
-    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="5 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR">
+      <enemy template="ENEMY_TEMPLATE_SAW" />
+    </tile>
+    <!-- wall joins here -->
+    <tile cell="5 0 0" template="TILE_GROUND_PIECE_3W" />
     <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" />
 
+    <!-- wall arch -->
     <tile cell="3 1 -1" template="TILE_FRONT_PIECE" />
     <tile cell="3 2 -1" template="TILE_FRONT_PIECE_4" />
     <tile cell="4 2 -1" template="TILE_FRONT_PIECE_4" />
-    <tile cell="5 2 -1" template="TILE_FRONT_PIECE_4" />
+    <tile cell="5 2 -1" template="TILE_FRONT_PIECE_2" />
     <tile cell="5 1 -1" template="TILE_FRONT_PIECE" />
+    <!-- wall arch -->
 
     <tile cell="7 0 0" template="TILE_GROUND_PIECE_CORNER" />
     <tile cell="7 0 1" template="TILE_GROUND_PIECE_FB" />
     <tile cell="7 0 2" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 3" template="TILE_GROUND_PIECE_CORNER_4" />
+    
+    <tile cell="7 0 3" template="TILE_GROUND_PIECE_3W_3" />
+    
     <tile cell="7 0 4" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 5" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="7 0 5" template="TILE_GROUND_PIECE_3W_3" />
+    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB">
+      <enemy template="ENEMY_TEMPLATE_SAW_H" />
+    </tile>
     <tile cell="7 0 7" template="TILE_GROUND_PIECE_FB" />
 
     <tile cell="7 0 3" template="TILE_SIDE_PIECE_V" />
-    <tile cell="7 -1 3" template="TILE_SIDE_PIECE_V" />
+    <tile cell="7 -1 3" template="TILE_FRONT_PIECE_CORNER" />
     <tile cell="7 -1 4" template="TILE_SIDE_PIECE_H">
       <!-- temp -->
       <trigger_switch toggle="switch_1" />
@@ -48,13 +56,6 @@
 
     <tile cell="7 0 9" template="TILE_GROUND_PIECE_FB" />
 
-    <enemy cell="1 0 0" offset="0.0000 1.0000 0.0000" template="ENEMY_TEMPLATE_SAW" >
-      
-    </enemy>
-
-    <enemy cell="7 0 3" offset="0.0000 1.0000 0.0000" template="ENEMY_TEMPLATE_SAW_H" >
-      
-    </enemy>
 
   </route>
 

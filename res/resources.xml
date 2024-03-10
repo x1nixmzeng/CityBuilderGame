@@ -34,6 +34,7 @@
   <resource type="mesh" id="WB_GROUND_MESH_1W" filename="models/ground_1w.obj" />
   <resource type="mesh" id="WB_FRONT_MESH_1W" filename="models/front_1w.obj" />
   <resource type="mesh" id="WB_FRONT_MESH_1W_2" filename="models/front_1w_270.obj" />
+  <resource type="mesh" id="WB_FRONT_MESH_CORNER" filename="models/front_corner.obj" />
 
   <resource type="mesh" id="WB_TRIGGER_ON" filename="models/trigger_on.obj" />
   <resource type="mesh" id="WB_TRIGGER_OFF" filename="models/trigger_off.obj" />
@@ -60,9 +61,7 @@
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_V"
             mesh="WB_FRONT_MESH_1"
-            surface="wall_side"
-            allow_forward="false"
-            allow_backward="false" />
+            surface="wall_side" />
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_H3"
             mesh="WB_FRONT_MESH_4"
@@ -186,5 +185,9 @@
             mesh="WB_SIDE_MESH_4"
             allow_left="false"
             allow_forward="false" />
+  
+  <resource type="tile_template" id="TILE_FRONT_PIECE_CORNER"
+            surface="wall_side"
+            mesh="WB_FRONT_MESH_CORNER" />
 
 </resources>

@@ -117,6 +117,9 @@ void ReadRouteNode(RouteNode& n, const xml_node& tileNode) {
         else if (name == "trigger_switch") {
             n.switchTrigger = std::string(childNode.attribute("toggle").as_string());
         }
+        else if (name == "enemy") {
+            n.enemy = std::string(childNode.attribute("template").as_string());
+        }
         else if (name == "trigger") {
             ReadTrigger(n, childNode);
         }
