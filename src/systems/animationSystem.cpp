@@ -29,7 +29,8 @@ void AnimationSystem::update(float dt) {
         t.rotationAxis = Vector3(0.0f, 0.0f, 1.0f);
         t.rotationAngle = x;
 
-        Matrix matRotation = MatrixRotateZ(x * DEG2RAD);
+        // Step is signed, and will rotate towards movement
+        Matrix matRotation = MatrixRotateZ(blade.step * x * DEG2RAD);
 
         if (blade.pattern == MovementPattern::ForwardBack) {
 
