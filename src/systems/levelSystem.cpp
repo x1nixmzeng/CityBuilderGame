@@ -159,22 +159,6 @@ void LevelSystem::generateLevel() {
 
     RouteComponent& test = registry.get<RouteComponent>(level1Instance);
 
-    // deprecate this
-    for (const auto& enemy : test.enemies) {
-        Vector3 position = CellToWorldPosition(enemy.cell);
-        position = Vector3Add(position, enemy.offset);
-
-        auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(enemy.templateName);
-
-        auto sawEntity = registry.create();
-        dynamicEntities.push_back(sawEntity);
-        registry.emplace<TransformationComponent>(sawEntity, position, Vector3Zero(), 0.0f, Vector3One());
-        MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
-        registry.emplace<MeshComponent>(sawEntity, skyMesh);
-        registry.emplace<NoHitTestComponent>(sawEntity);
-        registry.emplace<BladeComponent>(sawEntity, enemy.cell, enemyTemplate->pattern);
-    }
-
     for (const auto& node : test.routeNodes) {
         Vector3 position = CellToWorldPosition(node.cell);
 

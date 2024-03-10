@@ -136,21 +136,7 @@ RouteComponent ObjectLoader::loadComponent<RouteComponent>(const xml_node& node)
         tiles.push_back(n);
     }
 
-    std::vector<Enemy> enemies;
-
-    for (const xml_node& enemyNode : node.children("enemy")) {
-
-        Enemy e;
-        auto cell = ReadI3(enemyNode, "cell");
-        auto offset = ReadF3(enemyNode, "offset");
-        auto enemyTemplate = std::string_view(enemyNode.attribute("template").as_string());
-        e.cell = cell;
-        e.offset = offset;
-        e.templateName = enemyTemplate;
-        enemies.push_back(e);
-    }
-
-    return RouteComponent(tiles, enemies);
+    return RouteComponent(tiles);
 }
 
 template<>
