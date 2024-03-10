@@ -12,15 +12,14 @@ struct BladeComponent : public AssignableComponent {
 
     const float bladeSpeed = 300.0f;
     CellPos initialCell;
-    Vector3 offset;
     MovementPattern pattern;
     int step = 1;
 
-    inline BladeComponent(const CellPos& pos, Vector3 offset_, MovementPattern pattern_)
-        : initialCell(pos), offset(offset_), pattern(pattern_) {
+    inline BladeComponent(const CellPos& pos, MovementPattern pattern_)
+        : initialCell(pos), pattern(pattern_) {
     }
 
     inline void assignToEntity(const entt::entity entity, entt::registry& registry) const override {
-        registry.emplace<BladeComponent>(entity, initialCell, offset, pattern);
+        registry.emplace<BladeComponent>(entity, initialCell, pattern);
     }
 };

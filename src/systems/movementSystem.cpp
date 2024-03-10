@@ -79,10 +79,11 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
         blade.initialCell = cell;
 
         auto worldPos = CellToWorldPosition(cell);
-        worldPos = Vector3Add(worldPos, blade.offset);
+        worldPos = Vector3Add(worldPos, Vector3(0.0f, 1.0f, 0.0f));
 
         auto& trans = bladeView.get<TransformationComponent>(bladeEntity);
 
+        trans.unseal();
         switch (blade.pattern) {
             case MovementPattern::LeftRight:
                 trans.rotationAxis = Vector3(1.0, 0.0f, 0.0f);
@@ -95,6 +96,7 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
         }
 
         trans.position = worldPos;
+        trans.seal();
 
         // TODO: Temporarily not killing Lara
         if (e.pos == cell) {
@@ -140,7 +142,9 @@ bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, O
     auto blockViews = registry.view<NavBlockComponent>();
     for (auto blockViewEntity : blockViews) {
         auto x = blockViews.get<NavBlockComponent>(blockViewEntity);
-        if (x.data.cell == pos && x.data.surface == surfaceType) {
+        auto const cellMatch = x.data.cell == pos;
+        auto const surfaceMatch = x.data.surface == surfaceType;
+        if (cellMatch && surfaceMatch) {
             return true;
         }
     }
@@ -455,7 +459,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
     }
 
     if (!handled) {
-        puts(std::format("Unable to file valid target for move {}\n", oskName).c_str());
+        puts(std::format("Unable to find valid target for move {}\n", oskName).c_str());
         return;
     }
 }
@@ -463,12 +467,16 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 void MovementSystem::setLaraInternal(const Vector3& pos) {
     TransformationComponent& laraTransformation = registry.get<TransformationComponent>(laraEntity);
 
+    laraTransformation.unseal();
     auto finalPos = Vector3Add(pos, laraOffset);
 
-    laraTransformation.setPosition(finalPos);
+    laraTransformation.position = finalPos;
 
     // TODO: Would be good for "lara" to be facing the right direction here
-    laraTransformation.setRotation(Vector3(0.0f, 1.0f, 0.0f), 90.0f);
+    laraTransformation.rotationAxis = Vector3(0.0f, 1.0f, 0.0f);
+    laraTransformation.rotationAngle = 90.0f;
+
+    laraTransformation.seal();
 }
 
 void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceType) {

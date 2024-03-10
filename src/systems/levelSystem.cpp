@@ -127,7 +127,9 @@ void LevelSystem::handleRequestToggleSwitchEvent(const RequestToggleSwitchEvent&
 
                 // Update the transform
                 auto& transform = view.get<TransformationComponent>(entity);
+                transform.unseal();
                 transform.position = CellToWorldPosition(newCell);
+                transform.seal();
             }
         }
     }
@@ -157,6 +159,7 @@ void LevelSystem::generateLevel() {
 
     RouteComponent& test = registry.get<RouteComponent>(level1Instance);
 
+    // deprecate this
     for (const auto& enemy : test.enemies) {
         Vector3 position = CellToWorldPosition(enemy.cell);
         position = Vector3Add(position, enemy.offset);
@@ -169,7 +172,7 @@ void LevelSystem::generateLevel() {
         MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
         registry.emplace<MeshComponent>(sawEntity, skyMesh);
         registry.emplace<NoHitTestComponent>(sawEntity);
-        registry.emplace<BladeComponent>(sawEntity, enemy.cell, enemy.offset, enemyTemplate->pattern);
+        registry.emplace<BladeComponent>(sawEntity, enemy.cell, enemyTemplate->pattern);
     }
 
     for (const auto& node : test.routeNodes) {
@@ -186,6 +189,21 @@ void LevelSystem::generateLevel() {
             registry.emplace<NoHitTestComponent>(e);
 
             addSwitchOff(e, position);
+        }
+
+        if (node.enemy) {
+            // temp hack around "ground" offsets
+            auto enemyPosition = Vector3Add(position, Vector3(0.0f, 1.0f, 0.0f));
+
+            auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(*node.enemy);
+
+            auto sawEntity = registry.create();
+            dynamicEntities.push_back(sawEntity);
+            registry.emplace<TransformationComponent>(sawEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
+            MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
+            registry.emplace<MeshComponent>(sawEntity, skyMesh);
+            registry.emplace<NoHitTestComponent>(sawEntity);
+            registry.emplace<BladeComponent>(sawEntity, node.cell, enemyTemplate->pattern);
         }
 
         // main entry?

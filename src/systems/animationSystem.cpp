@@ -1,6 +1,7 @@
 #include "systems/animationSystem.hpp"
 #include "components/bladeComponent.hpp"
 #include "components/transformationComponent.hpp"
+#include <raymath.h>
 
 AnimationSystem::AnimationSystem(Game* game)
     : System(game) {
@@ -22,6 +23,37 @@ void AnimationSystem::update(float dt) {
         // TODO: Support multiple rotations
         // Need to rotate along Z for spin:
         // Need to orientate the blade for left/right
-        t.setRotation(Vector3(0.0f, 0.0f, 1.0f), x);
+
+        t.isSealed = false;
+
+        t.rotationAxis = Vector3(0.0f, 0.0f, 1.0f);
+        t.rotationAngle = x;
+
+        Matrix matRotation = MatrixRotateZ(x * DEG2RAD);
+
+        if (blade.pattern == MovementPattern::ForwardBack) {
+
+            // todo: rotate along some axis
+            // MatrixRotateZ(x);
+
+            t.rotationAxis = Vector3(0.0f, 1.0f, 0.0f);
+            t.rotationAngle = 90.0f;
+
+            Matrix matOrientation = MatrixRotate(Vector3(0.0f, 1.0f, 0.0f), 90.0f * DEG2RAD);
+
+            matRotation = MatrixMultiply(matRotation, matOrientation);
+        }
+        else {
+
+            // Do nothing. 0 deg around Y axis
+        }
+
+        // Recalculate the "seal" ourselves
+
+        Matrix matScale = MatrixScale(t.scale.x, t.scale.y, t.scale.z);
+        Matrix matTranslation = MatrixTranslate(t.position.x, t.position.y, t.position.z);
+
+        t.transform = MatrixMultiply(MatrixMultiply(matScale, matRotation), matTranslation);
+        t.isSealed = true;
     }
 }

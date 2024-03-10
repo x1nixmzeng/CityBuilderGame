@@ -2,25 +2,27 @@
 #include "component.hpp"
 
 #include <raylib.h>
+#include <vector>
 
-struct TransformationComponent : public AssignableComponent {
+struct BaseTransformationComponent : public AssignableComponent {
+    Matrix transform;
+
+    BaseTransformationComponent();
+    BaseTransformationComponent(Matrix finalMatrix);
+
+    void assignToEntity(const entt::entity entity, entt::registry& registry) const override;
+};
+
+struct TransformationComponent : public BaseTransformationComponent {
+    bool isSealed = true;
     Vector3 position;
-    
     Vector3 rotationAxis;
     float rotationAngle;
     Vector3 scale;
 
+    void unseal();
+    void seal();
+
     TransformationComponent(const Vector3& position, const Vector3& axis, float angle, const Vector3& scale);
-
-    void translate(const Vector3& translation);
-    void setPosition(const Vector3& position);
-
-    void rotate(const Vector3& axis, float angle);
-    void setRotation(const Vector3& axis, float angle);
-    void setRotation(const Vector3& eulerAngles);
-
-    void addScale(const Vector3& scale);
-    void setScale(const Vector3& scale);
-
     void assignToEntity(const entt::entity entity, entt::registry& registry) const override;
 };

@@ -23,6 +23,7 @@ struct RouteNode {
     std::optional<Vector3> cameraTrigger;
     std::optional<std::string> levelTrigger;
     std::optional<std::string> switchTrigger;
+    std::optional<std::string> enemy;
 
     std::string trigger;
     std::vector<Trigger> triggers;

@@ -22,6 +22,8 @@ class RenderSystem : public System {
     RenderTexture2D thumbnailTarget;
     Camera thumbnailCamera = {0};
 
+    void DrawModelInternal(Model model, TransformationComponent const& trans, Color tint) const;
+
     template<typename... T>
     inline void renderScene (entt::exclude_t<T...> exclude = {}) const {
         registry.view<MeshComponent, TransformationComponent>(exclude)
@@ -31,8 +33,13 @@ class RenderSystem : public System {
                     mesh.mesh->model.materials[i].shader = shader;
                 }
 
-                DrawModel(mesh.mesh->model, transform.position, 1.0f, WHITE);
-                DrawModelWires(mesh.mesh->model, transform.position, 1.0f, BLACK);
+                DrawModelInternal(mesh.mesh->model, transform, WHITE);
+
+                // Note: scale is not typically passed around properly
+                //DrawModelEx(mesh.mesh->model, transform.position, transform.rotationAxis, transform.rotationAngle, Vector3One(), WHITE);
+
+                //DrawModel(mesh.mesh->model, transform.position, 1.0f, WHITE);
+                //DrawModelWires(mesh.mesh->model, transform.position, 1.0f, BLACK);
             });
     }
 
