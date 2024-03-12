@@ -14,7 +14,7 @@ bool operator==(CellPos const& lhs, CellPos const& rhs) {
 }
 
 bool operator<(const CellPos& lhs, const CellPos& rhs) {
-    return lhs.x < rhs.x || lhs .y < rhs.y || lhs.z < rhs.z;
+    return lhs.x < rhs.x && lhs .y < rhs.y && lhs.z < rhs.z;
 }
 
 Surface SurfaceFromString(std::string_view const& surfaceString) {
