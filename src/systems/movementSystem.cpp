@@ -619,6 +619,11 @@ void MovementSystem::updateMovement(float dt) {
                 OnLaraDiedEvent laraDiedEvent;
                 game->raiseEvent(laraDiedEvent);
             }
+            else if (cameraTrigger) {
+                CameraRequestPosition cameraPosition;
+                cameraPosition.target = *cameraTrigger;
+                game->raiseEvent(cameraPosition);
+            }
 
             state = MovementState::Idle;
             lara = laraTarget;
@@ -712,4 +717,33 @@ void MovementSystem::createLara() {
 
     setLaraInternal(getWorldPosition(spawnPoint, Surface::Ground));
     lara = spawnPoint;
+
+    auto foundInitialCam = false;
+
+    // Find initial camera position
+    auto metaView = registry.view<MetaBlockComponent>();
+    for (auto metaEntity : metaView) {
+        MetaBlockComponent const& metaBlock = registry.get<MetaBlockComponent>(metaEntity);
+        if (metaBlock.node.cell == lara) {
+            if (metaBlock.node.cameraTrigger) {
+                CameraRequestPosition cameraPosition;
+                cameraPosition.target = *metaBlock.node.cameraTrigger;
+                game->raiseEvent(cameraPosition);
+                foundInitialCam = true;
+            }
+
+            break;
+        }
+    }
+
+    assert(foundInitialCam);
+
+    // Reset look at
+    {
+        auto end = getWorldPosition(lara, Surface::Ground);
+
+        CameraRequestLookAt lookAt;
+        lookAt.target = end;
+        game->raiseEvent(lookAt);
+    }
 }

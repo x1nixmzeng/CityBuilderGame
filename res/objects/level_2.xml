@@ -5,6 +5,7 @@
   <route name="A Sleepy Cave">
     <tile cell="0 0 0" template="TILE_FRONT_PIECE">
       <trigger_level target="level_1" />
+      <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
     <tile cell="0 -1 0" template="TILE_FRONT_PIECE" />
     <tile cell="0 -2 1" template="TILE_GROUND_PIECE_CORNER_3" />

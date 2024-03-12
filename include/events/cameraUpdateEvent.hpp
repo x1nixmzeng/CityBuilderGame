@@ -16,3 +16,7 @@ struct CameraUpdateEvent : public EntityEvent {
 struct CameraRequestLookAt : public Event {
     Vector3 target;
 };
+
+struct CameraRequestPosition : public Event {
+    Vector3 target;
+};

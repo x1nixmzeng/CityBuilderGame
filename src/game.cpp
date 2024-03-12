@@ -122,6 +122,7 @@ template void Game::raiseEvent<MouseScrollEvent>(MouseScrollEvent&);
 template void Game::raiseEvent<ResourceUpdatedEvent>(ResourceUpdatedEvent&);
 template void Game::raiseEvent<OskMoveRequested>(OskMoveRequested&);
 template void Game::raiseEvent<CameraRequestLookAt>(CameraRequestLookAt&);
+template void Game::raiseEvent<CameraRequestPosition>(CameraRequestPosition&);
 template void Game::raiseEvent<RequestToggleSwitchEvent>(RequestToggleSwitchEvent&);
 template void Game::raiseEvent<OnLaraMoveEvent>(OnLaraMoveEvent&);
 

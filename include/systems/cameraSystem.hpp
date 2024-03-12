@@ -1,12 +1,10 @@
 #pragma once
 #include "systems/system.hpp"
 
-#include "events/framebufferSizeEvent.hpp"
-#include "events/mouseEvents.hpp"
-
 #include <raylib.h>
 
 struct CameraRequestLookAt;
+struct CameraRequestPosition;
 
 class CameraSystem : public System {
   protected:
@@ -20,4 +18,5 @@ class CameraSystem : public System {
     virtual void update(float dt) override;
 
     void handleCameraRequestLookAt(const CameraRequestLookAt& e);
+    void handleCameraRequestPosition(const CameraRequestPosition& e);
 };

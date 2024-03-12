@@ -25,6 +25,9 @@ CameraSystem::CameraSystem(Game* game)
 
     eventDispatcher.sink<CameraRequestLookAt>()
         .connect<&CameraSystem::handleCameraRequestLookAt>(*this);
+
+    eventDispatcher.sink<CameraRequestPosition>()
+        .connect<&CameraSystem::handleCameraRequestPosition>(*this);
 }
 
 void CameraSystem::update(float dt) {
@@ -40,7 +43,10 @@ void CameraSystem::update(float dt) {
 void CameraSystem::handleCameraRequestLookAt(const CameraRequestLookAt& e) {
 
     CameraComponent& cameraComponent = registry.get<CameraComponent>(cameraEntity);
-
-    // apply immediately
     cameraComponent.camera.target = e.target;
+}
+
+void CameraSystem::handleCameraRequestPosition(const CameraRequestPosition& e) {
+    CameraComponent& cameraComponent = registry.get<CameraComponent>(cameraEntity);
+    cameraComponent.camera.position = e.target;
 }

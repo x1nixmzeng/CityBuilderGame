@@ -5,10 +5,10 @@
   <route name="A Ruined Route">
     <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
       <trigger_level target="level_2" />
-      <!--<trigger_camera position="-1.0000 10.0000 14.0000" />-->
+      <trigger_camera position="-0.5000 10.0000 11.0000" />
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_3W">
-      <trigger_camera position="-1.0000 10.0000 14.0000" />
+      <trigger_camera position="-0.5000 10.0000 11.0000" />
     </tile>
     <tile cell="1 1 -1" template="TILE_FRONT_PIECE" />
     <tile cell="1 1 -1" template="TILE_GROUND_PIECE">
