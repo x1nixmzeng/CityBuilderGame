@@ -14,8 +14,11 @@ The project was forked from CityBuilderGame (https://github.com/PhiGei2000/CityB
 - [x] Level switches
 - [x] Traps / Falling
 - [x] Fog
+- [x] Enemies (saws)
+- [ ] Enemies (snakes)
+- [ ] Weapons (spears)
+- [ ] Weapons (pistols)
 - [ ] Directional Lighting
-- [ ] Enemies (saws, snakes)
 - [ ] Level dressing
 - [ ] Character animations
 - [ ] Collectables

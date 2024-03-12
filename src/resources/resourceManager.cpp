@@ -94,8 +94,8 @@ void ResourceManager::loadResources() {
         else if (type == "enemy_template") {
             EnemyTemplate* enemyTemplate = new EnemyTemplate();
 
-            // todo: type? do we need a type here
-            auto surfaceAttrib = resourceNode.attribute("type").as_string();
+            auto surfaceAttrib = resourceNode.attribute("surface").as_string();
+            enemyTemplate->surface = SurfaceFromString(std::string_view(surfaceAttrib));
 
             auto patternAttrib = resourceNode.attribute("pattern").as_string();
             enemyTemplate->pattern = MovementPatternFromString(patternAttrib);

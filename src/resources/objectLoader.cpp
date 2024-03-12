@@ -106,6 +106,11 @@ void ReadRouteNode(RouteNode& n, const xml_node& tileNode) {
         n.trap = trapAttrib.as_bool();
     }
 
+    auto sawAttrib = tileNode.attribute("allow_saw");
+    if (sawAttrib) {
+        n.allowSaw = sawAttrib.as_bool();
+    }
+
     for (const xml_node& childNode : tileNode.children()) {
         auto name = std::string_view(childNode.name());
         if (name == "trigger_camera") {

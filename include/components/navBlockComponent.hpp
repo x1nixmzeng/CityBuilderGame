@@ -21,6 +21,7 @@ struct NavBlockData {
     NavBlockType type;
     NavBlocks blocks;
     int steps = 0;
+    bool allowSaw;
 };
 
 struct NavBlockComponent : public AssignableComponent {

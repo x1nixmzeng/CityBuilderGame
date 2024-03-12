@@ -6,11 +6,13 @@
 
 #include <raylib.h>
 #include <optional>
+#include <functional>
 
 struct OnLevelSpawned;
 struct OnStartBot;
 struct OnLaraMoveEvent;
 struct BladeComponent;
+struct NavBlockComponent;
 
 class MovementSystem : public System {
   protected:
@@ -70,8 +72,13 @@ class MovementSystem : public System {
     float fallSpeed = 6.0f;
     float interactLength = 0.1f;
 
-    bool canMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) const;
-    bool tryMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir);
+    using CanMoveLambda = std::function<bool(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType)>;
+
+    static bool CanMoveLara(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType);
+    static bool CanMoveSaw(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType);
+
+    bool canMoveTo(const CellPos& pos, const Surface& surfaceType, CanMoveLambda const& lambda) const;
+    bool tryMoveLara(const CellPos& pos, const Surface& surfaceType);
 
     Vector3 getWorldPosition(const CellPos& pos, const Surface& surfaceType) const;
 

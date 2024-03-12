@@ -217,6 +217,7 @@ void LevelSystem::generateLevel() {
         navBlockData.cell = node.cell;
         navBlockData.surface = tileTemplate->surface;
         navBlockData.type = blockType;
+        navBlockData.allowSaw = node.allowSaw;
 
         // copy out blocks
         navBlockData.blocks.allowForward = tileTemplate->navigation.allowForward;
@@ -283,7 +284,7 @@ void LevelSystem::generateLevel() {
             MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
             registry.emplace<MeshComponent>(sawEntity, skyMesh);
             registry.emplace<NoHitTestComponent>(sawEntity);
-            registry.emplace<BladeComponent>(sawEntity, finalCellPos, enemyTemplate->pattern);
+            registry.emplace<BladeComponent>(sawEntity, finalCellPos, enemyTemplate->pattern, enemyTemplate->surface);
         }
     }
 

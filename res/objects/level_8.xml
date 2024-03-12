@@ -7,18 +7,18 @@
       <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR" allow_saw="true" />
     <!-- wall joins here -->
-    <tile cell="3 0 0" template="TILE_GROUND_PIECE_3W" />
-    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR">
+    <tile cell="3 0 0" template="TILE_GROUND_PIECE_3W" allow_saw="true" />
+    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR" allow_saw="true">
       <enemy template="ENEMY_TEMPLATE_SAW" />
     </tile>
     <!-- wall joins here -->
-    <tile cell="5 0 0" template="TILE_GROUND_PIECE_3W" />
-    <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="5 0 0" template="TILE_GROUND_PIECE_3W" allow_saw="true" />
+    <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" allow_saw="true" />
 
-    <!-- wall arch -->
-    <tile cell="3 1 -1" template="TILE_FRONT_PIECE" />
+    <!-- wall arch  allow_saw="true"-->
+    <tile cell="3 1 -1" template="TILE_FRONT_PIECE" allow_saw="true" />
     <tile cell="3 2 -1" template="TILE_FRONT_PIECE_4" />
     <tile cell="4 2 -1" template="TILE_FRONT_PIECE_4" />
     <tile cell="5 2 -1" template="TILE_FRONT_PIECE_2" />
@@ -26,15 +26,15 @@
     <!-- wall arch -->
 
     <tile cell="7 0 0" template="TILE_GROUND_PIECE_CORNER" />
-    <tile cell="7 0 1" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 2" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="7 0 1" template="TILE_GROUND_PIECE_FB" allow_saw="true" />
+    <tile cell="7 0 2" template="TILE_GROUND_PIECE_FB" allow_saw="true" />
     
-    <tile cell="7 0 3" template="TILE_GROUND_PIECE_3W_3" />
+    <tile cell="7 0 3" template="TILE_GROUND_PIECE_3W_3" allow_saw="true" />
     
-    <tile cell="7 0 4" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 5" template="TILE_GROUND_PIECE_3W_3" />
-    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 7" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="7 0 4" template="TILE_GROUND_PIECE_FB" allow_saw="true" />
+    <tile cell="7 0 5" template="TILE_GROUND_PIECE_3W_3" allow_saw="true" />
+    <tile cell="7 0 6" template="TILE_GROUND_PIECE_FB" allow_saw="true" />
+    <tile cell="7 0 7" template="TILE_GROUND_PIECE_FB" allow_saw="true" />
 
     <tile cell="7 0 3" template="TILE_SIDE_PIECE_V" />
     <tile cell="7 -1 3" template="TILE_FRONT_PIECE_CORNER" />
@@ -45,7 +45,7 @@
     <tile cell="7 -1 5" template="TILE_SIDE_PIECE_H" />
     <tile cell="7 0 5" template="TILE_SIDE_PIECE_V" />
 
-    <tile cell="7 0 8" template="TILE_GROUND_PIECE_FB" trigger="switch_1">
+    <tile cell="7 0 8" template="TILE_GROUND_PIECE_FB" trigger="switch_1" allow_saw="true">
       <enemy template="ENEMY_TEMPLATE_SAW_H" />
       <trigger value="false">
         <cell offset="1 0 0" />

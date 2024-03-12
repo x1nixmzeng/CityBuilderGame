@@ -45,11 +45,13 @@
 
   <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW"
             mesh="BLADE_MESH"
-            pattern="leftright" />
+            pattern="leftright"
+            surface="ground" />
 
   <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW_H"
             mesh="BLADE_MESH"
-            pattern="forwardback" />
+            pattern="forwardback"
+            surface="ground" />
   
   <!-- walkables -->
   <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"

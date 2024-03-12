@@ -64,14 +64,14 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
         handleBladeMove(cell, blade);
 
         // Can the blade move here
-        if (!canMoveTo(cell, Surface::Ground, OskEvent::MoveBackward)) {
+        if (!canMoveTo(cell, Surface::Ground, CanMoveSaw)) {
 
             // Test cell in other direction
             cell = blade.initialCell;
             blade.step *= -1;
             handleBladeMove(cell, blade);
 
-            auto canMoveAgain = canMoveTo(cell, Surface::Ground, OskEvent::MoveBackward);
+            auto canMoveAgain = canMoveTo(cell, Surface::Ground, CanMoveSaw);
             if (!canMoveAgain) {
                 // This is valid. The blade is constrained to one tile and cannot move
                 // However, we must not move
@@ -104,9 +104,9 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
         trans.position = worldPos;
         trans.seal();
 
-        // TODO: Temporarily not killing Lara
-        if (e.pos == cell) {
-            // killLara = true;
+        // Must match the same surface
+        if (e.surface == blade.surface && e.pos == cell) {
+            killLara = true;
         }
     }
 
@@ -143,14 +143,33 @@ void MovementSystem::handleBladeMove(CellPos& cell, BladeComponent const& blade)
     }
 }
 
-bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) const {
+bool MovementSystem::CanMoveLara(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType) {
+    auto const cellMatch = navBlock.data.cell == pos;
+    auto const surfaceMatch = navBlock.data.surface == surfaceType;
+    if (cellMatch && surfaceMatch) {
+        return true;
+    }
+
+    return false;
+}
+
+bool MovementSystem::CanMoveSaw(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType) {
+    auto const cellMatch = navBlock.data.cell == pos;
+    auto const surfaceMatch = navBlock.data.surface == surfaceType;
+    if (navBlock.data.allowSaw && cellMatch && surfaceMatch) {
+        return true;
+    }
+
+    return false;
+}
+
+bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, CanMoveLambda const& checkCanMove) const {
 
     auto blockViews = registry.view<NavBlockComponent>();
     for (auto blockViewEntity : blockViews) {
         auto x = blockViews.get<NavBlockComponent>(blockViewEntity);
-        auto const cellMatch = x.data.cell == pos;
-        auto const surfaceMatch = x.data.surface == surfaceType;
-        if (cellMatch && surfaceMatch) {
+
+        if (checkCanMove(x, pos, surfaceType)) {
             return true;
         }
     }
@@ -158,9 +177,9 @@ bool MovementSystem::canMoveTo(const CellPos& pos, const Surface& surfaceType, O
     return false;
 }
 
-bool MovementSystem::tryMoveTo(const CellPos& pos, const Surface& surfaceType, OskEvent const& dir) {
+bool MovementSystem::tryMoveLara(const CellPos& pos, const Surface& surfaceType) {
 
-    if (canMoveTo(pos, surfaceType, dir)) {
+    if (canMoveTo(pos, surfaceType, CanMoveLara)) {
         setLaraTarget(pos, surfaceType);
         return true;
     }
@@ -308,9 +327,9 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 
                 auto target = lara;
                 target.x -= 1;
-                if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Ground)) {
                     target = lara;
-                    if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                    if (!tryMoveLara(target, Surface::Wall_Side)) {
                         handled = false;
                     }
                 }
@@ -318,7 +337,7 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
             else if (currentSurface == Surface::Wall_Front) {
                 auto target = lara;
                 target.x -= 1;
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     handled = false;
                 }
             }
@@ -326,9 +345,9 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 
                 auto target = lara;
                 target.y -= 1;
-                if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Side)) {
                     target.x -= 1;
-                    if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
+                    if (!tryMoveLara(target, Surface::Ground)) {
                         handled = false;
                     }
                 }
@@ -341,9 +360,9 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 
                 auto target = lara;
                 target.x += 1;
-                if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Ground)) {
                     target.y += 1;
-                    if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                    if (!tryMoveLara(target, Surface::Wall_Side)) {
                         handled = false;
                     }
                 }
@@ -351,16 +370,16 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
             else if (currentSurface == Surface::Wall_Front) {
                 auto target = lara;
                 target.x += 1;
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     handled = false;
                 }
             }
             else if (currentSurface == Surface::Wall_Side) {
                 auto target = lara;
                 target.y += 1;
-                if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Side)) {
                     target = lara;
-                    if (!tryMoveTo(target, Surface::Ground, oskEvent)) {
+                    if (!tryMoveLara(target, Surface::Ground)) {
                         handled = false;
                     }
                 }
@@ -375,10 +394,10 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 target.y += 1;
                 target.z -= 1;
 
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     target = lara;
                     target.z -= 1;
-                    tryMoveTo(target, Surface::Ground, oskEvent);
+                    tryMoveLara(target, Surface::Ground);
                 }
             }
             else if (currentSurface == Surface::Wall_Front) {
@@ -390,15 +409,15 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
 
                 // move down
                 target.y += 1;
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     // check for transition to ground
-                    tryMoveTo(lara, Surface::Ground, oskEvent);
+                    tryMoveLara(lara, Surface::Ground);
                 }
             }
             else if (currentSurface == Surface::Wall_Side) {
                 auto target = lara;
                 target.z -= 1;
-                if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Side)) {
                     // not sure what else can be done here
                     handled = false;
                 }
@@ -414,10 +433,10 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 // check for front walls on current cell
 
                 auto target = lara;
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     target.z += 1;
 
-                    tryMoveTo(target, Surface::Ground, oskEvent);
+                    tryMoveLara(target, Surface::Ground);
                 }
             }
             else if (currentSurface == Surface::Wall_Front) {
@@ -425,17 +444,17 @@ void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
                 // continue to climb down climb if possible
                 auto target = lara;
                 target.y -= 1;
-                if (!tryMoveTo(target, Surface::Wall_Front, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Front)) {
                     target.z += 1;
 
                     // check for transition to ground
-                    tryMoveTo(target, Surface::Ground, oskEvent);
+                    tryMoveLara(target, Surface::Ground);
                 }
             }
             else if (currentSurface == Surface::Wall_Side) {
                 auto target = lara;
                 target.z += 1;
-                if (!tryMoveTo(target, Surface::Wall_Side, oskEvent)) {
+                if (!tryMoveLara(target, Surface::Wall_Side)) {
                     // not sure what else can be done here
                     handled = false;
                 }
@@ -639,7 +658,7 @@ void MovementSystem::updateMovement(float dt) {
 
             // check again for target??
 
-            if (canMoveTo(laraTarget, Surface::Ground, OskEvent::Interact)) {
+            if (canMoveTo(laraTarget, Surface::Ground, CanMoveLara)) {
 
                 // lara has landed
 

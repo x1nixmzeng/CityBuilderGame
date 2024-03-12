@@ -18,6 +18,7 @@
 struct RouteNode {
     CellPos cell = {};
     bool trap = false;
+    bool allowSaw = false;
     std::string templateName;
 
     std::optional<Vector3> cameraTrigger;
