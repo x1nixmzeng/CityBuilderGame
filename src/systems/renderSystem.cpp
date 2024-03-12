@@ -246,6 +246,17 @@ void RenderSystem::update(float dt) {
             DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
     }
 
+    // Draw any saw paths
+    registry.view<NavBlockComponent>(entt::exclude<NoHitTestComponent>)
+        .each([&](const NavBlockComponent& navBlock) {
+            if (navBlock.data.allowSaw) {
+                Vector3 worldPos = CellToWorldPosition(navBlock.data.cell);
+                // Offset slightly towards normal
+                worldPos = Vector3Add(worldPos, Vector3(0.0f, 1.0f, 0.0f));
+                DrawSphereEx(worldPos, 0.2f, 8, 8, BLACK);
+            }
+        });
+
     EndMode3D();
 
     if (collision.hit) {

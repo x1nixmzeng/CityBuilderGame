@@ -18,7 +18,7 @@
     <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" allow_saw="true" />
 
     <!-- wall arch  allow_saw="true"-->
-    <tile cell="3 1 -1" template="TILE_FRONT_PIECE" allow_saw="true" />
+    <tile cell="3 1 -1" template="TILE_FRONT_PIECE" />
     <tile cell="3 2 -1" template="TILE_FRONT_PIECE_4" />
     <tile cell="4 2 -1" template="TILE_FRONT_PIECE_4" />
     <tile cell="5 2 -1" template="TILE_FRONT_PIECE_2" />
