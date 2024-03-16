@@ -61,6 +61,13 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
 
         // Test cell
         auto cell = blade.initialCell;
+
+        // Test lara against her current position
+        if (e.surface == blade.surface && e.pos == cell) {
+            killLara = true;
+            break;
+        }
+
         handleBladeMove(cell, blade);
 
         // Can the blade move here
@@ -107,6 +114,7 @@ void MovementSystem::handleOnLaraMoveEvent(const OnLaraMoveEvent& e) {
         // Must match the same surface
         if (e.surface == blade.surface && e.pos == cell) {
             killLara = true;
+            break;
         }
     }
 
