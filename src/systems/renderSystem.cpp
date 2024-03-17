@@ -147,9 +147,6 @@ void RenderSystem::update(float dt) {
                 EndMode3D(); // End 3d mode drawing, returns to orthographic 2d mode
 
                 DrawText(m.first.c_str(), 0, 0, 32, BLACK);
-
-                auto text = std::format("{} of {}", i + 1, allMeshes.size());
-                DrawText(text.c_str(), 0, 32, 32, BLACK);
             }
             EndTextureMode(); // End drawing to texture (now we have a texture available for next passes)
 
