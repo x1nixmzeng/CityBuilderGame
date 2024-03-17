@@ -3,26 +3,26 @@
   <lara cell="0 0 0" surface="wall_front" offset="0.0000 1.0000 0.0000" />
   <mesh filename="models/level_2_test.obj" />
   <route name="A Sleepy Cave">
-    <tile cell="0 0 0" template="TILE_FRONT_PIECE">
+    <tile cell="0 0 0" template="TILE_SIDE_EW">
       <trigger_level target="level_1" />
       <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
-    <tile cell="0 -1 0" template="TILE_FRONT_PIECE" />
-    <tile cell="0 -2 1" template="TILE_GROUND_PIECE_CORNER_3" />
-    <tile cell="1 -2 1" template="TILE_GROUND_PIECE_CORNER" />
-    <tile cell="1 -2 1" template="TILE_FRONT_PIECE_3" />
+    <tile cell="0 -1 0" template="TILE_SIDE_EW" />
+    <tile cell="0 -2 1" template="TILE_GROUND_ES" />
+    <tile cell="1 -2 1" template="TILE_GROUND_NW" />
+    <tile cell="1 -2 1" template="TILE_SIDE_ES" />
     
-    <tile cell="2 -2 1" template="TILE_FRONT_PIECE_2" />
+    <tile cell="2 -2 1" template="TILE_SIDE_NW" />
     
-    <tile cell="2 -3 1" template="TILE_FRONT_PIECE" />
-    <tile cell="2 -4 2" template="TILE_GROUND_PIECE_CORNER_3" />
-    <tile cell="3 -4 2" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="4 -4 2" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="2 -3 1" template="TILE_SIDE_EW" />
+    <tile cell="2 -4 2" template="TILE_GROUND_ES" />
+    <tile cell="3 -4 2" template="TILE_GROUND_NS" />
+    <tile cell="4 -4 2" template="TILE_GROUND_NS" />
 
-    <tile cell="5 -4 2" template="TILE_GROUND_PIECE_LR">
+    <tile cell="5 -4 2" template="TILE_GROUND_NS">
       <trigger_level target="level_3" />
     </tile>
-    <tile cell="6 -4 2" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="6 -4 2" template="TILE_GROUND_NS" />
   </route>
 
   <auto_nav>

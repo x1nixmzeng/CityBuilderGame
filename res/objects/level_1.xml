@@ -4,22 +4,25 @@
   <mesh filename="models/level_1_test.obj" />
   <route name="A Forgotten Path">
 
-    <tile cell="0 0 0" template="TILE_GROUND_PIECE_S">
+    <tile cell="0 0 0" template="TILE_GROUND_S">
       <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
-    <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="3 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="4 0 0" template="TILE_GROUND_PIECE_CORNER">
+    <tile cell="1 0 0" template="TILE_GROUND_NS" />
+    <tile cell="2 0 0" template="TILE_GROUND_NS">
+      <!--<enemy template="ENEMY_TEMPLATE_SNAKE" />-->
+    </tile>
+    <tile cell="3 0 0" template="TILE_GROUND_NS" />
+    <tile cell="4 0 0" template="TILE_GROUND_NW">
       <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
-    <tile cell="4 0 1" template="TILE_GROUND_PIECE_FB">
+    <tile cell="4 0 1" template="TILE_GROUND_EW">
       <trigger_camera position="5.0000 10.0000 20.0000" />
+      <!--<enemy template="ENEMY_TEMPLATE_SNAKE" />-->
     </tile>
-    <tile cell="4 0 2" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="4 0 2" template="TILE_FRONT_PIECE" />
-    <tile cell="4 -1 2" template="TILE_FRONT_PIECE" />
-    <tile cell="4 -2 2" template="TILE_FRONT_PIECE">
+    <tile cell="4 0 2" template="TILE_GROUND_EW" />
+    <tile cell="4 0 2" template="TILE_SIDE_EW" />
+    <tile cell="4 -1 2" template="TILE_SIDE_EW" />
+    <tile cell="4 -2 2" template="TILE_SIDE_EW">
       <trigger_level target="level_2" />
     </tile>
   </route>

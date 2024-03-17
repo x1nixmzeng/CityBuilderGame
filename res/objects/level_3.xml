@@ -3,40 +3,40 @@
   <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
   <mesh filename="models/level_3_test.obj" />
   <route name="A Ruined Route">
-    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+    <tile cell="0 0 0" template="TILE_GROUND_NS">
       <trigger_level target="level_2" />
       <trigger_camera position="-0.5000 10.0000 11.0000" />
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_3W">
       <trigger_camera position="-0.5000 10.0000 11.0000" />
     </tile>
-    <tile cell="1 1 -1" template="TILE_FRONT_PIECE" />
-    <tile cell="1 1 -1" template="TILE_GROUND_PIECE">
+    <tile cell="1 1 -1" template="TILE_SIDE_EW" />
+    <tile cell="1 1 -1" template="TILE_GROUND_W">
       <trigger_switch toggle="switch_1" />
     </tile>
-    <tile cell="2 0 0" template="TILE_GROUND_PIECE_LR">
+    <tile cell="2 0 0" template="TILE_GROUND_NS">
       <trigger_camera position="7.0000 10.0000 14.0000" />
     </tile>
 
     <!-- triggered -->
-    <tile cell="3 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_1">
+    <tile cell="3 0 0" template="TILE_GROUND_NS" trigger="switch_1">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
       <trigger value="true" />
     </tile>
 
-    <tile cell="4 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="5 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="6 0 0" template="TILE_GROUND_PIECE_LR" />
-    <tile cell="7 0 0" template="TILE_GROUND_PIECE_3W_2" />
-    <tile cell="7 0 1" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="7 0 2" template="TILE_GROUND_PIECE_CORNER_3">
+    <tile cell="4 0 0" template="TILE_GROUND_NS" />
+    <tile cell="5 0 0" template="TILE_GROUND_NS" />
+    <tile cell="6 0 0" template="TILE_GROUND_NS" />
+    <tile cell="7 0 0" template="TILE_GROUND_NSW" />
+    <tile cell="7 0 1" template="TILE_GROUND_EW" />
+    <tile cell="7 0 2" template="TILE_GROUND_ES">
       <trigger_switch toggle="switch_2" />
     </tile>
 
     <!-- triggered 2 (a) -->
-    <tile cell="8 0 2" template="TILE_GROUND_PIECE_LR" trigger="switch_2">
+    <tile cell="8 0 2" template="TILE_GROUND_NS" trigger="switch_2">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
@@ -44,14 +44,14 @@
     </tile>
 
     <!-- triggered 2 (b) -->
-    <tile cell="8 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_2">
+    <tile cell="8 0 0" template="TILE_GROUND_NS" trigger="switch_2">
       <trigger value="false" />
       <trigger value="true">
         <cell offset="0 -3 0" />
       </trigger>
     </tile>
 
-    <tile cell="9 0 2" template="TILE_GROUND_PIECE_N">
+    <tile cell="9 0 2" template="TILE_GROUND_N">
       <trigger_switch toggle="switch_3" />
     </tile>
 
@@ -63,40 +63,40 @@
       <trigger value="true" />
     </tile>
 
-    <tile cell="9 0 -1" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="9 0 -2" template="TILE_GROUND_PIECE">
+    <tile cell="9 0 -1" template="TILE_GROUND_EW" />
+    <tile cell="9 0 -2" template="TILE_GROUND_W">
       <trigger_switch toggle="switch_4" />
     </tile>
 
-    <tile cell="10 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+    <tile cell="10 0 0" template="TILE_GROUND_NS" trigger="switch_4">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
       <trigger value="true" />
     </tile>
-    <tile cell="11 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+    <tile cell="11 0 0" template="TILE_GROUND_NS" trigger="switch_4">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
       <trigger value="true" />
     </tile>
-    <tile cell="12 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+    <tile cell="12 0 0" template="TILE_GROUND_NS" trigger="switch_4">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
       <trigger value="true" />
     </tile>
-    <tile cell="13 0 0" template="TILE_GROUND_PIECE_LR" trigger="switch_4">
+    <tile cell="13 0 0" template="TILE_GROUND_NS" trigger="switch_4">
       <trigger value="false">
         <cell offset="0 -3 0" />
       </trigger>
       <trigger value="true" />
     </tile>
 
-    <tile cell="14 0 0" template="TILE_GROUND_PIECE_LR">
+    <tile cell="14 0 0" template="TILE_GROUND_NS">
       <trigger_level target="level_4" />
     </tile>
-    <tile cell="15 0 0" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="15 0 0" template="TILE_GROUND_NS" />
 
   </route>
 
