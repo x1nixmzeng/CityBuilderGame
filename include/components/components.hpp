@@ -9,6 +9,7 @@
 #include "laraComponent.hpp"
 #include "navBlockComponent.hpp"
 #include "routeComponent.hpp"
+#include "snakeComponent.hpp"
 #include "switchComponent.hpp"
 #include "autoNavComponent.hpp"
 #include "switchBlockComponent.hpp"

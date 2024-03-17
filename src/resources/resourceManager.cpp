@@ -94,6 +94,9 @@ void ResourceManager::loadResources() {
         else if (type == "enemy_template") {
             EnemyTemplate* enemyTemplate = new EnemyTemplate();
 
+            auto enemyAttrib = resourceNode.attribute("enemy").as_string();
+            enemyTemplate->type = EnemyTypeFromString(std::string_view(enemyAttrib));
+
             auto surfaceAttrib = resourceNode.attribute("surface").as_string();
             enemyTemplate->surface = SurfaceFromString(std::string_view(surfaceAttrib));
 

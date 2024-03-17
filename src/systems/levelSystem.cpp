@@ -278,13 +278,26 @@ void LevelSystem::generateLevel() {
 
             auto enemyTemplate = resourceManager.getResource<EnemyTemplate>(*node.enemy);
 
-            auto sawEntity = registry.create();
-            dynamicEntities.push_back(sawEntity);
-            registry.emplace<TransformationComponent>(sawEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
-            MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
-            registry.emplace<MeshComponent>(sawEntity, skyMesh);
-            registry.emplace<NoHitTestComponent>(sawEntity);
-            registry.emplace<BladeComponent>(sawEntity, finalCellPos, enemyTemplate->pattern, enemyTemplate->surface);
+            switch (enemyTemplate->type) {
+                case EnemyType::Saw: {
+                    auto sawEntity = registry.create();
+                    dynamicEntities.push_back(sawEntity);
+                    registry.emplace<TransformationComponent>(sawEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
+                    MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
+                    registry.emplace<MeshComponent>(sawEntity, skyMesh);
+                    registry.emplace<NoHitTestComponent>(sawEntity);
+                    registry.emplace<BladeComponent>(sawEntity, finalCellPos, enemyTemplate->pattern, enemyTemplate->surface);
+                } break;
+                case EnemyType::Snake: {
+                    auto snakeEntity = registry.create();
+                    dynamicEntities.push_back(snakeEntity);
+                    registry.emplace<TransformationComponent>(snakeEntity, enemyPosition, Vector3Zero(), 0.0f, Vector3One());
+                    MeshResPtr skyMesh = resourceManager.getResource<MeshRes>(enemyTemplate->meshName);
+                    registry.emplace<MeshComponent>(snakeEntity, skyMesh);
+                    registry.emplace<NoHitTestComponent>(snakeEntity);
+                    registry.emplace<SnakeComponent>(snakeEntity, finalCellPos, enemyTemplate->pattern, enemyTemplate->surface);
+                } break;
+            }
         }
     }
 

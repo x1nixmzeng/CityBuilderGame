@@ -7,6 +7,7 @@
   <resource type="mesh" id="LARA_MESH" filename="models/lara.obj" />
   <resource type="mesh" id="SKY_MESH" filename="models/sky_cube.obj" />
   <resource type="mesh" id="BLADE_MESH" filename="models/blade.obj" />
+  <resource type="mesh" id="SNAKE_MESH" filename="models/snake.obj" />
 
   <!-- world tiles -->
   <resource type="mesh" id="WB_GROUND_MESH_N" filename="models/ground_n.obj" />
@@ -69,12 +70,20 @@
 
   <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW"
             mesh="BLADE_MESH"
+            enemy="saw"
             pattern="leftright"
             surface="ground" />
 
   <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW_H"
             mesh="BLADE_MESH"
+            enemy="saw"
             pattern="forwardback"
+            surface="ground" />
+
+  <resource type="enemy_template" id="ENEMY_TEMPLATE_SNAKE"
+            mesh="SNAKE_MESH"
+            enemy="snake"
+            pattern="forward"
             surface="ground" />
 
   <!-- walkables -->
