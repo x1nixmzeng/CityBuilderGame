@@ -208,15 +208,11 @@
 
   <resource type="tile_template" id="TILE_FRONT_PIECE_2"
             surface="wall_front"
-            mesh="WB_SIDE_MESH_NW"
-            allow_right="false"
-            allow_backward="false" />
+            mesh="WB_SIDE_MESH_NW" />
 
   <resource type="tile_template" id="TILE_FRONT_PIECE_4"
             surface="wall_front"
-            mesh="WB_SIDE_MESH_NS"
-            allow_forward="false"
-            allow_backward="false" />
+            mesh="WB_SIDE_MESH_NS" />
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_SW"
             surface="wall_front"
@@ -273,5 +269,20 @@
             surface="wall_side"
             allow_forward="false"
             allow_left="false"/>
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE_ES"
+          surface="wall_side"
+          mesh="WB_FRONT_MESH_ES"
+          allow_forward="false" />
+
+  <resource type="tile_template" id="TILE_FRONT_PIECE_NES"
+        surface="wall_side"
+        mesh="WB_FRONT_MESH_NES"
+        allow_forward="false" />
+  
+  <resource type="tile_template" id="TILE_SIDE_MESH_NEW"
+        surface="wall_front"
+        mesh="WB_SIDE_MESH_NEW"
+        allow_right="false" />
 
 </resources>

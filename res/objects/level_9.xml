@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
+
+  <route name="The Tower of Blades">
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_FB">
+      <!--<trigger_camera position="-5.0000 29.0000 12.0000" />-->
+      <trigger_camera position="-10.0000 6.50000 10.0000" />
+    </tile>
+    <tile cell="0 0 1" template="TILE_GROUND_PIECE_ES" />
+    <tile cell="1 1 1" template="TILE_SIDE_PIECE_3W" />
+    <tile cell="1 2 1" template="TILE_SIDE_PIECE_3W" />
+    <tile cell="1 3 1" template="TILE_SIDE_PIECE_3W" allow_saw="true">
+      <trigger_camera position="-8.0000 16.0000 10.0000" />
+    </tile>
+    <tile cell="1 4 1" template="TILE_SIDE_PIECE_3W" allow_saw="true" />
+    <tile cell="1 1 2" template="TILE_FRONT_PIECE_ES" />
+    <tile cell="1 2 2" template="TILE_FRONT_PIECE_NES" />
+    <tile cell="1 3 2" template="TILE_FRONT_PIECE_NES" allow_saw="true">
+      <trigger_camera position="-8.0000 16.0000 10.0000" />
+    </tile>
+    <tile cell="1 4 2" template="TILE_FRONT_PIECE_NES" allow_saw="true" />
+    
+    <tile cell="1 4 1" template="TILE_GROUND_PIECE_CORNER" />
+    <tile cell="1 4 2" template="TILE_GROUND_PIECE_3W_3" />
+
+    <tile cell="1 4 3" template="TILE_GROUND_PIECE_CORNER_3">
+      <trigger_camera position="-5.0000 29.0000 12.0000" />
+    </tile>
+    <tile cell="2 4 3" template="TILE_GROUND_PIECE_LR" />
+    <tile cell="3 4 3" template="TILE_GROUND_PIECE_CORNER_4" />
+
+    <tile cell="3 5 2" template="TILE_FRONT_PIECE" />
+    <tile cell="3 6 2" template="TILE_SIDE_MESH_NEW" />
+    <tile cell="3 7 2" template="TILE_SIDE_MESH_NEW" />
+    <tile cell="3 8 2" template="TILE_SIDE_MESH_NEW" />
+    <tile cell="3 9 2" template="TILE_SIDE_MESH_NEW" />
+    <tile cell="3 10 2" template="TILE_FRONT_PIECE_2" />
+
+    <tile cell="2 6 2" template="TILE_FRONT_PIECE_3" />
+    <tile cell="2 7 2" template="TILE_FRONT_PIECE_3W" />
+    <tile cell="2 8 2" template="TILE_FRONT_PIECE_3W" />
+    <tile cell="2 9 2" template="TILE_FRONT_PIECE_3W" />
+    <tile cell="2 10 2" template="TILE_FRONT_PIECE_3W" />
+
+    <tile cell="2 6 2" template="TILE_FRONT_PIECE_ES" />
+    <tile cell="2 7 2" template="TILE_FRONT_PIECE_NES" />
+    <tile cell="2 8 2" template="TILE_FRONT_PIECE_NES" />
+    <tile cell="2 9 2" template="TILE_FRONT_PIECE_NES" />
+    <tile cell="2 10 2" template="TILE_FRONT_PIECE_NES" />
+
+    <tile cell="2 6 1" template="TILE_FRONT_PIECE_CORNER" />
+    <tile cell="2 7 1" template="TILE_SIDE_PIECE_3W" />
+    <tile cell="2 8 1" template="TILE_SIDE_PIECE_3W" />
+    <tile cell="2 9 1" template="TILE_SIDE_PIECE_3W" />
+    <tile cell="2 10 1" template="TILE_SIDE_PIECE_3W" />
+
+    <!-- top ground section -->
+    <tile cell="2 10 1" template="TILE_GROUND_PIECE_3W_2" />
+    <tile cell="3 11 1" template="TILE_GROUND_PIECE_LR">
+      <!-- this lifts up -->
+
+    </tile>
+    <tile cell="3 11 1" template="TILE_SIDE_PIECE_V">
+      <!-- this lifts up -->
+
+    </tile>
+    <tile cell="2 10 2" template="TILE_GROUND_PIECE_3W_3" />
+
+    <!-- exit -->
+    <tile cell="4 11 1" template="TILE_GROUND_PIECE_LR" />
+
+  </route>
+
+</object>
