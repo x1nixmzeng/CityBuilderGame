@@ -22,7 +22,7 @@
       </trigger>
     </tile>
 
-    <tile cell="1 0 6" template="TILE_GROUND_PIECE_3W_4" />
+    <tile cell="1 0 6" template="TILE_GROUND_PIECE_ES" />
 
     <tile cell="2 1 3" template="TILE_SIDE_PIECE_V" />
     <tile cell="2 2 3" template="TILE_SIDE_PIECE_V" />

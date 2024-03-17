@@ -76,7 +76,7 @@
             mesh="BLADE_MESH"
             pattern="forwardback"
             surface="ground" />
-  
+
   <!-- walkables -->
   <resource type="tile_template" id="TILE_SIDE_PIECE_CAP"
             mesh="WB_FRONT_MESH_N"
@@ -87,7 +87,9 @@
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_V"
             mesh="WB_FRONT_MESH_NS"
-            surface="wall_side" />
+            surface="wall_side"
+            allow_forward="false"
+            allow_backward="false" />
 
   <resource type="tile_template" id="TILE_SIDE_PIECE_H3"
             mesh="WB_FRONT_MESH_NE"
@@ -157,9 +159,9 @@
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_3_CRACKED"
             surface="ground"
             mesh="WB_GROUND_MESH_3W_3_CRACKED"
-            mesh_cracked="WB_GROUND_MESH_3W_3_CRACKED2" 
+            mesh_cracked="WB_GROUND_MESH_3W_3_CRACKED2"
             allow_right="false" />
-  
+
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W"
             surface="ground"
             mesh="WB_GROUND_MESH_NES"
@@ -176,18 +178,19 @@
 
   <resource type="tile_template" id="TILE_GROUND_PIECE_3W_4"
             surface="ground"
+            allow_left="false"
             mesh="WB_GROUND_MESH_ESW" />
 
   <resource type="tile_template" id="TILE_FRONT_PIECE_3W"
             surface="wall_front"
             mesh="WB_SIDE_MESH_ESW"
             allow_left="false" />
-  
+
   <resource type="tile_template" id="TILE_FRONT_PIECE_3W_4"
             surface="wall_front"
             mesh="WB_SIDE_MESH_NES"
             allow_forward="false" />
-  
+
   <resource type="tile_template" id="TILE_FRONT_PIECE"
             surface="wall_front"
             mesh="WB_SIDE_MESH_EW"
@@ -206,14 +209,60 @@
             allow_forward="false"
             allow_backward="false" />
 
+  <resource type="tile_template" id="TILE_SIDE_PIECE_SW"
+            surface="wall_front"
+            allow_left="false"
+            allow_backward="false"
+            mesh="WB_SIDE_MESH_SW" />
+
   <resource type="tile_template" id="TILE_FRONT_PIECE_3"
             surface="wall_front"
             mesh="WB_SIDE_MESH_ES"
             allow_left="false"
             allow_forward="false" />
-  
+
   <resource type="tile_template" id="TILE_FRONT_PIECE_CORNER"
             surface="wall_side"
             mesh="WB_FRONT_MESH_SW" />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_S"
+          surface="ground"
+          allow_forward="false"
+          allow_backward="false"
+          allow_left="false"
+          mesh="WB_GROUND_MESH_S"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_N"
+          surface="ground"
+          allow_forward="false"
+          allow_backward="false"
+          allow_right="false"
+          mesh="WB_GROUND_MESH_N"/>
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_E"
+          surface="ground"
+          allow_forward="false"
+          allow_left="false"
+          allow_right="false"
+          mesh="WB_GROUND_MESH_E" />
+
+  <resource type="tile_template" id="TILE_SIDE_PIECE_N"
+        surface="wall_front"
+        allow_backward="false"
+        allow_forward="false"
+        allow_right="false"
+        mesh="WB_SIDE_MESH_N" />
+
+  <resource type="tile_template" id="TILE_GROUND_PIECE_ES"
+          surface="ground"
+          allow_forward="false"
+          allow_left="false"
+          mesh="WB_GROUND_MESH_ES" />
+
+  <resource type="tile_template" id="TILE_SIDE_PIECE_ES"
+            mesh="WB_FRONT_MESH_ES"
+            surface="wall_side"
+            allow_forward="false"
+            allow_left="false"/>
 
 </resources>

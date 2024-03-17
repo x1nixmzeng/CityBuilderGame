@@ -51,7 +51,7 @@
       </trigger>
     </tile>
 
-    <tile cell="9 0 2" template="TILE_GROUND_PIECE_LR">
+    <tile cell="9 0 2" template="TILE_GROUND_PIECE_N">
       <trigger_switch toggle="switch_3" />
     </tile>
 

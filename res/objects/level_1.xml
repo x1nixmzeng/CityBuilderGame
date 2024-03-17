@@ -4,7 +4,7 @@
   <mesh filename="models/level_1_test.obj" />
   <route name="A Forgotten Path">
 
-    <tile cell="0 0 0" template="TILE_GROUND_PIECE_LR">
+    <tile cell="0 0 0" template="TILE_GROUND_PIECE_S">
       <trigger_camera position="3.0000 10.0000 13.0000" />
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />

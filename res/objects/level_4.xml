@@ -11,7 +11,7 @@
     <tile cell="1 0 0" template="TILE_GROUND_PIECE_LR" />
     <tile cell="2 0 0" template="TILE_GROUND_PIECE_3W_3_CRACKED" is_trap="true" />
     <tile cell="2 0 1" template="TILE_GROUND_PIECE_FB" />
-    <tile cell="2 0 2" template="TILE_GROUND_PIECE_FB" />
+    <tile cell="2 0 2" template="TILE_GROUND_PIECE_E" />
 
     <tile cell="2 0 -1" template="TILE_GROUND_PIECE_FB" />
     <tile cell="2 0 -2" template="TILE_GROUND_PIECE_CORNER_2" />
@@ -56,7 +56,7 @@
 
     <tile cell="7 2 -3" template="TILE_FRONT_PIECE_4" is_trap="true" />
     <tile cell="8 2 -3" template="TILE_FRONT_PIECE_3W_4" /> <!-- 3 way -->
-    <tile cell="9 2 -3" template="TILE_FRONT_PIECE_4" />
+    <tile cell="9 2 -3" template="TILE_SIDE_PIECE_N" />
 
 
     <tile cell="8 0 -2" template="TILE_GROUND_PIECE_CORNER_2" />
