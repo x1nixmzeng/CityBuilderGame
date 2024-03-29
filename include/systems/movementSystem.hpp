@@ -39,13 +39,12 @@ class MovementSystem : public System {
 
     void handleBladeMove(CellPos& cell, BladeComponent const& blade);
 
-    void setLaraInternal(const Vector3& pos);
-    void setLaraTarget(const CellPos& pos, const Surface& surfaceType);
+    void setLaraInternal(const Vector3& pos, const Vector3& rotation);
+    void setLaraTarget(const CellPos& pos, const Surface& surfaceType, OskEvent const oskEvent);
     void updateMovement(float dt);
 
     CellPos spawnPoint; // spawn point
     Vector3 laraOffset;
-    Vector3 laraDirection{};
 
     CellPos lara;
     Surface currentSurface;
@@ -61,6 +60,7 @@ class MovementSystem : public System {
     std::optional<Vector3> cameraTrigger;
 
     float laraDelta = 0.0f;
+    float laraRotation = 0.0f;
 
     float interactDelay = 0.0f;
 
@@ -78,7 +78,7 @@ class MovementSystem : public System {
     static bool CanMoveSaw(const NavBlockComponent& navBlock, const CellPos& pos, const Surface& surfaceType);
 
     bool canMoveTo(const CellPos& pos, const Surface& surfaceType, CanMoveLambda const& lambda) const;
-    bool tryMoveLara(const CellPos& pos, const Surface& surfaceType);
+    bool tryMoveLara(const CellPos& pos, const Surface& surfaceType, OskEvent const oskEvent);
 
     Vector3 getWorldPosition(const CellPos& pos, const Surface& surfaceType) const;
 
