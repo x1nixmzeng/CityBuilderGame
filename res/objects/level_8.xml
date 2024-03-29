@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object>
   <lara cell="0 0 0" offset="0.0000 1.0000 0.0000" />
-
+  <mesh filename="models/level_8_test.obj" />
   <route name="The Bridge of Many Sides">
     <tile cell="0 0 0" template="TILE_GROUND_NS">
       <trigger_camera position="3.0000 10.0000 13.0000" />
