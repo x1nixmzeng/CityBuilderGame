@@ -1,5 +1,6 @@
 #include "systems/animationSystem.hpp"
 #include "components/bladeComponent.hpp"
+#include "components/meshComponent.hpp"
 #include "components/transformationComponent.hpp"
 #include <raymath.h>
 
@@ -10,6 +11,22 @@ AnimationSystem::AnimationSystem(Game* game)
 }
 
 void AnimationSystem::update(float dt) {
+
+    // Update all anims
+    auto meshView = registry.view<MeshComponent>();
+    for (auto& meshEntity : meshView) {
+        MeshComponent& mesh = meshView.get<MeshComponent>(meshEntity);
+
+        if (mesh.mesh->animCount > 0) {
+            ModelAnimation anim = mesh.mesh->anims[0];
+            assert(anim.frameCount > 0);
+
+            mesh.mesh->animDelta += dt;
+
+            auto frame = static_cast<int>(std::floorf(mesh.mesh->animDelta * 60.0f));
+            UpdateModelAnimation(mesh.mesh->model, anim, frame);
+        }
+    }
 
     auto bladeView = registry.view<BladeComponent, TransformationComponent>();
     for (const auto& bladeEntity : bladeView) {

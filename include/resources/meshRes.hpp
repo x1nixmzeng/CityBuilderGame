@@ -9,6 +9,9 @@ struct MeshRes {
 
   public:
     Model model = {0};
+    ModelAnimation* anims = nullptr;
+    int animCount = 0;
+    float animDelta = 0.0f;
     std::string debugName;
 
     MeshRes();

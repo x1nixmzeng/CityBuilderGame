@@ -10,9 +10,15 @@ MeshResPtr MeshLoader::loadMesh(const std::string& filename) {
 
     assert(std::filesystem::exists(filename));
 
-    // instead use https://github.com/Not-Nik/rlobj
-    mesh->model = LoadObj(filename.c_str());
-    //mesh->debugName = std::filesystem::path(filename).filename().string();
+    auto ext = std::filesystem::path(filename).extension();
+    if (ext == ".obj") {
+        // instead use https://github.com/Not-Nik/rlobj
+        mesh->model = LoadObj(filename.c_str());
+    }
+    else {
+        mesh->model = LoadModel(filename.c_str());
+        mesh->anims = LoadModelAnimations(filename.c_str(), &mesh->animCount);
+    }
 
     // models must have at least one mesh
     assert(mesh->model.meshCount > 0);
