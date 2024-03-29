@@ -732,7 +732,7 @@ void MovementSystem::createLara() {
     laraEntity = registry.create();
 
     registry.emplace<TransformationComponent>(laraEntity, Vector3Zero(), Vector3(1.0f, 0.0f, 0.0f), 0.0f, Vector3One());
-    MeshResPtr laraMesh = resourceManager.getResource<MeshRes>("LARA_ANIM_MESH");
+    MeshResPtr laraMesh = resourceManager.getResource<MeshRes>("LARA_MESH");
     registry.emplace<MeshComponent>(laraEntity, laraMesh);
     registry.emplace<NoHitTestComponent>(laraEntity);
 
