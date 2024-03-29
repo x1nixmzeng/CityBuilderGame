@@ -14,8 +14,8 @@
 
 void RenderSystem::init() {
 
-    ConfigValuePtr fs = resourceManager.getResource<ConfigValue>("FOG_SHADER_FS");
-    ConfigValuePtr vs = resourceManager.getResource<ConfigValue>("LIGHTING_SHADER_VS");
+    ConfigValuePtr fs = resourceManager.getResource<ConfigValue>("TOON_SHADER_FS");
+    ConfigValuePtr vs = resourceManager.getResource<ConfigValue>("TOON_SHADER_VS");
 
     // Load basic lighting shader
     shader = LoadShader(vs->value.c_str(), fs->value.c_str());
@@ -24,23 +24,44 @@ void RenderSystem::init() {
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     // NOTE: "matModel" location name is automatically assigned on shader loading,
     // no need to get the location again if using that uniform name
-    // shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
+    shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
 
     // Ambient light level (some basic lighting)
+    const float ambient = 0.1f;
     int ambientLoc = GetShaderLocation(shader, "ambient");
 
-    float data[4] = {1.0f, 0.1f, 0.1f, 1.0f};
+    float data[4] = {ambient, ambient, ambient, 1.0f};
     SetShaderValue(shader, ambientLoc, data, SHADER_UNIFORM_VEC4);
 
-    float fogDensity = 0.03f; // 0.06f;
-    int fogDensityLoc = GetShaderLocation(shader, "fogDensity");
-    SetShaderValue(shader, fogDensityLoc, &fogDensity, SHADER_UNIFORM_FLOAT);
+    //    // light clamp
+    // auto light_clamp_loc = raylib.GetShaderLocation(shader, "light_clamp");
+    // raylib.SetShaderValue(shader, light_clamp_loc, &light_clamp,
+    //                      raylib.ShaderUniformDataType.SHADER_UNIFORM_FLOAT);
+    //// specular shine
+    // auto shine_loc = raylib.GetShaderLocation(shader, "shine");
+    // raylib.SetShaderValue(shader, shine_loc, &shine_amount,
+    //                       raylib.ShaderUniformDataType.SHADER_UNIFORM_FLOAT);
 
-    // Create lights
-    lights[0] = CreateLight(LIGHT_POINT, {-5, 5, -5}, Vector3Zero(), YELLOW, shader);
-    lights[1] = CreateLight(LIGHT_POINT, {5, 5, 5}, Vector3Zero(), RED, shader);
-    lights[2] = CreateLight(LIGHT_POINT, {-5, 5, 5}, Vector3Zero(), GREEN, shader);
-    lights[3] = CreateLight(LIGHT_POINT, {5, 5, -5}, Vector3Zero(), BLUE, shader);
+    //// light quantize
+    // auto light_quantize_loc = raylib.GetShaderLocation(shader, "light_quantize");
+    // raylib.SetShaderValue(shader, light_quantize_loc, &light_quantize,
+    //                       raylib.ShaderUniformDataType.SHADER_UNIFORM_INT);
+
+    // float fogDensity = 0.03f; // 0.06f;
+    // int fogDensityLoc = GetShaderLocation(shader, "fogDensity");
+    // SetShaderValue(shader, fogDensityLoc, &fogDensity, SHADER_UNIFORM_FLOAT);
+
+    lights.clear();
+
+
+    {
+        auto light1 = CreateLight(LIGHT_POINT, {5, 5, 5}, Vector3Zero(), RED, shader);
+        auto lightEntity = registry.create();
+        registry.emplace<LightComponent>(lightEntity, light1);
+        lights.push_back(lightEntity);
+    }
+
+  
 
     thumbnailTarget = LoadRenderTexture(400, 300);
 
@@ -86,16 +107,12 @@ void RenderSystem::update(float dt) {
     SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
     if (IsKeyPressed(KEY_ONE)) {
-        lights[0].enabled = !lights[0].enabled;
+        auto& light = registry.get<LightComponent>(lights[0]);
+        light.light.enabled = !light.light.enabled;
     }
-    if (IsKeyPressed(KEY_TWO)) {
-        lights[1].enabled = !lights[1].enabled;
-    }
-    if (IsKeyPressed(KEY_THREE)) {
-        lights[2].enabled = !lights[2].enabled;
-    }
-    if (IsKeyPressed(KEY_FOUR)) {
-        lights[3].enabled = !lights[3].enabled;
+
+    if (IsKeyPressed(KEY_NINE)) {
+        wireframe = !wireframe;
     }
 
     static bool exportAllImages = false;
@@ -110,13 +127,12 @@ void RenderSystem::update(float dt) {
         subMesh++;
     }
 
-    bool oldLightEnabled[MAX_LIGHTS];
-
-    for (int i = 0; i < MAX_LIGHTS; i++) {
-        oldLightEnabled[i] = lights[i].enabled;
-        lights[i].enabled = false;
-        UpdateLightValues(shader, lights[i]);
-    }
+    // Disable all lighting
+    registry.view<LightComponent>()
+        .each([&](LightComponent& light) {
+            light.oldEnabled = light.light.enabled;
+            light.light.enabled = false;
+        });
 
     if (exportAllImages) {
 
@@ -166,10 +182,11 @@ void RenderSystem::update(float dt) {
         exportAllImages = false;
     }
 
-    for (int i = 0; i < MAX_LIGHTS; i++) {
-        lights[i].enabled = oldLightEnabled[i];
-        UpdateLightValues(shader, lights[i]);
-    }
+    registry.view<LightComponent>()
+        .each([&](LightComponent& light) {
+            light.light.enabled = light.oldEnabled;
+            UpdateLightValues(shader, light.light);
+        });
 
     BeginMode3D(cameraComponent.camera);
 
@@ -236,12 +253,13 @@ void RenderSystem::update(float dt) {
         }
     }
 
-    for (int i = 0; i < MAX_LIGHTS; i++) {
-        if (lights[i].enabled)
-            DrawSphereEx(lights[i].position, 0.2f, 8, 8, lights[i].color);
-        else
-            DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
-    }
+    registry.view<LightComponent>()
+        .each([&](const LightComponent& light) {
+            if (light.light.enabled)
+                DrawSphereEx(light.light.position, 0.2f, 8, 8, light.light.color);
+            else
+                DrawSphereWires(light.light.position, 0.2f, 8, 8, ColorAlpha(light.light.color, 0.3f));
+        });
 
     // Draw any saw paths
     registry.view<NavBlockComponent>(entt::exclude<NoHitTestComponent>)

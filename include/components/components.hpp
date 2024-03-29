@@ -7,6 +7,7 @@
 #include "meshComponent.hpp"
 #include "transformationComponent.hpp"
 #include "laraComponent.hpp"
+#include "lightComponent.hpp"
 #include "navBlockComponent.hpp"
 #include "routeComponent.hpp"
 #include "snakeComponent.hpp"

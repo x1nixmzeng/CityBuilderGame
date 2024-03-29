@@ -14,6 +14,7 @@ The project was forked from CityBuilderGame (https://github.com/PhiGei2000/CityB
 - [x] Level switches
 - [x] Traps / Falling
 - [x] Fog
+- [x] Cell shaing (https://bedroomcoders.co.uk/posts/223)
 - [x] Enemies (saws)
 - [ ] Enemies (snakes)
 - [ ] Weapons (spears)

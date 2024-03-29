@@ -510,6 +510,12 @@ void MovementSystem::setLaraInternal(const Vector3& pos) {
     laraTransformation.rotationAngle = 90.0f;
 
     laraTransformation.seal();
+
+    // hack to move spotlight with character
+    registry.view<LightComponent>()
+        .each([&](LightComponent& light) {
+            light.light.position = Vector3Add(finalPos, Vector3(0.0f, 3.0f, 0.0f));
+        });
 }
 
 void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceType) {

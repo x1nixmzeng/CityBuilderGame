@@ -8,24 +8,24 @@
 
 #include <raylib.h>
 #include <raymath.h>
-
-#include "misc/rlights.h"
+#include <rlgl.h>
 
 class RenderSystem : public System {
   protected:
     void init() override;
 
     Shader shader;
-    Light lights[MAX_LIGHTS] = {0};
 
     // thumbnail rendering
     RenderTexture2D thumbnailTarget;
     Camera thumbnailCamera = {0};
+    std::vector<entt::entity> lights;
+    bool wireframe = true;
 
     void DrawModelInternal(Model model, TransformationComponent const& trans, Color tint) const;
 
     template<typename... T>
-    inline void renderScene (entt::exclude_t<T...> exclude = {}) const {
+    inline void renderScene(entt::exclude_t<T...> exclude = {}) const {
         registry.view<MeshComponent, TransformationComponent>(exclude)
             .each([&](const MeshComponent& mesh, const TransformationComponent& transform) {
                 // Temporarily light this model
@@ -35,11 +35,11 @@ class RenderSystem : public System {
 
                 DrawModelInternal(mesh.mesh->model, transform, WHITE);
 
-                // Note: scale is not typically passed around properly
-                //DrawModelEx(mesh.mesh->model, transform.position, transform.rotationAxis, transform.rotationAngle, Vector3One(), WHITE);
-
-                //DrawModel(mesh.mesh->model, transform.position, 1.0f, WHITE);
-                //DrawModelWires(mesh.mesh->model, transform.position, 1.0f, BLACK);
+                if (wireframe) {
+                    rlEnableWireMode();
+                    DrawModelInternal(mesh.mesh->model, transform, BLACK);
+                    rlDisableWireMode();
+                }
             });
     }
 
@@ -54,7 +54,10 @@ class RenderSystem : public System {
                     }
 
                     DrawModel(mesh.mesh->model, trans.position, 1.0f, WHITE);
-                    DrawModelWires(mesh.mesh->model, trans.position, 1.0f, BLACK);
+
+                    if (wireframe) {
+                        DrawModelWires(mesh.mesh->model, trans.position, 1.0f, BLACK);
+                    }
                 }
             });
     }

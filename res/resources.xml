@@ -64,6 +64,8 @@
   <resource type="mesh" id="WB_TRIGGER_ON" filename="models/trigger_on.obj" />
   <resource type="mesh" id="WB_TRIGGER_OFF" filename="models/trigger_off.obj" />
 
+  <resource type="shader" id="TOON_SHADER_FS" filename="shaders/glsl330/toon.fs" />
+  <resource type="shader" id="TOON_SHADER_VS" filename="shaders/glsl330/toon.vs" />
   <resource type="shader" id="FOG_SHADER_FS" filename="shaders/glsl330/fog.fs" />
   <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
