@@ -77,11 +77,13 @@ or to create a symbolic link
 | LEFT/RIGHT/UP/DOWN | Move |
 | SPACE | Interact |
 | ESC | Pause menu |
-| (Hold) C| Free camera |
+| (Hold) C | Free camera |
 | WASD | Move free camera |
-| 1/2/3/4 | Toggle the light |
+| 1 | Toggle the light |
+| 9 | Toggle wireframe |
 | F1 | Toggle debug panel |
 | F2 | Toggle control panel |
+| F3 | Toggle thumbnail generation |
 
 ## Issues and questions
 Feel free to report issues and questions to the [issues section](https://github.com/x1nixmzeng/CityBuilderGame/issues).
