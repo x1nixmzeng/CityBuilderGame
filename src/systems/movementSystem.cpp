@@ -261,6 +261,26 @@ void MovementSystem::update(float dt) {
     }
 
     updateMovement(dt);
+
+    {
+        TransformationComponent& laraTransformation = registry.get<TransformationComponent>(laraEntity);
+        // hack to move spotlight with character
+        registry.view<LightComponent>()
+            .each([&](LightComponent& light) {
+                auto lightPos = light.light.position;
+
+                // Negate the light offset
+                lightPos = Vector3Add(lightPos, Vector3(0.0f, -3.0f, 0.0f));
+
+                // Project a little
+                auto v1 = Vector3Subtract(laraTransformation.position, lightPos);
+                const float speed = 0.3f;
+                auto finalPos = Vector3Add(lightPos, Vector3Multiply(v1, Vector3(speed, speed, speed)));
+
+                // Reapply the offset
+                light.light.position = Vector3Add(finalPos, Vector3(0.0f, 3.0f, 0.0f));
+            });
+    }
 }
 
 void MovementSystem::handleOskKey(const OskEvent& oskEvent) {
@@ -511,11 +531,11 @@ void MovementSystem::setLaraInternal(const Vector3& pos, const Vector3& rotation
 
     laraTransformation.seal();
 
-    // hack to move spotlight with character
-    registry.view<LightComponent>()
-        .each([&](LightComponent& light) {
-            light.light.position = Vector3Add(finalPos, Vector3(0.0f, 3.0f, 0.0f));
-        });
+    //// hack to move spotlight with character
+    //registry.view<LightComponent>()
+    //    .each([&](LightComponent& light) {
+    //        light.light.position = Vector3Add(finalPos, Vector3(0.0f, 3.0f, 0.0f));
+    //    });
 }
 
 void MovementSystem::setLaraTarget(const CellPos& pos, const Surface& surfaceType, OskEvent const oskEvent) {
