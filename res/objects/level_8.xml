@@ -11,7 +11,7 @@
     <!-- wall joins here -->
     <tile cell="3 0 0" template="TILE_GROUND_PIECE_3W" allow_saw="true" />
     <tile cell="4 0 0" template="TILE_GROUND_NS" allow_saw="true">
-      <enemy template="ENEMY_TEMPLATE_SAW" />
+      <enemy template="ENEMY_GROUND_SAW" />
     </tile>
     <!-- wall joins here -->
     <tile cell="5 0 0" template="TILE_GROUND_PIECE_3W" allow_saw="true" />
@@ -46,7 +46,7 @@
     <tile cell="7 0 5" template="TILE_FRONT_NS" />
 
     <tile cell="7 0 8" template="TILE_GROUND_EW" trigger="switch_1" allow_saw="true">
-      <enemy template="ENEMY_TEMPLATE_SAW_H" />
+      <enemy template="ENEMY_GROUND_SAW_H" />
       <trigger value="false">
         <cell offset="1 0 0" />
       </trigger>

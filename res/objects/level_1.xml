@@ -9,7 +9,7 @@
     </tile>
     <tile cell="1 0 0" template="TILE_GROUND_NS" />
     <tile cell="2 0 0" template="TILE_GROUND_NS">
-      <!--<enemy template="ENEMY_TEMPLATE_SNAKE" />-->
+      <!--<enemy template="ENEMY_GROUND_SNAKE" />-->
     </tile>
     <tile cell="3 0 0" template="TILE_GROUND_NS" />
     <tile cell="4 0 0" template="TILE_GROUND_NW">
@@ -17,7 +17,7 @@
     </tile>
     <tile cell="4 0 1" template="TILE_GROUND_EW">
       <trigger_camera position="5.0000 10.0000 20.0000" />
-      <!--<enemy template="ENEMY_TEMPLATE_SNAKE" />-->
+      <!--<enemy template="ENEMY_GROUND_SNAKE" />-->
     </tile>
     <tile cell="4 0 2" template="TILE_GROUND_EW" />
     <tile cell="4 0 2" template="TILE_SIDE_EW" />

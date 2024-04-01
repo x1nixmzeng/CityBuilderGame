@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object>
-  <lara cell="0 0 0" surface="wall_front" offset="0.0000 1.0000 0.0000" />
+  <lara cell="0 0 0" surface="front" offset="0.0000 1.0000 0.0000" />
   <mesh filename="models/level_2_test.obj" />
   <route name="A Sleepy Cave">
     <tile cell="0 0 0" template="TILE_SIDE_EW">

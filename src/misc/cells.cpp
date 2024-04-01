@@ -21,11 +21,11 @@ Surface SurfaceFromString(std::string_view const& surfaceString) {
     if (surfaceString == "ground") {
         return Surface::Ground;
     }
-    else if (surfaceString == "wall_front") {
-        return Surface::Wall_Front;
+    else if (surfaceString == "front") {
+        return Surface::Front;
     }
-    else if (surfaceString == "wall_side") {
-        return Surface::Wall_Side;
+    else if (surfaceString == "side") {
+        return Surface::Side;
     }
     else if (surfaceString.size() > 0) {
         std::unreachable();

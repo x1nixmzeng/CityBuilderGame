@@ -70,19 +70,25 @@
   <resource type="shader" id="LIGHTING_SHADER_FS" filename="shaders/glsl330/lighting.fs" />
   <resource type="shader" id="LIGHTING_SHADER_VS" filename="shaders/glsl330/lighting.vs" />
 
-  <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW"
+  <resource type="enemy_template" id="ENEMY_GROUND_SAW"
             mesh="BLADE_MESH"
             enemy="saw"
             pattern="leftright"
             surface="ground" />
 
-  <resource type="enemy_template" id="ENEMY_TEMPLATE_SAW_H"
+  <resource type="enemy_template" id="ENEMY_GROUND_SAW_H"
             mesh="BLADE_MESH"
             enemy="saw"
             pattern="forwardback"
             surface="ground" />
 
-  <resource type="enemy_template" id="ENEMY_TEMPLATE_SNAKE"
+  <resource type="enemy_template" id="ENEMY_FRONT_SAW"
+            mesh="BLADE_MESH"
+            enemy="saw"
+            pattern="leftright"
+            surface="front" />
+
+  <resource type="enemy_template" id="ENEMY_GROUND_SNAKE"
             mesh="SNAKE_MESH"
             enemy="snake"
             pattern="forward"
@@ -91,38 +97,38 @@
   <!-- walkables -->
   <resource type="tile_template" id="TILE_FRONT_N"
             mesh="WB_FRONT_MESH_N"
-            surface="wall_side"
+            surface="side"
             allow_right="false"
             allow_forward="false"
             allow_backward="false" />
 
   <resource type="tile_template" id="TILE_FRONT_NS"
             mesh="WB_FRONT_MESH_NS"
-            surface="wall_side"
+            surface="side"
             allow_forward="false"
             allow_backward="false" />
 
   <resource type="tile_template" id="TILE_FRONT_NE"
             mesh="WB_FRONT_MESH_NE"
-            surface="wall_side"
+            surface="side"
             allow_forward="false"
             allow_right="false"/>
 
   <resource type="tile_template" id="TILE_FRONT_E"
             mesh="WB_FRONT_MESH_E"
-            surface="wall_side"
+            surface="side"
             allow_left="false"
             allow_right="false"/>
 
   <resource type="tile_template" id="TILE_FRONT_EW"
             mesh="WB_FRONT_MESH_EW"
-            surface="wall_side"
+            surface="side"
             allow_left="false"
             allow_right="false"/>
 
   <resource type="tile_template" id="TILE_FRONT_NSW"
             mesh="WB_FRONT_MESH_NSW"
-            surface="wall_side"
+            surface="side"
             allow_backward="false" />
 
   <resource type="tile_template" id="TILE_GROUND_W"
@@ -187,43 +193,43 @@
             mesh="WB_GROUND_MESH_ESW" />
 
   <resource type="tile_template" id="TILE_SIDE_ESW"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_ESW"
             allow_left="false" />
 
   <resource type="tile_template" id="TILE_SIDE_NES"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_NES"
             allow_forward="false" />
 
   <resource type="tile_template" id="TILE_SIDE_EW"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_EW"
             allow_left="false"
             allow_right="false" />
 
   <resource type="tile_template" id="TILE_SIDE_NW"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_NW" />
 
   <resource type="tile_template" id="TILE_SIDE_NS"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_NS" />
 
   <resource type="tile_template" id="TILE_SIDE_SW"
-            surface="wall_front"
+            surface="front"
             allow_left="false"
             allow_backward="false"
             mesh="WB_SIDE_MESH_SW" />
 
   <resource type="tile_template" id="TILE_SIDE_ES"
-            surface="wall_front"
+            surface="front"
             mesh="WB_SIDE_MESH_ES"
             allow_left="false"
             allow_forward="false" />
 
   <resource type="tile_template" id="TILE_FRONT_SW"
-            surface="wall_side"
+            surface="side"
             mesh="WB_FRONT_MESH_SW" />
 
   <resource type="tile_template" id="TILE_GROUND_S"
@@ -248,7 +254,7 @@
           mesh="WB_GROUND_MESH_E" />
 
   <resource type="tile_template" id="TILE_SIDE_N"
-        surface="wall_front"
+        surface="front"
         allow_backward="false"
         allow_forward="false"
         allow_right="false"
@@ -262,17 +268,17 @@
 
   <resource type="tile_template" id="TILE_FRONT_ES"
             mesh="WB_FRONT_MESH_ES"
-            surface="wall_side"
+            surface="side"
             allow_forward="false"
             allow_left="false"/>
 
   <resource type="tile_template" id="TILE_FRONT_NES"
-        surface="wall_side"
+        surface="side"
         mesh="WB_FRONT_MESH_NES"
         allow_forward="false" />
 
   <resource type="tile_template" id="TILE_SIDE_NEW"
-        surface="wall_front"
+        surface="front"
         mesh="WB_SIDE_MESH_NEW"
         allow_right="false" />
 

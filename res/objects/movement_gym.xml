@@ -7,16 +7,16 @@
 
     <tile cell="1 0 0" surface="ground" />
 
-    <tile cell="0 0 0" surface="wall_side" />
-    <tile cell="0 -1 0" surface="wall_side" />
+    <tile cell="0 0 0" surface="side" />
+    <tile cell="0 -1 0" surface="side" />
 
     <tile cell="1 0 1" surface="ground" />
     <tile cell="1 0 -1" surface="ground" />
     <tile cell="2 0 -1" surface="ground" />
     <tile cell="3 0 -1" surface="ground" />
 
-    <tile cell="3 0 -1" surface="wall_front" />
-    <tile cell="3 -1 -1" surface="wall_front" />
+    <tile cell="3 0 -1" surface="front" />
+    <tile cell="3 -1 -1" surface="front" />
 
 
 

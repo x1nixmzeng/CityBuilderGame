@@ -13,8 +13,8 @@ bool operator<(const CellPos& lhs, const CellPos& rhs);
 
 enum class Surface {
     Ground,
-    Wall_Front,
-    Wall_Side,
+    Front,
+    Side,
 };
 
 Surface SurfaceFromString(std::string_view const& surfaceString);
