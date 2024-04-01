@@ -11,6 +11,7 @@ The base class of all components is the "Component" class.
 - [DebugComponent](#debugcomponent)
 - [InstancedMeshComponent](#instancedmeshcomponent)
 - [LaraComponent](#laracomponent)
+- [LightComponent](#lightcomponent)
 - [MeshComponent](#meshcomponent)
 - [MetaBlockComponent](#metablockcomponent)
 - [NavBlockComponent](#navblockcomponent)
@@ -40,6 +41,11 @@ Allows the same mesh to be rendered multiple times using an array of transformat
 
 ### LaraComponent
 Stores the properties of the player character (Lara)
+
+### LightComponent
+Stores the properties of a dynamic list
+
+**Note:** There is a limit of 4 lights enabled in a scene at once
 
 ### MeshComponent
 Stores a reference to a renderable mesh
