@@ -28,9 +28,9 @@
     <tile cell="7 0 0" template="TILE_GROUND_NW" />
     <tile cell="7 0 1" template="TILE_GROUND_EW" allow_saw="true" />
     <tile cell="7 0 2" template="TILE_GROUND_EW" allow_saw="true" />
-    
+
     <tile cell="7 0 3" template="TILE_GROUND_NEW" allow_saw="true" />
-    
+
     <tile cell="7 0 4" template="TILE_GROUND_EW" allow_saw="true" />
     <tile cell="7 0 5" template="TILE_GROUND_NEW" allow_saw="true" />
     <tile cell="7 0 6" template="TILE_GROUND_EW" allow_saw="true" />
@@ -53,10 +53,52 @@
       <trigger value="true" />
     </tile>
 
-    <tile cell="7 0 9" template="TILE_GROUND_EW" />
-
+    <tile cell="7 0 9" template="TILE_GROUND_EW">
+      <!-- level exit -->
+      <trigger_level target="level_1" />
+    </tile>
 
   </route>
 
+  <auto_nav>
+    <!-- 0 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="right" />
+    <event id="backward" />
+    <event id="backward" />
+    <!-- 5 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="forward" />
+    <event id="backward" />
+    <event id="forward" />
+    <!-- 10 -->
+    <event id="backward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="right" />
+    <event id="right" />
+    <!-- 15 -->
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="left" />
+    <event id="left" />
+    <!-- 20 -->
+    <event id="forward" />
+    <event id="interact" />
+    <event id="forward" />
+    <event id="right" />
+    <event id="left" />
+    <!-- 25 -->
+    <event id="right" />
+    <event id="right" />
+    <event id="forward" />
+    <event id="forward" />
+    <event id="forward" />
+    <!-- 30 -->
+    <event id="forward" />
+  </auto_nav>
 
 </object>

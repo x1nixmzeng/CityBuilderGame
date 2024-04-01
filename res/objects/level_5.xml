@@ -64,7 +64,7 @@
     <tile cell="7 4 4" template="TILE_GROUND_NS" />
     <tile cell="8 4 4" template="TILE_GROUND_NS">
       <!-- level exit -->
-      <trigger_level target="level_1" />
+      <trigger_level target="level_8" />
     </tile>
 
     <tile cell="2 3 5" template="TILE_FRONT_EW" is_trap="true" />
